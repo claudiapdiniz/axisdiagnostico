@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -108,9 +109,10 @@
             border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;
             flex-shrink: 0;
         }
-        .badge-alto        { background: #FDECEC; color: #B71C1C; }
-        .badge-intermediario { background: #FEF3E2; color: #B05800; }
-        .badge-baixo       { background: #E8F5E9; color: #1B5E20; }
+        .badge-critico      { background: #FDECEC; color: #7B1010; }
+        .badge-alto         { background: #FEE8D6; color: #7D3800; }
+        .badge-medio        { background: #FEF9D6; color: #7A5B00; }
+        .badge-baixo        { background: #E8F5E9; color: #1B5E20; }
 
         /* ══════════════════════════════════════════════════
            SCREEN: HOME
@@ -239,8 +241,9 @@
             border-radius: 20px; padding: 24px 22px;
             color: #fff; margin-bottom: 20px; text-align: center;
         }
-        .rh-alto        { background: linear-gradient(140deg, #7B1010, #C0392B); }
-        .rh-intermediario { background: linear-gradient(140deg, #7D3800, #E67E22); }
+        .rh-critico     { background: linear-gradient(140deg, #5C0000, #C0392B); }
+        .rh-alto        { background: linear-gradient(140deg, #7D3800, #E67E22); }
+        .rh-medio       { background: linear-gradient(140deg, #7A5B00, #F1C40F); }
         .rh-baixo       { background: linear-gradient(140deg, #145A1E, #27AE60); }
         .rh-company { font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.65); margin-bottom: 2px; }
         .rh-meta    { font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 16px; }
@@ -575,13 +578,22 @@ let S = {
 // HELPERS
 // ─────────────────────────────────────────────────────────
 function riskClass(nivel) {
-  return nivel === 'Alto' ? 'alto' : nivel === 'Intermediário' ? 'intermediario' : 'baixo';
+  if (nivel === 'Crítico')  return 'critico';
+  if (nivel === 'Alto')     return 'alto';
+  if (nivel === 'Médio')    return 'medio';
+  return 'baixo';
 }
 function riskColor(nivel) {
-  return nivel === 'Alto' ? '#C0392B' : nivel === 'Intermediário' ? '#E67E22' : '#27AE60';
+  if (nivel === 'Crítico')  return '#C0392B';
+  if (nivel === 'Alto')     return '#E67E22';
+  if (nivel === 'Médio')    return '#F1C40F';
+  return '#27AE60';
 }
 function riskEmoji(nivel) {
-  return nivel === 'Alto' ? '⚠️' : nivel === 'Intermediário' ? '🔶' : '✅';
+  if (nivel === 'Crítico')  return '🔴';
+  if (nivel === 'Alto')     return '⚠️';
+  if (nivel === 'Médio')    return '🔶';
+  return '✅';
 }
 function fmtDate(d) {
   if (!d) return '';
@@ -793,12 +805,12 @@ function calcResults() {
     let tot = 0, max = f.perguntas.length * 4;
     f.perguntas.forEach((_, pi) => { tot += S.resp[`${fi}_${pi}`] || 0; });
     const pct = Math.round((tot / max) * 100);
-    const nivel = pct >= 67 ? 'Alto' : pct >= 34 ? 'Intermediário' : 'Baixo';
+    const nivel = pct >= 76 ? 'Crítico' : pct >= 51 ? 'Alto' : pct >= 26 ? 'Médio' : 'Baixo';
     return { id: f.id, icon: f.icon, nome: f.nome, tot, max, pct, nivel };
   });
 
   const avgPct = Math.round(fatores.reduce((s, f) => s + f.pct, 0) / fatores.length);
-  const nivel  = avgPct >= 67 ? 'Alto' : avgPct >= 34 ? 'Intermediário' : 'Baixo';
+  const nivel  = avgPct >= 76 ? 'Crítico' : avgPct >= 51 ? 'Alto' : avgPct >= 26 ? 'Médio' : 'Baixo';
   return { fatores, pct: avgPct, nivel };
 }
 
@@ -845,7 +857,7 @@ function renderResults(c) {
   const top3 = [...c.fatores].sort((a, b) => b.pct - a.pct).slice(0, 3);
   const recsHTML = top3.map((f, i) => {
     const rnivel = riskClass(f.nivel);
-    const recMap = { alto: 'alto', intermediario: 'intermediario', baixo: 'baixo' };
+    const recMap = { critico: 'alto', alto: 'alto', medio: 'intermediario', baixo: 'baixo' };
     const recKey = recMap[rnivel] || 'baixo';
     const rec = RECS[f.id]?.[recKey] || '';
     return `
@@ -871,8 +883,14 @@ function renderResults(c) {
     ${factorsHTML}
 
     <div class="card" style="margin-top:4px;">
-      <div class="sec-label" style="margin-bottom:14px;">Perfil de Risco — Visão Radar</div>
-      <canvas id="radarChart" height="260"></canvas>
+      <div class="sec-label" style="margin-bottom:4px;">Distribuição de Risco por Nível</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:16px;">Proporção dos 6 fatores em cada categoria</div>
+      <div style="display:flex;align-items:center;gap:16px;">
+        <div style="width:170px;height:170px;flex-shrink:0;position:relative;">
+          <canvas id="pieChart"></canvas>
+        </div>
+        <div id="pie-legend" style="flex:1;display:flex;flex-direction:column;gap:8px;"></div>
+      </div>
     </div>
 
     <div class="card">
@@ -896,54 +914,66 @@ function renderResults(c) {
   `;
 
   // Draw chart after DOM ready
-  setTimeout(() => drawRadar(c.fatores), 120);
+  setTimeout(() => drawPie(c.fatores), 120);
 }
 
 // ─────────────────────────────────────────────────────────
-// CHART
+// CHART — PIE
 // ─────────────────────────────────────────────────────────
-let radarInst = null;
-function drawRadar(fatores) {
-  const ctx = document.getElementById('radarChart');
+let pieInst = null;
+function drawPie(fatores) {
+  const ctx = document.getElementById('pieChart');
   if (!ctx) return;
-  if (radarInst) { radarInst.destroy(); radarInst = null; }
+  if (pieInst) { pieInst.destroy(); pieInst = null; }
 
-  const labels = fatores.map(f => f.nome.split(' e ')[0].split(' ').slice(0, 2).join(' '));
-  const data   = fatores.map(f => f.pct);
-  const ptColors = fatores.map(f => riskColor(f.nivel));
+  const LEVELS = ['Crítico', 'Alto', 'Médio', 'Baixo'];
+  const COLORS  = ['#C0392B', '#E67E22', '#F1C40F', '#27AE60'];
 
-  radarInst = new Chart(ctx, {
-    type: 'radar',
+  // Count how many factors fall in each level
+  const counts = LEVELS.map(l => fatores.filter(f => f.nivel === l).length);
+  const total  = fatores.length;
+
+  // Build legend
+  const legendEl = document.getElementById('pie-legend');
+  if (legendEl) {
+    legendEl.innerHTML = LEVELS.map((l, i) => {
+      const n = counts[i];
+      const pct = Math.round((n / total) * 100);
+      if (n === 0) return '';
+      return `
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:12px;height:12px;border-radius:3px;background:${COLORS[i]};flex-shrink:0;"></div>
+          <div style="font-size:13px;color:#1A2540;flex:1;">${l}</div>
+          <div style="font-size:13px;font-weight:700;color:#1A2540;">${pct}%</div>
+          <div style="font-size:11px;color:#7A8BA8;">(${n}/${total})</div>
+        </div>`;
+    }).join('');
+  }
+
+  pieInst = new Chart(ctx, {
+    type: 'pie',
     data: {
-      labels,
+      labels: LEVELS,
       datasets: [{
-        label: 'Risco (%)',
-        data,
-        backgroundColor: 'rgba(27,58,107,0.12)',
-        borderColor: '#1B3A6B',
-        borderWidth: 2.5,
-        pointBackgroundColor: ptColors,
-        pointBorderColor: ptColors,
-        pointRadius: 6,
-        pointHoverRadius: 8
+        data: counts,
+        backgroundColor: COLORS,
+        borderColor: '#fff',
+        borderWidth: 3,
+        hoverOffset: 8
       }]
     },
     options: {
       responsive: true,
-      scales: {
-        r: {
-          beginAtZero: true, max: 100,
-          ticks: { stepSize: 25, font: { size: 10 }, color: '#7A8BA8' },
-          pointLabels: { font: { size: 11, weight: '700' }, color: '#1A2540' },
-          grid: { color: '#DDE3EE' },
-          angleLines: { color: '#DDE3EE' }
-        }
-      },
+      animation: { animateRotate: true, duration: 700 },
       plugins: {
         legend: { display: false },
         tooltip: {
           callbacks: {
-            label: ctx => ` ${ctx.raw}% — ${['Alto','Intermediário','Baixo'].includes(fatores[ctx.dataIndex]?.nivel) ? fatores[ctx.dataIndex].nivel : ''}`
+            label: ctx => {
+              const n = ctx.raw;
+              const pct = Math.round((n / total) * 100);
+              return ` ${ctx.label}: ${pct}% (${n} fator${n !== 1 ? 'es' : ''})`;
+            }
           }
         }
       }
