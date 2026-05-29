@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -318,6 +317,24 @@
 
         /* ── DIVIDER ────────────────────────────────────── */
         .divider { height: 1px; background: var(--border); margin: 4px 0 16px; }
+
+        /* ── SETTINGS BTN ───────────────────────────────── */
+        .settings-btn {
+            background: rgba(255,255,255,0.12); border: none;
+            width: 36px; height: 36px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 18px; color: #fff;
+            transition: background 0.18s; flex-shrink: 0;
+        }
+        .settings-btn:active { background: rgba(255,255,255,0.22); }
+
+        /* ── COLOR PRESETS ──────────────────────────────── */
+        .color-presets { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+        .color-dot {
+            width: 34px; height: 34px; border-radius: 50%; cursor: pointer;
+            border: 3px solid transparent; transition: all 0.18s;
+        }
+        .color-dot.selected { border-color: var(--text); transform: scale(1.1); }
     </style>
 </head>
 <body>
@@ -325,10 +342,13 @@
 <!-- HEADER -->
 <header class="header">
     <div class="header-brand">
-        <span class="header-sub">Axis Consultorias</span>
-        <span class="header-title">Mapeamento NR-1</span>
+        <span class="header-sub" id="h-empresa">Minha Consultoria</span>
+        <span class="header-title" id="h-profissional">Mapeamento NR-1</span>
     </div>
-    <span class="header-tag">NR-1 / 2025</span>
+    <div style="display:flex;align-items:center;gap:8px;">
+        <span class="header-tag">NR-1 / 2025</span>
+        <button class="settings-btn" onclick="goBrand()" title="Configurar marca">⚙️</button>
+    </div>
 </header>
 
 <!-- ══ SCREEN: HOME ══════════════════════════════════════ -->
@@ -419,6 +439,39 @@
 <!-- ══ SCREEN: RESULTS ══════════════════════════════════ -->
 <div id="s-results" class="screen">
     <!-- Rendered by JS -->
+</div>
+
+<!-- ══ SCREEN: CONFIGURAR MARCA ══════════════════════════ -->
+<div id="s-brand" class="screen">
+    <div class="screen-h1">Sua Marca</div>
+    <div class="screen-sub">Personalize o app com os dados da sua consultoria. Estas informações aparecem no cabeçalho e nos relatórios.</div>
+
+    <div class="form-group">
+        <label>Nome da sua Consultoria / Empresa *</label>
+        <input type="text" id="b-empresa" placeholder="Ex.: Axis Consultorias" />
+    </div>
+    <div class="form-group">
+        <label>Seu nome profissional *</label>
+        <input type="text" id="b-profissional" placeholder="Ex.: Clau Diniz" />
+    </div>
+    <div class="form-group">
+        <label>Título / Especialidade</label>
+        <input type="text" id="b-titulo" placeholder="Ex.: Consultora NR-1 | Psicóloga Organizacional" />
+    </div>
+    <div class="form-group">
+        <label>WhatsApp / Contato</label>
+        <input type="text" id="b-contato" placeholder="Ex.: (11) 94781-8238" />
+    </div>
+    <div class="form-group">
+        <label>Instagram</label>
+        <input type="text" id="b-instagram" placeholder="Ex.: @axisconsultorias" />
+    </div>
+    <div class="form-group">
+        <label>Cor principal</label>
+        <div class="color-presets" id="color-presets"></div>
+    </div>
+
+    <button class="btn btn-navy" onclick="saveBrand()" style="margin-top:8px;">Salvar e continuar →</button>
 </div>
 
 <!-- MODAL: confirmar exclusão -->
@@ -901,10 +954,23 @@ function renderResults(c) {
       ${recsHTML}
     </div>
 
-    <div class="compliance-note" style="margin-bottom:18px;">
+    <div class="compliance-note" style="margin-bottom:14px;">
       ⚖️ Este diagnóstico serve como subsídio para elaboração do <strong>PGR</strong> e <strong>PCMSO</strong>
       conforme exigência da NR-1 (Portaria MTE nº 1.419/2024). Recomenda-se aprofundamento com avaliação clínica individual.
     </div>
+
+    ${(()=>{
+      const b = loadBrand();
+      if (!b) return '';
+      const linhas = [b.profissional, b.titulo, b.contato, b.instagram].filter(Boolean);
+      return `<div style="background:#fff;border-radius:12px;padding:16px;box-shadow:var(--sh);margin-bottom:18px;display:flex;align-items:center;gap:14px;">
+        <div style="width:42px;height:42px;border-radius:10px;background:var(--navy);display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;font-weight:700;flex-shrink:0;">${b.empresa.charAt(0).toUpperCase()}</div>
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--text);">${b.empresa}</div>
+          ${linhas.map(l=>`<div style="font-size:12px;color:var(--muted);">${l}</div>`).join('')}
+        </div>
+      </div>`;
+    })()}
 
     <div class="action-zone">
       <button class="btn btn-accent" onclick="window.print()">🖨️ Imprimir / Salvar como PDF</button>
@@ -994,10 +1060,98 @@ function showToast(msg) {
 }
 
 // ─────────────────────────────────────────────────────────
+// BRAND / MARCA
+// ─────────────────────────────────────────────────────────
+const BRAND_KEY = 'axis_brand';
+const COR_PRESETS = [
+  { nome: 'Azul Naval',   cor: '#0F2744' },
+  { nome: 'Verde Escuro', cor: '#145A1E' },
+  { nome: 'Roxo',         cor: '#4A235A' },
+  { nome: 'Bordo',        cor: '#6B0E1E' },
+  { nome: 'Azul Petróleo',cor: '#0E4A56' },
+  { nome: 'Grafite',      cor: '#2C2C2C' }
+];
+let selectedCor = COR_PRESETS[0].cor;
+
+function loadBrand() {
+  try { return JSON.parse(localStorage.getItem(BRAND_KEY)); } catch { return null; }
+}
+function saveBrand() {
+  const empresa     = document.getElementById('b-empresa').value.trim();
+  const profissional = document.getElementById('b-profissional').value.trim();
+  if (!empresa || !profissional) {
+    showToast('Preencha nome da consultoria e seu nome');
+    return;
+  }
+  const brand = {
+    empresa,
+    profissional,
+    titulo:    document.getElementById('b-titulo').value.trim(),
+    contato:   document.getElementById('b-contato').value.trim(),
+    instagram: document.getElementById('b-instagram').value.trim(),
+    cor:       selectedCor
+  };
+  localStorage.setItem(BRAND_KEY, JSON.stringify(brand));
+  applyBrand(brand);
+  showToast('Marca salva com sucesso!');
+  goHome();
+}
+
+function applyBrand(brand) {
+  if (!brand) return;
+  document.getElementById('h-empresa').textContent     = brand.empresa || 'Minha Consultoria';
+  document.getElementById('h-profissional').textContent = brand.profissional || 'Mapeamento NR-1';
+  // Apply primary color to CSS variable
+  if (brand.cor) {
+    document.documentElement.style.setProperty('--navy', brand.cor);
+    document.documentElement.style.setProperty('--blue', brand.cor + 'CC');
+  }
+}
+
+function goBrand() {
+  const brand = loadBrand();
+  // Pre-fill form
+  document.getElementById('b-empresa').value      = brand?.empresa     || '';
+  document.getElementById('b-profissional').value  = brand?.profissional || '';
+  document.getElementById('b-titulo').value        = brand?.titulo      || '';
+  document.getElementById('b-contato').value       = brand?.contato     || '';
+  document.getElementById('b-instagram').value     = brand?.instagram   || '';
+  selectedCor = brand?.cor || COR_PRESETS[0].cor;
+  renderColorPresets();
+  goScreen('s-brand');
+}
+
+function renderColorPresets() {
+  const el = document.getElementById('color-presets');
+  if (!el) return;
+  el.innerHTML = COR_PRESETS.map(p => `
+    <div class="color-dot ${selectedCor === p.cor ? 'selected' : ''}"
+         style="background:${p.cor}"
+         title="${p.nome}"
+         onclick="pickCor('${p.cor}')"></div>
+  `).join('');
+}
+
+function pickCor(cor) {
+  selectedCor = cor;
+  renderColorPresets();
+}
+
+// ─────────────────────────────────────────────────────────
 // INIT
 // ─────────────────────────────────────────────────────────
 S.companies = db.get();
-renderHome();
+const savedBrand = loadBrand();
+if (savedBrand) {
+  applyBrand(savedBrand);
+  renderHome();
+  goScreen('s-home');
+} else {
+  // Primeira vez: pede para configurar a marca
+  selectedCor = COR_PRESETS[0].cor;
+  renderColorPresets();
+  goScreen('s-brand');
+}
 </script>
 </body>
 </html>
