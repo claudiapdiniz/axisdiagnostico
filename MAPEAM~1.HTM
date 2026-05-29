@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>Mapeamento NR-1 | Axis Consultorias</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        :root {
+            --navy:   #0F2744;
+            --blue:   #1B3A6B;
+            --blue2:  #2D5A9E;
+            --accent: #C0392B;
+            --gold:   #E67E22;
+            --ok:     #27AE60;
+            --warn:   #E67E22;
+            --danger: #C0392B;
+            --bg:     #F2F5FA;
+            --card:   #FFFFFF;
+            --border: #DDE3EE;
+            --muted:  #7A8BA8;
+            --text:   #1A2540;
+            --sh: 0 2px 12px rgba(15,39,68,0.10);
+            --sh2: 0 6px 24px rgba(15,39,68,0.13);
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            max-width: 480px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* ── HEADER ─────────────────────────────────────── */
+        .header {
+            background: var(--navy);
+            padding: 14px 20px 12px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .header-brand { display: flex; flex-direction: column; }
+        .header-sub { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,0.45); }
+        .header-title { font-size: 16px; font-weight: 700; color: #fff; letter-spacing: -0.3px; }
+        .header-tag {
+            background: rgba(192,57,43,0.25);
+            border: 1px solid rgba(192,57,43,0.5);
+            color: #F1948A;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* ── SCREENS ─────────────────────────────────────── */
+        .screen { display: none; padding: 20px; animation: fadeIn 0.2s ease; }
+        .screen.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ── BUTTONS ─────────────────────────────────────── */
+        .btn {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            width: 100%; border: none; border-radius: 14px; padding: 15px 20px;
+            font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.18s;
+            font-family: inherit; text-align: center;
+        }
+        .btn:active { transform: scale(0.97); }
+        .btn-navy { background: var(--navy); color: #fff; }
+        .btn-accent { background: var(--accent); color: #fff; }
+        .btn-ghost { background: #fff; color: var(--blue); border: 2px solid var(--border); }
+        .btn-outline { background: transparent; color: var(--blue); border: 2px solid var(--blue); }
+        .btn:disabled { background: var(--border) !important; color: var(--muted) !important; cursor: not-allowed; transform: none !important; }
+        .btn-sm { padding: 10px 16px; font-size: 13px; border-radius: 10px; }
+
+        /* ── CARDS ─────────────────────────────────────── */
+        .card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: var(--sh);
+            margin-bottom: 14px;
+        }
+
+        /* ── SECTION LABEL ─────────────────────────────── */
+        .sec-label {
+            font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px;
+            color: var(--muted); font-weight: 700; margin-bottom: 10px;
+        }
+
+        /* ── RISK BADGES ─────────────────────────────────── */
+        .badge {
+            display: inline-flex; align-items: center;
+            font-size: 11px; font-weight: 800; padding: 4px 10px;
+            border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;
+            flex-shrink: 0;
+        }
+        .badge-alto        { background: #FDECEC; color: #B71C1C; }
+        .badge-intermediario { background: #FEF3E2; color: #B05800; }
+        .badge-baixo       { background: #E8F5E9; color: #1B5E20; }
+
+        /* ══════════════════════════════════════════════════
+           SCREEN: HOME
+        ══════════════════════════════════════════════════ */
+        .hero {
+            background: linear-gradient(140deg, var(--navy) 0%, var(--blue) 100%);
+            border-radius: 20px;
+            padding: 26px 22px 22px;
+            color: #fff;
+            margin-bottom: 22px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: -40px; right: -40px;
+            width: 160px; height: 160px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.04);
+        }
+        .hero h2 { font-size: 20px; font-weight: 800; line-height: 1.3; margin-bottom: 8px; }
+        .hero p  { font-size: 13px; color: rgba(255,255,255,0.72); line-height: 1.6; margin-bottom: 20px; }
+
+        .company-card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            box-shadow: var(--sh);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: box-shadow 0.18s;
+        }
+        .company-card:active { box-shadow: var(--sh2); transform: scale(0.99); }
+        .company-icon {
+            width: 42px; height: 42px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; flex-shrink: 0;
+        }
+        .company-info { flex: 1; min-width: 0; }
+        .company-name { font-size: 14px; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .company-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+        .del-btn {
+            background: none; border: none; color: var(--muted);
+            font-size: 16px; cursor: pointer; padding: 6px; flex-shrink: 0;
+            line-height: 1;
+        }
+        .empty-state { text-align: center; padding: 36px 16px; color: var(--muted); }
+        .empty-state .e-icon { font-size: 44px; margin-bottom: 12px; }
+        .empty-state p { font-size: 13px; line-height: 1.6; }
+
+        /* ══════════════════════════════════════════════════
+           SCREEN: SETUP
+        ══════════════════════════════════════════════════ */
+        .screen-h1 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+        .screen-sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; line-height: 1.5; }
+
+        .form-group { margin-bottom: 18px; }
+        .form-group label {
+            display: block; font-size: 11px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1px;
+            color: var(--muted); margin-bottom: 7px;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%; padding: 13px 15px;
+            border: 2px solid var(--border); border-radius: 12px;
+            font-size: 16px; color: var(--text); background: #fff;
+            outline: none; transition: border-color 0.18s;
+            font-family: inherit; -webkit-appearance: none; appearance: none;
+        }
+        .form-group input:focus,
+        .form-group select:focus { border-color: var(--blue); }
+
+        /* ══════════════════════════════════════════════════
+           SCREEN: QUESTIONNAIRE
+        ══════════════════════════════════════════════════ */
+        .progress-wrap { background: var(--border); border-radius: 100px; height: 5px; margin-bottom: 20px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--blue), var(--blue2)); border-radius: 100px; transition: width 0.4s ease; }
+
+        .cat-card {
+            background: linear-gradient(135deg, var(--navy), var(--blue));
+            border-radius: 16px; padding: 18px 20px;
+            color: #fff; margin-bottom: 20px;
+            display: flex; align-items: center; gap: 14px;
+        }
+        .cat-emoji { font-size: 30px; flex-shrink: 0; }
+        .cat-sub { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.55); margin-bottom: 3px; }
+        .cat-name { font-size: 17px; font-weight: 700; }
+
+        .q-counter { font-size: 11px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+        .q-text { font-size: 17px; font-weight: 600; line-height: 1.5; color: var(--text); margin-bottom: 22px; }
+
+        .answers { display: flex; flex-direction: column; gap: 9px; margin-bottom: 28px; }
+        .ans-btn {
+            display: flex; align-items: center; gap: 12px;
+            background: #fff; border: 2px solid var(--border);
+            border-radius: 12px; padding: 13px 15px;
+            font-size: 14px; font-weight: 500; color: var(--text);
+            cursor: pointer; text-align: left; transition: all 0.18s;
+            font-family: inherit;
+        }
+        .ans-btn:active { transform: scale(0.99); }
+        .ans-btn.sel { border-color: var(--blue); background: #EBF0FA; color: var(--blue); }
+        .ans-dot {
+            width: 20px; height: 20px; border-radius: 50%;
+            border: 2px solid var(--border); flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.18s;
+        }
+        .ans-btn.sel .ans-dot { border-color: var(--blue); background: var(--blue); }
+        .ans-dot-inner { width: 8px; height: 8px; border-radius: 50%; background: #fff; display: none; }
+        .ans-btn.sel .ans-dot-inner { display: block; }
+
+        .nav-row { display: flex; gap: 10px; }
+        .nav-row .btn-ghost { flex: 1; }
+        .nav-row .btn-navy  { flex: 2; }
+
+        /* ══════════════════════════════════════════════════
+           SCREEN: RESULTS
+        ══════════════════════════════════════════════════ */
+        .result-hero {
+            border-radius: 20px; padding: 24px 22px;
+            color: #fff; margin-bottom: 20px; text-align: center;
+        }
+        .rh-alto        { background: linear-gradient(140deg, #7B1010, #C0392B); }
+        .rh-intermediario { background: linear-gradient(140deg, #7D3800, #E67E22); }
+        .rh-baixo       { background: linear-gradient(140deg, #145A1E, #27AE60); }
+        .rh-company { font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.65); margin-bottom: 2px; }
+        .rh-meta    { font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 16px; }
+        .rh-lbl     { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.75); margin-bottom: 4px; }
+        .rh-risk    { font-size: 42px; font-weight: 900; letter-spacing: -2px; line-height: 1; margin-bottom: 8px; }
+        .rh-pct     { font-size: 13px; color: rgba(255,255,255,0.7); }
+
+        .factor-item { background: #fff; border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; box-shadow: var(--sh); }
+        .fi-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 9px; }
+        .fi-name { font-size: 13px; font-weight: 700; flex: 1; margin-right: 8px; }
+        .bar-wrap { height: 8px; background: var(--border); border-radius: 100px; overflow: hidden; }
+        .bar-fill { height: 100%; border-radius: 100px; }
+        .fi-pct { font-size: 11px; color: var(--muted); text-align: right; margin-top: 5px; }
+
+        .rec-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+        .rec-item:last-child { border-bottom: none; }
+        .rec-num {
+            width: 26px; height: 26px; border-radius: 50%;
+            background: var(--navy); color: #fff;
+            font-size: 12px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .rec-body { font-size: 13px; line-height: 1.6; color: var(--text); }
+        .rec-body strong { color: var(--navy); display: block; margin-bottom: 3px; }
+
+        .action-zone { display: flex; flex-direction: column; gap: 10px; padding-bottom: 36px; }
+
+        /* ── MODAL ──────────────────────────────────────── */
+        .overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(10,20,40,0.55); z-index: 200;
+            align-items: flex-end; justify-content: center;
+        }
+        .overlay.open { display: flex; }
+        .modal {
+            background: #fff; border-radius: 24px 24px 0 0;
+            padding: 20px; width: 100%; max-width: 480px;
+            animation: slideUp 0.28s ease;
+        }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .modal-handle { width: 38px; height: 4px; background: var(--border); border-radius: 100px; margin: 0 auto 18px; }
+        .modal h3 { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
+        .modal p  { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 22px; }
+
+        /* ── TOAST ──────────────────────────────────────── */
+        .toast {
+            position: fixed; bottom: 24px; left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: var(--navy); color: #fff;
+            padding: 11px 20px; border-radius: 100px;
+            font-size: 13px; font-weight: 600; z-index: 300;
+            transition: transform 0.28s ease;
+            white-space: nowrap; box-shadow: var(--sh2);
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+
+        /* ── COMPLIANCE NOTICE ──────────────────────────── */
+        .compliance-note {
+            background: #EBF0FA; border-left: 3px solid var(--blue);
+            border-radius: 10px; padding: 12px 14px;
+            font-size: 12px; color: var(--blue); line-height: 1.5;
+            margin-bottom: 18px;
+        }
+
+        /* ── PRINT ──────────────────────────────────────── */
+        @media print {
+            .header, .action-zone, .nav-row, .progress-wrap, .cat-card { display: none !important; }
+            .screen { display: block !important; padding: 10px; }
+            .card, .factor-item, .recommendations-card { box-shadow: none !important; border: 1px solid #ddd; }
+            body { max-width: 100%; }
+        }
+
+        /* ── DIVIDER ────────────────────────────────────── */
+        .divider { height: 1px; background: var(--border); margin: 4px 0 16px; }
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+    <div class="header-brand">
+        <span class="header-sub">Axis Consultorias</span>
+        <span class="header-title">Mapeamento NR-1</span>
+    </div>
+    <span class="header-tag">NR-1 / 2025</span>
+</header>
+
+<!-- ══ SCREEN: HOME ══════════════════════════════════════ -->
+<div id="s-home" class="screen active">
+
+    <div class="hero">
+        <h2>Diagnóstico de Riscos Psicossociais</h2>
+        <p>Mapeie os fatores de risco NR-1 durante a reunião de vendas — sem planilhas, direto no celular.</p>
+        <button class="btn btn-ghost" onclick="goSetup()">
+            <span>＋</span> Nova Análise de Empresa
+        </button>
+    </div>
+
+    <div class="sec-label">Análises Realizadas</div>
+    <div id="companies-list"></div>
+</div>
+
+<!-- ══ SCREEN: SETUP ════════════════════════════════════ -->
+<div id="s-setup" class="screen">
+    <div class="screen-h1">Nova Análise</div>
+    <div class="screen-sub">Preencha os dados da empresa antes de iniciar o diagnóstico de riscos psicossociais.</div>
+
+    <div class="compliance-note">
+        📋 <strong>Conformidade NR-1 (2025):</strong> Este questionário avalia os 6 fatores de risco psicossocial conforme a Portaria MTE nº 1.419/2024.
+    </div>
+
+    <div class="form-group">
+        <label>Nome da Empresa *</label>
+        <input type="text" id="f-empresa" placeholder="Ex.: Empresa ABC Ltda" autocomplete="organization" />
+    </div>
+    <div class="form-group">
+        <label>Setor / Segmento</label>
+        <select id="f-setor">
+            <option value="">Selecione...</option>
+            <option>Saúde</option>
+            <option>Educação</option>
+            <option>Tecnologia / TI</option>
+            <option>Varejo / Comércio</option>
+            <option>Indústria / Manufatura</option>
+            <option>Serviços Financeiros</option>
+            <option>Logística / Transporte</option>
+            <option>Construção Civil</option>
+            <option>Alimentação / Hotelaria</option>
+            <option>Administração Pública</option>
+            <option>Jurídico / Consultoria</option>
+            <option>Outro</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Nº de Funcionários</label>
+        <select id="f-func">
+            <option value="">Selecione...</option>
+            <option>1 a 9 (Microempresa)</option>
+            <option>10 a 49 (Pequena Empresa)</option>
+            <option>50 a 199 (Média Empresa)</option>
+            <option>200 a 499</option>
+            <option>500 ou mais (Grande Empresa)</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Data da Reunião</label>
+        <input type="date" id="f-data" />
+    </div>
+
+    <button class="btn btn-navy" onclick="startQ()" style="margin-top:4px;">Iniciar Diagnóstico →</button>
+    <button class="btn btn-ghost" onclick="goHome()" style="margin-top:10px;">← Voltar</button>
+</div>
+
+<!-- ══ SCREEN: QUESTIONÁRIO ═════════════════════════════ -->
+<div id="s-quest" class="screen">
+    <div class="progress-wrap"><div class="progress-fill" id="prog-bar" style="width:0%"></div></div>
+    <div class="cat-card">
+        <div class="cat-emoji" id="q-icon"></div>
+        <div>
+            <div class="cat-sub" id="q-sub"></div>
+            <div class="cat-name" id="q-name"></div>
+        </div>
+    </div>
+    <div class="q-counter" id="q-ctr"></div>
+    <div class="q-text" id="q-text"></div>
+    <div class="answers" id="q-answers"></div>
+    <div class="nav-row">
+        <button class="btn btn-ghost" id="btn-back" onclick="prevQ()">← Voltar</button>
+        <button class="btn btn-navy" id="btn-next" onclick="nextQ()" disabled>Próxima →</button>
+    </div>
+</div>
+
+<!-- ══ SCREEN: RESULTS ══════════════════════════════════ -->
+<div id="s-results" class="screen">
+    <!-- Rendered by JS -->
+</div>
+
+<!-- MODAL: confirmar exclusão -->
+<div class="overlay" id="modal-del">
+    <div class="modal">
+        <div class="modal-handle"></div>
+        <h3>Excluir Análise</h3>
+        <p>Tem certeza? Esta ação não pode ser desfeita.</p>
+        <button class="btn btn-accent" onclick="confirmDel()">Excluir definitivamente</button>
+        <button class="btn btn-ghost" onclick="closeModal()" style="margin-top:10px;">Cancelar</button>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ─────────────────────────────────────────────────────────
+// DADOS: FATORES E PERGUNTAS NR-1
+// ─────────────────────────────────────────────────────────
+const FATORES = [
+  {
+    id: 'demanda', icon: '⚙️',
+    sub: 'Fator 1 de 6',
+    nome: 'Demanda e Organização do Trabalho',
+    perguntas: [
+      'Com que frequência os colaboradores relatam excesso de tarefas?',
+      'Com que frequência as jornadas ultrapassam regularmente o horário contratado?',
+      'Com que frequência há pressão por metas ou prazos percebidos como irreais?',
+      'Com que frequência o ritmo de trabalho é considerado excessivamente intenso?',
+      'Com que frequência os colaboradores assumem funções além de suas atribuições?',
+      'Com que frequência há imprevisibilidade e mudanças constantes nas demandas?'
+    ]
+  },
+  {
+    id: 'controle', icon: '🎯',
+    sub: 'Fator 2 de 6',
+    nome: 'Controle e Autonomia',
+    perguntas: [
+      'Com que frequência os colaboradores se sentem sem autonomia para tomar decisões?',
+      'Com que frequência há falta de clareza sobre papéis e responsabilidades?',
+      'Com que frequência os colaboradores são excluídos de decisões que afetam seu trabalho?',
+      'Com que frequência processos rígidos impedem a iniciativa da equipe?',
+      'Com que frequência os colaboradores não conseguem organizar sua própria rotina?'
+    ]
+  },
+  {
+    id: 'relacoes', icon: '🤝',
+    sub: 'Fator 3 de 6',
+    nome: 'Relações e Suporte Social',
+    perguntas: [
+      'Com que frequência há conflitos entre colaboradores ou entre equipes?',
+      'Com que frequência os gestores são percebidos como distantes ou indisponíveis?',
+      'Com que frequência a comunicação entre liderança e equipe é percebida como falha?',
+      'Com que frequência há relatos de tratamento desrespeitoso, assédio ou discriminação?',
+      'Com que frequência os colaboradores se sentem sem suporte em momentos de dificuldade?'
+    ]
+  },
+  {
+    id: 'reconhecimento', icon: '⭐',
+    sub: 'Fator 4 de 6',
+    nome: 'Reconhecimento e Recompensa',
+    perguntas: [
+      'Com que frequência os colaboradores se sentem não reconhecidos pelo trabalho realizado?',
+      'Com que frequência há percepção de injustiça nas promoções ou nos benefícios?',
+      'Com que frequência a remuneração é percebida como desproporcional ao esforço?',
+      'Com que frequência o feedback é ausente, superficial ou exclusivamente negativo?'
+    ]
+  },
+  {
+    id: 'comunicacao', icon: '📢',
+    sub: 'Fator 5 de 6',
+    nome: 'Comunicação Organizacional',
+    perguntas: [
+      'Com que frequência as informações sobre mudanças chegam de forma confusa ou tardia?',
+      'Com que frequência os colaboradores se sentem sem canal para expressar opiniões?',
+      'Com que frequência há contradição entre os valores declarados e as práticas reais?',
+      'Com que frequência há conflitos por desalinhamento entre áreas ou setores?'
+    ]
+  },
+  {
+    id: 'saude', icon: '💚',
+    sub: 'Fator 6 de 6',
+    nome: 'Saúde e Bem-Estar Psicológico',
+    perguntas: [
+      'Com que frequência há relatos de estresse, ansiedade ou esgotamento (burnout)?',
+      'Com que frequência os colaboradores relatam dificuldade em se desligar do trabalho?',
+      'Com que frequência há absenteísmo ou presenteísmo relacionado à saúde mental?',
+      'Com que frequência existe estigma ou resistência à busca de apoio psicológico?'
+    ]
+  }
+];
+
+const OPCOES = [
+  { label: 'Nunca',         valor: 0 },
+  { label: 'Raramente',     valor: 1 },
+  { label: 'Às vezes',      valor: 2 },
+  { label: 'Frequentemente',valor: 3 },
+  { label: 'Sempre',        valor: 4 }
+];
+
+const RECS = {
+  demanda: {
+    alto:          'Revisão urgente da distribuição de carga de trabalho. Implementar gestão de demandas com critérios claros de priorização e estabelecer limites saudáveis de jornada conforme a NR-1.',
+    intermediario: 'Monitorar a percepção de sobrecarga da equipe. Criar canais de escuta ativa para identificar gargalos operacionais antes que se tornem fatores críticos de risco.',
+    baixo:         'Equilíbrio entre demanda e capacidade está adequado. Realizar pesquisas de clima periódicas para preservar esse nível de bem-estar organizacional.'
+  },
+  controle: {
+    alto:          'Mapear urgentemente processos que suprimem a autonomia. Redefinir responsabilidades com clareza e criar espaços formais de participação nas decisões que afetam a equipe.',
+    intermediario: 'Revisar descrições de cargo e comunicar expectativas de cada função. Promover reuniões de alinhamento regulares e fortalecer a delegação consciente.',
+    baixo:         'Nível de autonomia e clareza de papéis está adequado. Reforçar as práticas de gestão participativa já existentes na organização.'
+  },
+  relacoes: {
+    alto:          'Intervenção imediata no clima organizacional. Investigar casos de assédio, implementar política de convivência e oferecer capacitação em liderança humanizada e gestão de conflitos.',
+    intermediario: 'Fortalecer a comunicação entre gestores e equipes. Promover ações de integração e treinar lideranças em escuta ativa e inteligência emocional.',
+    baixo:         'Relações de trabalho estão saudáveis. Manter ações de integração e práticas de reconhecimento para preservar o clima positivo.'
+  },
+  reconhecimento: {
+    alto:          'Reestruturar urgentemente as políticas de reconhecimento e feedback. Criar critérios transparentes para promoções e alinhar remuneração ao mercado e ao esforço real.',
+    intermediario: 'Implementar cultura de feedback regular e reconhecimento público de conquistas. Revisar a equidade interna nas remunerações e benefícios.',
+    baixo:         'Políticas de reconhecimento funcionam adequadamente. Manter os canais de feedback e os programas de valorização existentes.'
+  },
+  comunicacao: {
+    alto:          'Mapear os fluxos de comunicação e criar protocolos formais de transparência. Abrir canais seguros de feedback ascendente e realizar encontros regulares de alinhamento.',
+    intermediario: 'Melhorar a consistência da comunicação interna. Garantir que decisões estratégicas sejam comunicadas de forma clara e oportuna para todas as equipes.',
+    baixo:         'Comunicação organizacional está eficiente. Manter a regularidade e a transparência das informações já praticadas.'
+  },
+  saude: {
+    alto:          'Implementar com urgência um Programa de Saúde Mental (PSM) com acesso a apoio psicológico, treinamento em reconhecimento de burnout e políticas formais de desconexão digital.',
+    intermediario: 'Criar iniciativas de promoção de saúde mental: palestras, pausas ativas, grupos de escuta. Garantir acesso ao suporte psicológico sem estigma.',
+    baixo:         'Saúde psicológica da equipe está preservada. Manter os programas de bem-estar e a cultura de cuidado já estabelecida.'
+  }
+};
+
+// ─────────────────────────────────────────────────────────
+// STORAGE
+// ─────────────────────────────────────────────────────────
+const db = {
+  get: () => { try { return JSON.parse(localStorage.getItem('axis_nr1') || '[]'); } catch { return []; } },
+  set: (v) => { try { localStorage.setItem('axis_nr1', JSON.stringify(v)); } catch {} }
+};
+
+// ─────────────────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────────────────
+let S = {
+  companies: [],
+  cur: null,          // current analysis meta
+  resp: {},           // responses { "fi_pi": valor }
+  fi: 0,              // fatorIndex
+  pi: 0,              // perguntaIndex
+  delTarget: null,    // index to delete
+  timer: null         // auto-advance timer
+};
+
+// ─────────────────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────────────────
+function riskClass(nivel) {
+  return nivel === 'Alto' ? 'alto' : nivel === 'Intermediário' ? 'intermediario' : 'baixo';
+}
+function riskColor(nivel) {
+  return nivel === 'Alto' ? '#C0392B' : nivel === 'Intermediário' ? '#E67E22' : '#27AE60';
+}
+function riskEmoji(nivel) {
+  return nivel === 'Alto' ? '⚠️' : nivel === 'Intermediário' ? '🔶' : '✅';
+}
+function fmtDate(d) {
+  if (!d) return '';
+  const [y, m, day] = d.split('-');
+  return `${day}/${m}/${y}`;
+}
+function totalQ() { return FATORES.reduce((s, f) => s + f.perguntas.length, 0); }
+function globalIdx() {
+  let n = 0;
+  for (let i = 0; i < S.fi; i++) n += FATORES[i].perguntas.length;
+  return n + S.pi;
+}
+function key() { return `${S.fi}_${S.pi}`; }
+
+// ─────────────────────────────────────────────────────────
+// NAVIGATION
+// ─────────────────────────────────────────────────────────
+function goScreen(id) {
+  document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'auto' });
+}
+
+function goHome() {
+  S.companies = db.get();
+  renderHome();
+  goScreen('s-home');
+}
+
+function goSetup() {
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('f-data').value = today;
+  document.getElementById('f-empresa').value = '';
+  document.getElementById('f-setor').value = '';
+  document.getElementById('f-func').value = '';
+  goScreen('s-setup');
+}
+
+// ─────────────────────────────────────────────────────────
+// HOME
+// ─────────────────────────────────────────────────────────
+function renderHome() {
+  const list = document.getElementById('companies-list');
+  const companies = [...S.companies].reverse(); // recent first
+
+  if (!companies.length) {
+    list.innerHTML = `
+      <div class="empty-state">
+        <div class="e-icon">📋</div>
+        <p>Nenhuma análise realizada ainda.<br>Toque em <strong>"Nova Análise"</strong> para começar.</p>
+      </div>`;
+    return;
+  }
+
+  list.innerHTML = companies.map((c, i) => {
+    const rc = riskClass(c.nivel);
+    return `
+      <div class="company-card" onclick="viewCompany(${i})">
+        <div class="company-icon" style="background:${riskColor(c.nivel)}18">${riskEmoji(c.nivel)}</div>
+        <div class="company-info">
+          <div class="company-name">${c.empresa}</div>
+          <div class="company-meta">${c.setor || '—'} · ${fmtDate(c.data)} · ${c.pct}%</div>
+        </div>
+        <span class="badge badge-${rc}">${c.nivel}</span>
+        <button class="del-btn" onclick="event.stopPropagation();askDel(${i})">✕</button>
+      </div>`;
+  }).join('');
+}
+
+function viewCompany(revIdx) {
+  const companies = [...S.companies].reverse();
+  const c = companies[revIdx];
+  renderResults(c);
+  goScreen('s-results');
+}
+
+function askDel(revIdx) {
+  const companies = [...S.companies].reverse();
+  S.delTarget = S.companies.indexOf(companies[revIdx]);
+  document.getElementById('modal-del').classList.add('open');
+}
+
+function confirmDel() {
+  S.companies.splice(S.delTarget, 1);
+  db.set(S.companies);
+  closeModal();
+  showToast('Análise excluída');
+  renderHome();
+}
+
+function closeModal() {
+  document.getElementById('modal-del').classList.remove('open');
+}
+
+// ─────────────────────────────────────────────────────────
+// QUESTIONNAIRE: START
+// ─────────────────────────────────────────────────────────
+function startQ() {
+  const empresa = document.getElementById('f-empresa').value.trim();
+  if (!empresa) {
+    showToast('Informe o nome da empresa');
+    document.getElementById('f-empresa').focus();
+    return;
+  }
+  S.cur = {
+    empresa,
+    setor:      document.getElementById('f-setor').value || 'Não informado',
+    func:       document.getElementById('f-func').value || 'Não informado',
+    data:       document.getElementById('f-data').value
+  };
+  S.resp = {};
+  S.fi = 0;
+  S.pi = 0;
+  renderQ();
+  goScreen('s-quest');
+}
+
+// ─────────────────────────────────────────────────────────
+// QUESTIONNAIRE: RENDER
+// ─────────────────────────────────────────────────────────
+function renderQ() {
+  const fator = FATORES[S.fi];
+  const perg  = fator.perguntas[S.pi];
+  const total = totalQ();
+  const gIdx  = globalIdx();
+  const k     = key();
+  const selVal = S.resp[k];
+
+  // Progress
+  document.getElementById('prog-bar').style.width = `${(gIdx / total) * 100}%`;
+
+  // Category
+  document.getElementById('q-icon').textContent = fator.icon;
+  document.getElementById('q-sub').textContent  = fator.sub;
+  document.getElementById('q-name').textContent = fator.nome;
+
+  // Question
+  document.getElementById('q-ctr').textContent  = `Pergunta ${gIdx + 1} de ${total}`;
+  document.getElementById('q-text').textContent = perg;
+
+  // Answers
+  document.getElementById('q-answers').innerHTML = OPCOES.map(op => `
+    <button class="ans-btn ${selVal === op.valor ? 'sel' : ''}" onclick="pickAns(${op.valor})">
+      <div class="ans-dot"><div class="ans-dot-inner"></div></div>
+      <span>${op.label}</span>
+    </button>`).join('');
+
+  // Nav
+  const isFirst = S.fi === 0 && S.pi === 0;
+  const isLast  = S.fi === FATORES.length - 1 && S.pi === fator.perguntas.length - 1;
+
+  document.getElementById('btn-back').style.display = isFirst ? 'none' : 'flex';
+  const nextBtn = document.getElementById('btn-next');
+  nextBtn.textContent = isLast ? 'Ver Diagnóstico ✓' : 'Próxima →';
+  nextBtn.disabled = selVal === undefined;
+}
+
+// ─────────────────────────────────────────────────────────
+// QUESTIONNAIRE: INTERACTIONS
+// ─────────────────────────────────────────────────────────
+function pickAns(val) {
+  S.resp[key()] = val;
+
+  // Update UI immediately
+  document.querySelectorAll('.ans-btn').forEach((btn, i) => btn.classList.toggle('sel', i === val));
+  document.getElementById('btn-next').disabled = false;
+
+  // Auto-advance
+  if (S.timer) clearTimeout(S.timer);
+  S.timer = setTimeout(() => { S.timer = null; nextQ(); }, 450);
+}
+
+function nextQ() {
+  if (S.timer) { clearTimeout(S.timer); S.timer = null; }
+  if (S.resp[key()] === undefined) return;
+
+  const fator = FATORES[S.fi];
+  const isLast = S.fi === FATORES.length - 1 && S.pi === fator.perguntas.length - 1;
+
+  if (isLast) { finalizeQ(); return; }
+
+  if (S.pi < fator.perguntas.length - 1) {
+    S.pi++;
+  } else {
+    S.fi++;
+    S.pi = 0;
+  }
+  renderQ();
+  window.scrollTo({ top: 0, behavior: 'auto' });
+}
+
+function prevQ() {
+  if (S.timer) { clearTimeout(S.timer); S.timer = null; }
+  if (S.pi > 0) {
+    S.pi--;
+  } else if (S.fi > 0) {
+    S.fi--;
+    S.pi = FATORES[S.fi].perguntas.length - 1;
+  }
+  renderQ();
+  window.scrollTo({ top: 0, behavior: 'auto' });
+}
+
+// ─────────────────────────────────────────────────────────
+// CALCULATION
+// ─────────────────────────────────────────────────────────
+function calcResults() {
+  const fatores = FATORES.map((f, fi) => {
+    let tot = 0, max = f.perguntas.length * 4;
+    f.perguntas.forEach((_, pi) => { tot += S.resp[`${fi}_${pi}`] || 0; });
+    const pct = Math.round((tot / max) * 100);
+    const nivel = pct >= 67 ? 'Alto' : pct >= 34 ? 'Intermediário' : 'Baixo';
+    return { id: f.id, icon: f.icon, nome: f.nome, tot, max, pct, nivel };
+  });
+
+  const avgPct = Math.round(fatores.reduce((s, f) => s + f.pct, 0) / fatores.length);
+  const nivel  = avgPct >= 67 ? 'Alto' : avgPct >= 34 ? 'Intermediário' : 'Baixo';
+  return { fatores, pct: avgPct, nivel };
+}
+
+function finalizeQ() {
+  const results = calcResults();
+  const company = {
+    ...S.cur,
+    resp:   { ...S.resp },
+    fatores: results.fatores,
+    pct:    results.pct,
+    nivel:  results.nivel,
+    ts:     Date.now()
+  };
+  S.companies = db.get();
+  S.companies.push(company);
+  db.set(S.companies);
+  renderResults(company);
+  goScreen('s-results');
+}
+
+// ─────────────────────────────────────────────────────────
+// RESULTS RENDER
+// ─────────────────────────────────────────────────────────
+function renderResults(c) {
+  const rc = riskClass(c.nivel);
+
+  // Factor bars
+  const factorsHTML = c.fatores.map(f => {
+    const frc = riskClass(f.nivel);
+    return `
+      <div class="factor-item">
+        <div class="fi-top">
+          <div class="fi-name">${f.icon} ${f.nome}</div>
+          <span class="badge badge-${frc}">${f.nivel}</span>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar-fill" style="width:${f.pct}%;background:${riskColor(f.nivel)}"></div>
+        </div>
+        <div class="fi-pct">${f.pct}% de risco</div>
+      </div>`;
+  }).join('');
+
+  // Top 3 recommendations
+  const top3 = [...c.fatores].sort((a, b) => b.pct - a.pct).slice(0, 3);
+  const recsHTML = top3.map((f, i) => {
+    const rnivel = riskClass(f.nivel);
+    const recMap = { alto: 'alto', intermediario: 'intermediario', baixo: 'baixo' };
+    const recKey = recMap[rnivel] || 'baixo';
+    const rec = RECS[f.id]?.[recKey] || '';
+    return `
+      <div class="rec-item">
+        <div class="rec-num">${i + 1}</div>
+        <div class="rec-body">
+          <strong>${f.icon} ${f.nome} — ${f.nivel} (${f.pct}%)</strong>
+          ${rec}
+        </div>
+      </div>`;
+  }).join('');
+
+  document.getElementById('s-results').innerHTML = `
+    <div class="result-hero rh-${rc}">
+      <div class="rh-company">${c.empresa}</div>
+      <div class="rh-meta">${c.setor} · ${c.func} · ${fmtDate(c.data)}</div>
+      <div class="rh-lbl">Nível de Risco Geral</div>
+      <div class="rh-risk">${c.nivel}</div>
+      <div class="rh-pct">Índice consolidado: ${c.pct}%</div>
+    </div>
+
+    <div class="sec-label">Resultado por Fator de Risco</div>
+    ${factorsHTML}
+
+    <div class="card" style="margin-top:4px;">
+      <div class="sec-label" style="margin-bottom:14px;">Perfil de Risco — Visão Radar</div>
+      <canvas id="radarChart" height="260"></canvas>
+    </div>
+
+    <div class="card">
+      <div class="sec-label" style="margin-bottom:14px;">🎯 Recomendações Prioritárias</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:14px;">
+        Baseadas nos 3 fatores com maior índice de risco identificado:
+      </div>
+      ${recsHTML}
+    </div>
+
+    <div class="compliance-note" style="margin-bottom:18px;">
+      ⚖️ Este diagnóstico serve como subsídio para elaboração do <strong>PGR</strong> e <strong>PCMSO</strong>
+      conforme exigência da NR-1 (Portaria MTE nº 1.419/2024). Recomenda-se aprofundamento com avaliação clínica individual.
+    </div>
+
+    <div class="action-zone">
+      <button class="btn btn-accent" onclick="window.print()">🖨️ Imprimir / Salvar como PDF</button>
+      <button class="btn btn-navy" onclick="goSetup()">＋ Nova Análise</button>
+      <button class="btn btn-ghost" onclick="goHome()">← Todas as Análises</button>
+    </div>
+  `;
+
+  // Draw chart after DOM ready
+  setTimeout(() => drawRadar(c.fatores), 120);
+}
+
+// ─────────────────────────────────────────────────────────
+// CHART
+// ─────────────────────────────────────────────────────────
+let radarInst = null;
+function drawRadar(fatores) {
+  const ctx = document.getElementById('radarChart');
+  if (!ctx) return;
+  if (radarInst) { radarInst.destroy(); radarInst = null; }
+
+  const labels = fatores.map(f => f.nome.split(' e ')[0].split(' ').slice(0, 2).join(' '));
+  const data   = fatores.map(f => f.pct);
+  const ptColors = fatores.map(f => riskColor(f.nivel));
+
+  radarInst = new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Risco (%)',
+        data,
+        backgroundColor: 'rgba(27,58,107,0.12)',
+        borderColor: '#1B3A6B',
+        borderWidth: 2.5,
+        pointBackgroundColor: ptColors,
+        pointBorderColor: ptColors,
+        pointRadius: 6,
+        pointHoverRadius: 8
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        r: {
+          beginAtZero: true, max: 100,
+          ticks: { stepSize: 25, font: { size: 10 }, color: '#7A8BA8' },
+          pointLabels: { font: { size: 11, weight: '700' }, color: '#1A2540' },
+          grid: { color: '#DDE3EE' },
+          angleLines: { color: '#DDE3EE' }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.raw}% — ${['Alto','Intermediário','Baixo'].includes(fatores[ctx.dataIndex]?.nivel) ? fatores[ctx.dataIndex].nivel : ''}`
+          }
+        }
+      }
+    }
+  });
+}
+
+// ─────────────────────────────────────────────────────────
+// TOAST
+// ─────────────────────────────────────────────────────────
+let toastTimer = null;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+// ─────────────────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────────────────
+S.companies = db.get();
+renderHome();
+</script>
+</body>
+</html>
