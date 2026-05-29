@@ -318,6 +318,41 @@
         /* ── DIVIDER ────────────────────────────────────── */
         .divider { height: 1px; background: var(--border); margin: 4px 0 16px; }
 
+        /* ── ACTIVATION SCREEN ─────────────────────────── */
+        .activate-wrap {
+            min-height: calc(100vh - 68px);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 32px 20px; text-align: center;
+        }
+        .activate-logo {
+            width: 72px; height: 72px; border-radius: 20px;
+            background: var(--navy); color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 32px; font-weight: 900; margin: 0 auto 20px;
+            letter-spacing: -1px;
+        }
+        .activate-title { font-size: 22px; font-weight: 800; margin-bottom: 8px; }
+        .activate-sub   { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 32px; }
+        .code-input {
+            width: 100%; padding: 16px; text-align: center;
+            font-size: 20px; font-weight: 700; letter-spacing: 3px;
+            border: 2px solid var(--border); border-radius: 14px;
+            outline: none; font-family: 'Courier New', monospace;
+            text-transform: uppercase; background: #fff;
+            transition: border-color 0.18s; margin-bottom: 14px;
+        }
+        .code-input:focus { border-color: var(--blue); }
+        .code-input.error { border-color: #C0392B; animation: shake 0.3s ease; }
+        @keyframes shake {
+            0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}
+        }
+        .activate-error {
+            font-size: 13px; color: #C0392B; font-weight: 600;
+            margin-bottom: 14px; display: none;
+        }
+        .activate-error.show { display: block; }
+
         /* ── SETTINGS BTN ───────────────────────────────── */
         .settings-btn {
             background: rgba(255,255,255,0.12); border: none;
@@ -338,6 +373,25 @@
     </style>
 </head>
 <body>
+
+<!-- ══ SCREEN: ATIVAÇÃO ═══════════════════════════════════ -->
+<div id="s-activate" class="screen">
+    <div class="activate-wrap">
+        <div class="activate-logo">NR1</div>
+        <div class="activate-title">Código de Acesso</div>
+        <div class="activate-sub">Este app é licenciado individualmente.<br>Digite o código que você recebeu ao adquirir a ferramenta.</div>
+        <input class="code-input" id="act-input" type="text" maxlength="14"
+               placeholder="AXIS-XXXX-XXXX"
+               oninput="formatCode(this)"
+               onkeydown="if(event.key==='Enter') tryActivate()" />
+        <div class="activate-error" id="act-error">Código inválido. Verifique e tente novamente.</div>
+        <button class="btn btn-navy" style="width:100%;" onclick="tryActivate()">Ativar Acesso →</button>
+        <div style="margin-top:20px;font-size:12px;color:var(--muted);line-height:1.6;">
+            Não tem um código? Entre em contato com a Axis Consultorias.<br>
+            <strong style="color:var(--text);">@axisconsultorias</strong>
+        </div>
+    </div>
+</div>
 
 <!-- HEADER -->
 <header class="header">
@@ -1060,6 +1114,54 @@ function showToast(msg) {
 }
 
 // ─────────────────────────────────────────────────────────
+// ACTIVATION / LICENÇA
+// ─────────────────────────────────────────────────────────
+const VALID_HASHES = ["44553442","d5f72f69","4a295d49","0b43279b","0e6de614","73838898","bd6b33a3","95bf1436","d9be5ad2","dc546066","a99758b9","4bad3c20","b76cc888","238bee56","58f15a3f","7aff7eb1","2094f5b6","6980ec97","678238a0","57a6e971","4ffb0290","fa23bb45","18871092","e0cc784e","09446210","7097e5af","804de37b","3176b309","317a65da","b8f59ea7","49b378a0","3284934d","e8219bd9","af27e4f8","6101e607","d3e99fc6","330f492e","e9640ad0","bb42ba8d","9659585c","92587133","bad11546","254359a9","0cee8be3","867a25f6","a3dcab33","f2756520","9b81156c","b4218b16","dc48c6dc"];
+
+function fnv1a(str) {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+    h >>>= 0;
+  }
+  return h.toString(16).padStart(8, '0');
+}
+
+function isActivated() {
+  try { return !!localStorage.getItem('axis_lic'); } catch { return false; }
+}
+
+function formatCode(input) {
+  let v = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+  if (v.length > 4 && !v.startsWith('AXIS')) v = v.slice(0, 4);
+  let formatted = '';
+  if (v.length <= 4) formatted = v;
+  else if (v.length <= 8) formatted = v.slice(0,4) + '-' + v.slice(4);
+  else formatted = v.slice(0,4) + '-' + v.slice(4,8) + '-' + v.slice(8,12);
+  input.value = formatted;
+  input.classList.remove('error');
+  document.getElementById('act-error').classList.remove('show');
+}
+
+function tryActivate() {
+  const raw = document.getElementById('act-input').value.trim().toUpperCase();
+  const normalized = raw.replace(/-/g, '');
+  const hash = fnv1a(normalized);
+  if (VALID_HASHES.includes(hash)) {
+    try { localStorage.setItem('axis_lic', hash); } catch {}
+    showToast('Acesso ativado com sucesso! ✓');
+    const brand = loadBrand();
+    if (brand) { applyBrand(brand); renderHome(); goScreen('s-home'); }
+    else { selectedCor = COR_PRESETS[0].cor; renderColorPresets(); goScreen('s-brand'); }
+  } else {
+    const input = document.getElementById('act-input');
+    input.classList.add('error');
+    document.getElementById('act-error').classList.add('show');
+  }
+}
+
+// ─────────────────────────────────────────────────────────
 // BRAND / MARCA
 // ─────────────────────────────────────────────────────────
 const BRAND_KEY = 'axis_brand';
@@ -1141,16 +1243,20 @@ function pickCor(cor) {
 // INIT
 // ─────────────────────────────────────────────────────────
 S.companies = db.get();
-const savedBrand = loadBrand();
-if (savedBrand) {
-  applyBrand(savedBrand);
-  renderHome();
-  goScreen('s-home');
+if (!isActivated()) {
+  // Não ativado → tela de código de acesso
+  goScreen('s-activate');
 } else {
-  // Primeira vez: pede para configurar a marca
-  selectedCor = COR_PRESETS[0].cor;
-  renderColorPresets();
-  goScreen('s-brand');
+  const savedBrand = loadBrand();
+  if (savedBrand) {
+    applyBrand(savedBrand);
+    renderHome();
+    goScreen('s-home');
+  } else {
+    selectedCor = COR_PRESETS[0].cor;
+    renderColorPresets();
+    goScreen('s-brand');
+  }
 }
 </script>
 </body>
