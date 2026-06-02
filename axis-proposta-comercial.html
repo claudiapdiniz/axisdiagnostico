@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Proposta Comercial | Axis Consultorias</title>
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        :root {
+            --navy:   #0F2744;
+            --blue:   #1B3A6B;
+            --blue2:  #2D5A9E;
+            --accent: #C0392B;
+            --gold:   #E67E22;
+            --ok:     #27AE60;
+            --bg:     #F2F5FA;
+            --card:   #FFFFFF;
+            --border: #DDE3EE;
+            --muted:  #7A8BA8;
+            --text:   #1A2540;
+            --sh:     0 2px 12px rgba(15,39,68,0.10);
+        }
+
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        /* ── PRINT TOOLBAR ───────────────────────────────── */
+        .print-toolbar {
+            background: var(--navy);
+            padding: 12px 20px;
+            display: flex; align-items: center; justify-content: space-between;
+            position: sticky; top: 0; z-index: 100;
+        }
+        .pt-left { color: rgba(255,255,255,0.7); font-size: 13px; }
+        .pt-left strong { color: #fff; }
+        .pt-btns { display: flex; gap: 10px; }
+        .pt-btn {
+            padding: 8px 18px; border-radius: 8px; border: none;
+            font-size: 13px; font-weight: 700; cursor: pointer;
+            font-family: inherit; transition: all 0.18s;
+        }
+        .pt-btn-ghost { background: rgba(255,255,255,0.12); color: #fff; }
+        .pt-btn-ghost:hover { background: rgba(255,255,255,0.22); }
+        .pt-btn-accent { background: var(--accent); color: #fff; }
+        .pt-btn-accent:hover { background: #a93226; }
+
+        /* ── PROPOSAL DOC ────────────────────────────────── */
+        .proposal {
+            max-width: 760px;
+            margin: 0 auto;
+            background: var(--card);
+        }
+
+        /* ══ CAPA ══════════════════════════════════════════ */
+        .cover {
+            background: linear-gradient(160deg, var(--navy) 0%, #0A1A30 40%, #162E50 100%);
+            padding: 60px 48px 48px;
+            position: relative; overflow: hidden;
+            min-height: 320px;
+            display: flex; flex-direction: column; justify-content: space-between;
+        }
+        .cover::before {
+            content: '';
+            position: absolute; top: -80px; right: -80px;
+            width: 340px; height: 340px; border-radius: 50%;
+            background: rgba(255,255,255,0.03);
+        }
+        .cover::after {
+            content: '';
+            position: absolute; bottom: -60px; left: -40px;
+            width: 220px; height: 220px; border-radius: 50%;
+            background: rgba(45,90,158,0.15);
+        }
+        .cover-logo { display: flex; align-items: center; gap: 12px; }
+        .cover-logo-icon {
+            width: 48px; height: 48px; border-radius: 12px;
+            background: var(--accent);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; font-weight: 900; color: #fff; letter-spacing: -0.5px;
+        }
+        .cover-logo-text { color: #fff; font-size: 18px; font-weight: 700; }
+        .cover-logo-sub { color: rgba(255,255,255,0.5); font-size: 12px; }
+        .cover-main { margin: 40px 0 0; }
+        .cover-tag {
+            display: inline-block;
+            background: rgba(192,57,43,0.3); border: 1px solid rgba(192,57,43,0.45);
+            color: #F1948A; font-size: 11px; font-weight: 700;
+            padding: 5px 14px; border-radius: 20px;
+            text-transform: uppercase; letter-spacing: 1px;
+            margin-bottom: 18px;
+        }
+        .cover-title {
+            font-size: clamp(28px, 5vw, 40px);
+            font-weight: 900; color: #fff;
+            line-height: 1.15; letter-spacing: -0.5px;
+            margin-bottom: 12px;
+        }
+        .cover-title span { color: #F1C40F; }
+        .cover-subtitle { font-size: 16px; color: rgba(255,255,255,0.65); line-height: 1.6; }
+        .cover-meta { display: flex; gap: 32px; flex-wrap: wrap; }
+        .cover-meta-item { }
+        .cover-meta-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.4); margin-bottom: 3px; }
+        .cover-meta-value { font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.85); }
+
+        /* ── EDIT FIELDS ─────────────────────────────────── */
+        .editable {
+            background: rgba(241,196,15,0.08);
+            border-bottom: 2px dashed rgba(241,196,15,0.4);
+            outline: none; display: inline;
+            cursor: text; transition: background 0.18s;
+            min-width: 80px;
+        }
+        .editable:focus { background: rgba(241,196,15,0.15); }
+        .editable.light { border-color: rgba(255,255,255,0.35); background: rgba(255,255,255,0.06); }
+        .editable.light:focus { background: rgba(255,255,255,0.12); }
+
+        /* ══ SECTIONS ══════════════════════════════════════ */
+        .doc-section { padding: 40px 48px; border-bottom: 1px solid var(--border); }
+        .doc-section:last-child { border-bottom: none; }
+
+        .sec-label {
+            font-size: 10px; text-transform: uppercase; letter-spacing: 2px;
+            color: var(--accent); font-weight: 700; margin-bottom: 8px;
+        }
+        .sec-title {
+            font-size: 22px; font-weight: 800; color: var(--navy);
+            margin-bottom: 16px; letter-spacing: -0.3px;
+        }
+        .sec-text { font-size: 14px; color: var(--text); line-height: 1.75; margin-bottom: 16px; }
+
+        /* ── CLIENT INFO ─────────────────────────────────── */
+        .info-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+            margin-bottom: 16px;
+        }
+        @media (max-width: 520px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-item {
+            background: var(--bg); border-radius: 12px; padding: 14px 16px;
+        }
+        .info-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 5px; font-weight: 700; }
+        .info-value { font-size: 15px; font-weight: 700; color: var(--text); }
+
+        /* ── DIAGNOSIS RESULT ────────────────────────────── */
+        .diag-hero {
+            border-radius: 16px; padding: 24px;
+            margin-bottom: 20px; color: #fff;
+        }
+        .diag-critico { background: linear-gradient(140deg, #5C0000, #C0392B); }
+        .diag-alto { background: linear-gradient(140deg, #7D3800, #E67E22); }
+        .diag-medio { background: linear-gradient(140deg, #7A5B00, #F1C40F); }
+        .diag-baixo { background: linear-gradient(140deg, #145A1E, #27AE60); }
+        .diag-nivel { font-size: 36px; font-weight: 900; letter-spacing: -1px; }
+        .diag-pct { font-size: 14px; color: rgba(255,255,255,0.7); margin-top: 4px; }
+        .diag-empresa { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.6); margin-bottom: 4px; }
+
+        .factor-row {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 0; border-bottom: 1px solid var(--border);
+        }
+        .factor-row:last-child { border-bottom: none; }
+        .factor-icon { font-size: 20px; flex-shrink: 0; width: 28px; text-align: center; }
+        .factor-name { flex: 1; font-size: 13px; font-weight: 600; color: var(--text); }
+        .factor-bar-wrap { width: 100px; height: 8px; background: var(--border); border-radius: 100px; overflow: hidden; flex-shrink: 0; }
+        .factor-bar-fill { height: 100%; border-radius: 100px; }
+        .factor-pct { font-size: 12px; font-weight: 700; width: 36px; text-align: right; flex-shrink: 0; }
+        .badge-sm {
+            font-size: 10px; font-weight: 800; padding: 3px 8px;
+            border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;
+            flex-shrink: 0;
+        }
+        .badge-critico { background: #FDECEC; color: #7B1010; }
+        .badge-alto { background: #FEE8D6; color: #7D3800; }
+        .badge-medio { background: #FEF9D6; color: #7A5B00; }
+        .badge-baixo { background: #E8F5E9; color: #1B5E20; }
+
+        /* ── SERVICES ────────────────────────────────────── */
+        .service-card {
+            background: var(--bg); border-radius: 14px; padding: 20px;
+            margin-bottom: 12px; border-left: 3px solid var(--blue);
+        }
+        .service-card.featured { border-left-color: var(--accent); background: #FEF9F9; }
+        .service-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; gap: 12px; }
+        .service-name { font-size: 15px; font-weight: 700; color: var(--navy); }
+        .service-badge {
+            background: var(--accent); color: #fff;
+            font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px;
+            white-space: nowrap; flex-shrink: 0;
+        }
+        .service-desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 12px; }
+        .service-includes { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+        .service-includes li {
+            font-size: 12px; color: var(--text); display: flex; align-items: flex-start; gap: 8px;
+        }
+        .service-includes li::before { content: '✓'; color: var(--ok); font-weight: 700; flex-shrink: 0; }
+
+        /* ── PRICING ─────────────────────────────────────── */
+        .pricing-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .pricing-table th {
+            background: var(--navy); color: #fff;
+            padding: 12px 16px; text-align: left; font-size: 11px;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        .pricing-table th:last-child { text-align: right; }
+        .pricing-table td { padding: 12px 16px; border-bottom: 1px solid var(--border); }
+        .pricing-table td:last-child { text-align: right; font-weight: 700; }
+        .pricing-table tr:last-child td { border-bottom: none; }
+        .pricing-table .total-row td { background: var(--bg); font-weight: 700; font-size: 14px; }
+        .pricing-table .total-row td:last-child { color: var(--navy); font-size: 16px; }
+
+        .payment-options {
+            display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px;
+        }
+        .payment-opt {
+            flex: 1; min-width: 160px;
+            background: var(--bg); border-radius: 12px; padding: 14px 16px;
+            border: 2px solid var(--border);
+        }
+        .payment-opt.preferred { border-color: var(--blue); background: #EBF0FA; }
+        .payment-opt-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 6px; font-weight: 700; }
+        .payment-opt-value { font-size: 15px; font-weight: 700; color: var(--navy); }
+        .payment-opt-note { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+        /* ── TIMELINE ────────────────────────────────────── */
+        .timeline { display: flex; flex-direction: column; gap: 0; }
+        .tl-item {
+            display: flex; gap: 16px; position: relative; padding-bottom: 20px;
+        }
+        .tl-item:last-child { padding-bottom: 0; }
+        .tl-left { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+        .tl-dot {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: var(--navy); color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px; font-weight: 800; z-index: 1;
+        }
+        .tl-line { width: 2px; flex: 1; background: var(--border); margin-top: 4px; }
+        .tl-item:last-child .tl-line { display: none; }
+        .tl-body { flex: 1; padding-top: 6px; }
+        .tl-week { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); font-weight: 700; margin-bottom: 3px; }
+        .tl-title { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+        .tl-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+        /* ── TERMS ───────────────────────────────────────── */
+        .terms-list { display: flex; flex-direction: column; gap: 10px; }
+        .term-item {
+            display: flex; gap: 12px; align-items: flex-start;
+            font-size: 13px; color: var(--text); line-height: 1.6;
+        }
+        .term-num {
+            width: 24px; height: 24px; border-radius: 50%;
+            background: var(--border); color: var(--muted);
+            font-size: 11px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+
+        /* ── SIGNATURE ───────────────────────────────────── */
+        .signature-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
+        }
+        @media (max-width: 520px) { .signature-grid { grid-template-columns: 1fr; } }
+        .sig-box {
+            border-top: 2px solid var(--border); padding-top: 12px;
+        }
+        .sig-name { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+        .sig-role { font-size: 12px; color: var(--muted); }
+        .sig-date { font-size: 11px; color: var(--muted); margin-top: 6px; }
+        .sig-line {
+            height: 60px;
+            display: flex; align-items: flex-end;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 12px; color: var(--muted); font-size: 11px;
+        }
+
+        /* ── COMPLIANCE NOTE ─────────────────────────────── */
+        .compliance-note {
+            background: #EBF0FA; border-left: 3px solid var(--blue);
+            border-radius: 10px; padding: 12px 14px;
+            font-size: 12px; color: var(--blue); line-height: 1.6;
+        }
+
+        /* ── FOOTER ──────────────────────────────────────── */
+        .doc-footer {
+            background: var(--navy);
+            padding: 24px 48px;
+            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+        }
+        .doc-footer-brand { color: #fff; font-size: 14px; font-weight: 700; }
+        .doc-footer-contact { font-size: 12px; color: rgba(255,255,255,0.5); }
+        .doc-footer-validity {
+            background: rgba(192,57,43,0.25); border: 1px solid rgba(192,57,43,0.4);
+            color: #F1948A; font-size: 11px; font-weight: 700;
+            padding: 5px 12px; border-radius: 20px;
+        }
+
+        /* ── PRINT ───────────────────────────────────────── */
+        @media print {
+            .print-toolbar { display: none !important; }
+            body { background: #fff; }
+            .proposal { max-width: 100%; }
+            .doc-section { padding: 32px 40px; }
+            .cover { padding: 48px 40px 40px; }
+            .editable { border-bottom-color: transparent; background: transparent; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            @page { size: A4; margin: 0; }
+        }
+
+        @media (max-width: 540px) {
+            .doc-section { padding: 28px 20px; }
+            .cover { padding: 32px 20px 28px; }
+            .doc-footer { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- PRINT TOOLBAR (hidden on print) -->
+<div class="print-toolbar">
+    <div class="pt-left">Proposta Comercial · <strong>Axis Consultorias</strong> · <span id="edit-hint">Clique nos campos para editar</span></div>
+    <div class="pt-btns">
+        <button class="pt-btn pt-btn-ghost" onclick="window.print()">🖨️ Imprimir / PDF</button>
+    </div>
+</div>
+
+<div class="proposal">
+
+    <!-- ══ CAPA ══════════════════════════════════════════ -->
+    <div class="cover">
+        <div class="cover-logo">
+            <div class="cover-logo-icon">AX</div>
+            <div>
+                <div class="cover-logo-text">Axis Consultorias</div>
+                <div class="cover-logo-sub">Saúde Organizacional · NR-1 · 2025</div>
+            </div>
+        </div>
+        <div class="cover-main">
+            <div class="cover-tag">Proposta Comercial Confidencial</div>
+            <div class="cover-title">Programa de Conformidade<br><span>NR-1 2025</span></div>
+            <div class="cover-subtitle">Diagnóstico, Gestão de Riscos Psicossociais<br>e Elaboração do PGR</div>
+        </div>
+        <div class="cover-meta">
+            <div class="cover-meta-item">
+                <div class="cover-meta-label">Preparado para</div>
+                <div class="cover-meta-value"><span class="editable light" contenteditable="true" data-placeholder="Nome do Cliente">Nome do Cliente</span></div>
+            </div>
+            <div class="cover-meta-item">
+                <div class="cover-meta-label">Empresa</div>
+                <div class="cover-meta-value"><span class="editable light" contenteditable="true">Nome da Empresa</span></div>
+            </div>
+            <div class="cover-meta-item">
+                <div class="cover-meta-label">Data</div>
+                <div class="cover-meta-value" id="prop-date"></div>
+            </div>
+            <div class="cover-meta-item">
+                <div class="cover-meta-label">Validade</div>
+                <div class="cover-meta-value" id="prop-validity"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ SEÇÃO: DADOS DO CLIENTE ════════════════════ -->
+    <div class="doc-section">
+        <div class="sec-label">Identificação</div>
+        <div class="sec-title">Dados da Empresa</div>
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="info-label">Empresa</div>
+                <div class="info-value"><span class="editable" contenteditable="true">Nome da Empresa Ltda</span></div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">CNPJ</div>
+                <div class="info-value"><span class="editable" contenteditable="true">00.000.000/0001-00</span></div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Responsável / Contato</div>
+                <div class="info-value"><span class="editable" contenteditable="true">Nome do Responsável</span></div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Cargo</div>
+                <div class="info-value"><span class="editable" contenteditable="true">Gerente de RH</span></div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Setor / Segmento</div>
+                <div class="info-value"><span class="editable" contenteditable="true">Setor da Empresa</span></div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Nº de Colaboradores</div>
+                <div class="info-value"><span class="editable" contenteditable="true">00 colaboradores</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ SEÇÃO: CONTEXTO ════════════════════════════ -->
+    <div class="doc-section">
+        <div class="sec-label">Contexto</div>
+        <div class="sec-title">Cenário e Necessidade</div>
+        <div class="sec-text">
+            A Portaria MTE nº 1.419/2024 estabelece a obrigatoriedade de identificação, avaliação e controle dos riscos psicossociais no ambiente de trabalho para todas as empresas com trabalhadores regidos pela CLT. Esta exigência está integrada à Norma Regulamentadora NR-1 e deve ser contemplada no Programa de Gerenciamento de Riscos (PGR).
+        </div>
+        <div class="sec-text">
+            O diagnóstico realizado com a <strong><span class="editable" contenteditable="true">Nome da Empresa</span></strong> em <span class="editable" contenteditable="true">dd/mm/aaaa</span> identificou o seguinte resultado:
+        </div>
+
+        <!-- Resultado do diagnóstico -->
+        <div class="diag-hero diag-alto">
+            <div class="diag-empresa"><span class="editable light" contenteditable="true">Nome da Empresa</span></div>
+            <div class="diag-nivel"><span class="editable light" contenteditable="true">Alto</span></div>
+            <div class="diag-pct">Índice consolidado: <span class="editable light" contenteditable="true">62</span>% · <span class="editable light" contenteditable="true">dd/mm/aaaa</span></div>
+        </div>
+
+        <div style="background:var(--bg);border-radius:14px;padding:16px;margin-bottom:16px;">
+            <div class="sec-label" style="margin-bottom:12px;">Resultado por fator de risco</div>
+            <div class="factor-row">
+                <div class="factor-icon">⚙️</div>
+                <div class="factor-name">Demanda e Organização do Trabalho</div>
+                <div class="factor-bar-wrap"><div class="factor-bar-fill" style="width:72%;background:#E67E22;"></div></div>
+                <div class="factor-pct" style="color:#E67E22;">72%</div>
+                <div class="badge-sm badge-alto">Alto</div>
+            </div>
+            <div class="factor-row">
+                <div class="factor-icon">🎯</div>
+                <div class="factor-name">Controle e Autonomia</div>
+                <div class="factor-bar-wrap"><div class="factor-bar-fill" style="width:55%;background:#E67E22;"></div></div>
+                <div class="factor-pct" style="color:#E67E22;">55%</div>
+                <div class="badge-sm badge-alto">Alto</div>
+            </div>
+            <div class="factor-row">
+                <div class="factor-icon">🤝</div>
+                <div class="factor-name">Relações e Suporte Social</div>
+                <div class="factor-bar-wrap"><div class="factor-bar-fill" style="width:48%;background:#F1C40F;"></div></div>
+                <div class="factor-pct" style="color:#7A5B00;">48%</div>
+                <div class="badge-sm badge-medio">Médio</div>
+            </div>
+            <div class="factor-row">
+                <div class="factor-icon">⭐</div>
+                <div class="factor-name">Reconhecimento e Recompensa</div>
+                <div class="factor-bar-wrap"><div class="factor-bar-fill" style="width:65%;background:#E67E22;"></div></div>
+                <div class="factor-pct" style="color:#E67E22;">65%</div>
+                <div class="badge-sm badge-alto">Alto</div>
+            </div>
+            <div class="factor-row">
+                <div class="factor-icon">📢</div>
+                <div class="factor-name">Comunicação Organizacional</div>
+                <div class="factor-bar-wrap"><div class="factor-bar-fill" style="width:42%;background:#F1C40F;"></div></div>
+                <div class="factor-pct" style="color:#7A5B00;">42%</div>
+                <div class="badge-sm badge-medio">Médio</div>
+            </div>
+            <div class="factor-row">
+                <div class="factor-icon">💚</div>
+                <div class="factor-name">Saúde e Bem-Estar Psicológico</div>
+                <div class="factor-bar-wrap"><div class="factor-bar-fill" style="width:78%;background:#C0392B;"></div></div>
+                <div class="factor-pct" style="color:#C0392B;">78%</div>
+                <div class="badge-sm badge-critico">Crítico</div>
+            </div>
+        </div>
+
+        <div class="compliance-note">
+            ⚖️ Este relatório foi gerado pela ferramenta Axis Insight IA e serve como subsídio para elaboração do PGR e PCMSO conforme exigência da NR-1 (Portaria MTE nº 1.419/2024).
+        </div>
+    </div>
+
+    <!-- ══ SEÇÃO: SOLUÇÃO PROPOSTA ════════════════════ -->
+    <div class="doc-section">
+        <div class="sec-label">Nossa Proposta</div>
+        <div class="sec-title">Serviços Propostos</div>
+        <div class="sec-text">Com base no diagnóstico realizado, propomos um programa estruturado em etapas para garantir a conformidade da <span class="editable" contenteditable="true">Nome da Empresa</span> com a NR-1 e promover melhorias sustentáveis no ambiente de trabalho.</div>
+
+        <div class="service-card featured">
+            <div class="service-header">
+                <div class="service-name">⚡ Módulo 1 — Diagnóstico Aprofundado e PGR</div>
+                <div class="service-badge">Prioritário</div>
+            </div>
+            <div class="service-desc">Elaboração do Programa de Gerenciamento de Riscos (PGR) completo, com inclusão dos fatores de risco psicossocial conforme NR-1 atualizada.</div>
+            <ul class="service-includes">
+                <li>Aplicação do questionário NR-1 para todos os colaboradores</li>
+                <li>Análise estatística e cruzamento de dados por área/setor</li>
+                <li>Elaboração do PGR com os 6 fatores psicossociais</li>
+                <li>Relatório executivo com nível de risco por departamento</li>
+                <li>Plano de ação com responsáveis e prazos</li>
+                <li>Documentação legal para arquivo e fiscalização</li>
+            </ul>
+        </div>
+
+        <div class="service-card">
+            <div class="service-header">
+                <div class="service-name">🎓 Módulo 2 — Capacitação de Lideranças</div>
+            </div>
+            <div class="service-desc">Treinamento para gestores e líderes sobre saúde mental no trabalho, sinais de alerta e boas práticas de gestão humanizada.</div>
+            <ul class="service-includes">
+                <li>Workshop presencial ou online (4h)</li>
+                <li>Material didático exclusivo</li>
+                <li>Guia de boas práticas para líderes</li>
+                <li>Suporte pós-treinamento por 30 dias</li>
+            </ul>
+        </div>
+
+        <div class="service-card">
+            <div class="service-header">
+                <div class="service-name">💚 Módulo 3 — Programa de Saúde Mental (PSM)</div>
+            </div>
+            <div class="service-desc">Implementação de programa estruturado de promoção de saúde mental com ações contínuas ao longo de 6 meses.</div>
+            <ul class="service-includes">
+                <li>Política interna de saúde mental redigida e aprovada</li>
+                <li>Canal de acolhimento psicológico (online)</li>
+                <li>Palestras mensais temáticas para colaboradores</li>
+                <li>Indicadores de monitoramento e relatório semestral</li>
+            </ul>
+        </div>
+
+        <div class="service-card">
+            <div class="service-header">
+                <div class="service-name">📊 Módulo 4 — Monitoramento Contínuo (12 meses)</div>
+            </div>
+            <div class="service-desc">Acompanhamento periódico da evolução dos indicadores e suporte consultivo para garantir conformidade contínua.</div>
+            <ul class="service-includes">
+                <li>Aplicação trimestral do diagnóstico NR-1</li>
+                <li>Relatório de evolução comparativo</li>
+                <li>Reuniões mensais de acompanhamento (1h)</li>
+                <li>Suporte por WhatsApp e e-mail ilimitado</li>
+                <li>Atualização do PGR conforme mudanças legais</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- ══ SEÇÃO: CRONOGRAMA ══════════════════════════ -->
+    <div class="doc-section">
+        <div class="sec-label">Cronograma</div>
+        <div class="sec-title">Etapas de Implementação</div>
+        <div class="timeline">
+            <div class="tl-item">
+                <div class="tl-left"><div class="tl-dot">1</div><div class="tl-line"></div></div>
+                <div class="tl-body">
+                    <div class="tl-week">Semana 1–2</div>
+                    <div class="tl-title">Kickoff e Diagnóstico Aprofundado</div>
+                    <div class="tl-desc">Reunião de alinhamento, aplicação do questionário NR-1 para todos os colaboradores e coleta de dados quantitativos e qualitativos.</div>
+                </div>
+            </div>
+            <div class="tl-item">
+                <div class="tl-left"><div class="tl-dot">2</div><div class="tl-line"></div></div>
+                <div class="tl-body">
+                    <div class="tl-week">Semana 3–4</div>
+                    <div class="tl-title">Elaboração do PGR</div>
+                    <div class="tl-desc">Análise dos resultados, cruzamento por área/setor e elaboração do Programa de Gerenciamento de Riscos completo com plano de ação.</div>
+                </div>
+            </div>
+            <div class="tl-item">
+                <div class="tl-left"><div class="tl-dot">3</div><div class="tl-line"></div></div>
+                <div class="tl-body">
+                    <div class="tl-week">Mês 2</div>
+                    <div class="tl-title">Capacitação e Implementação</div>
+                    <div class="tl-desc">Treinamento de líderes, entrega do PGR finalizado e início da implementação das ações prioritárias do plano.</div>
+                </div>
+            </div>
+            <div class="tl-item">
+                <div class="tl-left"><div class="tl-dot">4</div><div class="tl-line"></div></div>
+                <div class="tl-body">
+                    <div class="tl-week">Meses 3–12</div>
+                    <div class="tl-title">Programa de Saúde Mental e Monitoramento</div>
+                    <div class="tl-desc">Acompanhamento contínuo, aplicações trimestrais do diagnóstico, palestras mensais e relatórios de evolução.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ SEÇÃO: INVESTIMENTO ════════════════════════ -->
+    <div class="doc-section">
+        <div class="sec-label">Investimento</div>
+        <div class="sec-title">Tabela de Valores</div>
+
+        <table class="pricing-table">
+            <thead>
+                <tr>
+                    <th>Módulo / Serviço</th>
+                    <th>Prazo</th>
+                    <th>Valor</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <strong>Módulo 1</strong> — Diagnóstico Aprofundado e PGR<br>
+                        <span style="font-size:11px;color:var(--muted);">Inclui aplicação, análise, PGR completo e plano de ação</span>
+                    </td>
+                    <td><span class="editable" contenteditable="true">30 dias</span></td>
+                    <td>R$ <span class="editable" contenteditable="true">4.800</span></td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>Módulo 2</strong> — Capacitação de Lideranças<br>
+                        <span style="font-size:11px;color:var(--muted);">Workshop de 4h + material didático</span>
+                    </td>
+                    <td><span class="editable" contenteditable="true">1 sessão</span></td>
+                    <td>R$ <span class="editable" contenteditable="true">2.200</span></td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>Módulo 3</strong> — Programa de Saúde Mental<br>
+                        <span style="font-size:11px;color:var(--muted);">Política interna + canal de acolhimento + palestras mensais</span>
+                    </td>
+                    <td><span class="editable" contenteditable="true">6 meses</span></td>
+                    <td>R$ <span class="editable" contenteditable="true">6.000</span></td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>Módulo 4</strong> — Monitoramento Contínuo<br>
+                        <span style="font-size:11px;color:var(--muted);">Diagnóstico trimestral + reuniões mensais + suporte ilimitado</span>
+                    </td>
+                    <td><span class="editable" contenteditable="true">12 meses</span></td>
+                    <td>R$ <span class="editable" contenteditable="true">9.600</span></td>
+                </tr>
+                <tr class="total-row">
+                    <td colspan="2"><strong>Investimento Total</strong></td>
+                    <td>R$ <span class="editable" contenteditable="true">22.600</span></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="payment-options">
+            <div class="payment-opt preferred">
+                <div class="payment-opt-label">💳 À Vista</div>
+                <div class="payment-opt-value">R$ <span class="editable" contenteditable="true">20.800</span></div>
+                <div class="payment-opt-note">Desconto de <span class="editable" contenteditable="true">8%</span> para pagamento integral</div>
+            </div>
+            <div class="payment-opt">
+                <div class="payment-opt-label">📆 Parcelado</div>
+                <div class="payment-opt-value"><span class="editable" contenteditable="true">12</span>x de R$ <span class="editable" contenteditable="true">1.883</span></div>
+                <div class="payment-opt-note">Faturamento mensal · Sem juros</div>
+            </div>
+            <div class="payment-opt">
+                <div class="payment-opt-label">🔖 Por Módulo</div>
+                <div class="payment-opt-value">Sob consulta</div>
+                <div class="payment-opt-note">Contratação avulsa por etapa</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ SEÇÃO: TERMOS ══════════════════════════════ -->
+    <div class="doc-section">
+        <div class="sec-label">Condições</div>
+        <div class="sec-title">Termos da Proposta</div>
+        <div class="terms-list">
+            <div class="term-item">
+                <div class="term-num">1</div>
+                <div>Esta proposta tem validade de <strong>7 (sete) dias corridos</strong> a partir da data de emissão. Após esse prazo, os valores e condições estão sujeitos a revisão.</div>
+            </div>
+            <div class="term-item">
+                <div class="term-num">2</div>
+                <div>O início dos serviços está condicionado à assinatura do contrato e ao pagamento da primeira parcela ou do valor à vista.</div>
+            </div>
+            <div class="term-item">
+                <div class="term-num">3</div>
+                <div>A aplicação do diagnóstico depende da colaboração da equipe da empresa contratante, que deve disponibilizar os colaboradores no prazo acordado.</div>
+            </div>
+            <div class="term-item">
+                <div class="term-num">4</div>
+                <div>O PGR entregue é de propriedade da empresa contratante e pode ser utilizado livremente junto aos órgãos de fiscalização.</div>
+            </div>
+            <div class="term-item">
+                <div class="term-num">5</div>
+                <div>A Axis Consultorias mantém sigilo absoluto sobre todas as informações e dados coletados durante a prestação dos serviços, em conformidade com a LGPD.</div>
+            </div>
+            <div class="term-item">
+                <div class="term-num">6</div>
+                <div>Eventuais deslocamentos para atendimento presencial fora de <span class="editable" contenteditable="true">São Paulo - SP</span> serão cobrados à parte, conforme cotação prévia aprovada pelo cliente.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ SEÇÃO: PRÓXIMOS PASSOS ════════════════════ -->
+    <div class="doc-section">
+        <div class="sec-label">Próximos Passos</div>
+        <div class="sec-title">Para iniciarmos juntos</div>
+        <div class="sec-text">Se esta proposta atende às expectativas da <span class="editable" contenteditable="true">Nome da Empresa</span>, os próximos passos são:</div>
+        <div class="terms-list">
+            <div class="term-item">
+                <div class="term-num" style="background:var(--navy);color:#fff;">1</div>
+                <div><strong>Aceite desta proposta</strong> — assinatura abaixo ou confirmação por e-mail/WhatsApp</div>
+            </div>
+            <div class="term-item">
+                <div class="term-num" style="background:var(--navy);color:#fff;">2</div>
+                <div><strong>Assinatura do contrato</strong> — enviado por e-mail em até 24h após confirmação</div>
+            </div>
+            <div class="term-item">
+                <div class="term-num" style="background:var(--navy);color:#fff;">3</div>
+                <div><strong>Pagamento da primeira parcela</strong> — via PIX, boleto ou transferência bancária</div>
+            </div>
+            <div class="term-item">
+                <div class="term-num" style="background:var(--navy);color:#fff;">4</div>
+                <div><strong>Reunião de kickoff</strong> — agendada para até 5 dias úteis após a confirmação do pagamento</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ SEÇÃO: ASSINATURA ══════════════════════════ -->
+    <div class="doc-section">
+        <div class="sec-label">Aceite</div>
+        <div class="sec-title">Aprovação da Proposta</div>
+        <div class="sec-text">Ao assinar abaixo, a parte contratante declara ter lido, compreendido e aceito todos os termos desta proposta comercial.</div>
+
+        <div class="signature-grid">
+            <div class="sig-box">
+                <div class="sig-line"></div>
+                <div class="sig-name">Axis Consultorias</div>
+                <div class="sig-role"><span class="editable" contenteditable="true">Clau Diniz</span> · Consultora NR-1</div>
+                <div class="sig-date">Data: <span class="editable" contenteditable="true">___/___/______</span></div>
+            </div>
+            <div class="sig-box">
+                <div class="sig-line"></div>
+                <div class="sig-name"><span class="editable" contenteditable="true">Nome do Responsável</span></div>
+                <div class="sig-role"><span class="editable" contenteditable="true">Nome da Empresa</span></div>
+                <div class="sig-date">Data: <span class="editable" contenteditable="true">___/___/______</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="doc-footer">
+        <div>
+            <div class="doc-footer-brand">Axis Consultorias</div>
+            <div class="doc-footer-contact">@axisconsultorias · <span class="editable" style="color:rgba(255,255,255,0.5);background:none;border:none;" contenteditable="true">(11) 94781-8238</span></div>
+        </div>
+        <div class="doc-footer-validity" id="footer-validity">Válida por 7 dias</div>
+    </div>
+
+</div>
+
+<script>
+// Set dates
+const today = new Date();
+const fmt = d => d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+const validity = new Date(today);
+validity.setDate(validity.getDate() + 7);
+
+document.getElementById('prop-date').textContent = fmt(today);
+document.getElementById('prop-validity').textContent = fmt(validity);
+document.getElementById('footer-validity').textContent = `Válida até ${fmt(validity)}`;
+
+// Hint: hide on first edit
+document.querySelectorAll('.editable').forEach(el => {
+    el.addEventListener('focus', () => {
+        document.getElementById('edit-hint').style.opacity = '0.4';
+        if (el.textContent === el.dataset.placeholder) {
+            el.textContent = '';
+        }
+    });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Stories Instagram | Axis Consultorias</title>
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        :root {
+            --navy:   #0F2744;
+            --blue:   #1B3A6B;
+            --blue2:  #2D5A9E;
+            --accent: #C0392B;
+            --gold:   #E67E22;
+            --ok:     #27AE60;
+            --bg:     #F2F5FA;
+            --border: #DDE3EE;
+            --muted:  #7A8BA8;
+            --text:   #1A2540;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #0D0D0D;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ── APP HEADER ─────────────────────────────────── */
+        .app-header {
+            width: 100%; max-width: 420px;
+            padding: 14px 16px 0;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .app-title { font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.8); }
+        .app-sub { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+        .story-counter {
+            font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.5);
+        }
+
+        /* ── PROGRESS BAR ───────────────────────────────── */
+        .progress-bar-row {
+            width: 100%; max-width: 420px;
+            padding: 10px 16px 0;
+            display: flex; gap: 4px;
+        }
+        .progress-seg {
+            flex: 1; height: 3px; border-radius: 100px;
+            background: rgba(255,255,255,0.2);
+            overflow: hidden;
+        }
+        .progress-seg-fill {
+            height: 100%; border-radius: 100px;
+            background: #fff;
+            width: 0%; transition: width 0.3s ease;
+        }
+        .progress-seg.done .progress-seg-fill { width: 100%; }
+        .progress-seg.active .progress-seg-fill { width: 100%; animation: progressAnim var(--dur, 8s) linear forwards; }
+        @keyframes progressAnim { from { width: 0%; } to { width: 100%; } }
+
+        /* ── STORY VIEWER ───────────────────────────────── */
+        .story-viewer {
+            width: 100%; max-width: 420px;
+            padding: 8px 16px 0;
+            position: relative;
+        }
+
+        /* 9:16 ratio for stories */
+        .story-wrapper {
+            position: relative;
+            width: 100%;
+            padding-bottom: 177.78%;
+            border-radius: 18px;
+            overflow: hidden;
+        }
+
+        .story {
+            position: absolute; inset: 0;
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+            animation: storyIn 0.3s ease;
+        }
+        .story.active { display: flex; }
+        @keyframes storyIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Story backgrounds */
+        .bg-dark-blue { background: linear-gradient(160deg, #060F1E 0%, #0F2744 100%); }
+        .bg-red { background: linear-gradient(160deg, #1A0505 0%, #5C0E0E 100%); }
+        .bg-gold { background: linear-gradient(160deg, #1A0D00 0%, #7D4A00 100%); }
+        .bg-green { background: linear-gradient(160deg, #040F07 0%, #0E3D18 100%); }
+        .bg-blue-grad { background: linear-gradient(160deg, #060D1C 0%, #1B3A6B 100%); }
+        .bg-accent { background: linear-gradient(160deg, #2D0000 0%, #C0392B 100%); }
+
+        /* ── STORY HEADER ───────────────────────────────── */
+        .story-top {
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .story-profile {
+            display: flex; align-items: center; gap: 8px;
+        }
+        .profile-ring {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: linear-gradient(45deg, var(--gold), var(--accent));
+            padding: 2px;
+        }
+        .profile-inner {
+            width: 100%; height: 100%; border-radius: 50%;
+            background: var(--navy);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px; font-weight: 900; color: #fff;
+        }
+        .profile-name { font-size: 12px; font-weight: 700; color: #fff; }
+        .profile-time { font-size: 10px; color: rgba(255,255,255,0.5); }
+        .story-mute {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; cursor: pointer;
+        }
+
+        /* ── STORY BODY ─────────────────────────────────── */
+        .story-mid { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+
+        .story-tag {
+            display: inline-block;
+            font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 4px 12px; border-radius: 20px;
+            margin-bottom: 16px; width: fit-content;
+        }
+        .tag-r { background: rgba(192,57,43,0.4); color: #F1948A; border: 1px solid rgba(192,57,43,0.5); }
+        .tag-g { background: rgba(39,174,96,0.3); color: #A9DFBF; border: 1px solid rgba(39,174,96,0.4); }
+        .tag-y { background: rgba(230,126,34,0.3); color: #FAD7A0; border: 1px solid rgba(230,126,34,0.4); }
+        .tag-w { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.9); }
+
+        .story-headline {
+            font-size: clamp(22px, 6vw, 32px);
+            font-weight: 900; color: #fff;
+            line-height: 1.2; letter-spacing: -0.5px;
+            margin-bottom: 14px;
+        }
+        .story-headline .y { color: #F1C40F; }
+        .story-headline .r { color: #F1948A; }
+        .story-headline .g { color: #A9DFBF; }
+
+        .story-body-text {
+            font-size: 14px; color: rgba(255,255,255,0.75);
+            line-height: 1.65;
+        }
+
+        .stat-big {
+            font-size: clamp(56px, 18vw, 80px);
+            font-weight: 900; letter-spacing: -4px;
+            line-height: 1; color: #F1C40F;
+            margin: 12px 0 8px;
+        }
+        .stat-big.red { color: #F1948A; }
+        .stat-label {
+            font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.5;
+        }
+
+        .check-row {
+            display: flex; flex-direction: column; gap: 10px; margin-top: 8px;
+        }
+        .check-line {
+            display: flex; align-items: center; gap: 12px;
+            background: rgba(255,255,255,0.07);
+            border-radius: 12px; padding: 12px 14px;
+        }
+        .chk {
+            width: 24px; height: 24px; border-radius: 7px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; flex-shrink: 0;
+        }
+        .chk-ok { background: rgba(39,174,96,0.3); border: 1.5px solid #27AE60; }
+        .chk-no { background: rgba(192,57,43,0.3); border: 1.5px solid var(--accent); }
+        .check-line-text { font-size: 13px; color: rgba(255,255,255,0.85); font-weight: 500; }
+
+        /* ── STORY BOTTOM ───────────────────────────────── */
+        .story-bottom { display: flex; flex-direction: column; gap: 10px; }
+        .swipe-up {
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            cursor: pointer;
+        }
+        .swipe-arrow { font-size: 20px; animation: bounce 1.5s infinite; }
+        @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+        .swipe-text { font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.7); letter-spacing: 0.5px; }
+
+        .story-cta-btn {
+            background: #fff; color: var(--navy);
+            padding: 14px 20px; border-radius: 12px;
+            font-size: 14px; font-weight: 700;
+            text-align: center; cursor: pointer;
+            border: none; font-family: inherit; width: 100%;
+        }
+
+        .mention {
+            text-align: center; font-size: 12px;
+            color: rgba(255,255,255,0.5);
+        }
+        .mention strong { color: rgba(255,255,255,0.8); }
+
+        /* ── OVERLAY NAV ─────────────────────────────────── */
+        .nav-overlay {
+            position: absolute; inset: 0;
+            display: flex;
+        }
+        .nav-zone { flex: 1; cursor: pointer; }
+
+        /* ── NAV BAR ─────────────────────────────────────── */
+        .nav-bar {
+            width: 100%; max-width: 420px;
+            padding: 14px 16px;
+            display: flex; align-items: center; justify-content: space-between; gap: 10px;
+        }
+        .nav-btn {
+            padding: 10px 20px; border-radius: 10px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: #fff; font-size: 13px; font-weight: 700;
+            cursor: pointer; font-family: inherit;
+            transition: all 0.18s;
+        }
+        .nav-btn:hover { background: rgba(255,255,255,0.2); }
+        .nav-btn:disabled { opacity: 0.3; cursor: default; }
+
+        /* ── COPY PANEL ──────────────────────────────────── */
+        .copy-panel {
+            width: 100%; max-width: 420px;
+            padding: 0 16px 24px;
+        }
+        .copy-box {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 14px; padding: 16px;
+        }
+        .copy-label {
+            font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px;
+            color: rgba(255,255,255,0.4); margin-bottom: 10px; font-weight: 700;
+        }
+        .copy-text { font-size: 12px; color: rgba(255,255,255,0.65); line-height: 1.7; white-space: pre-line; }
+        .copy-btn {
+            width: 100%; margin-top: 12px; padding: 10px;
+            border-radius: 10px; background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: rgba(255,255,255,0.8); font-size: 12px; font-weight: 700;
+            cursor: pointer; font-family: inherit; transition: all 0.18s;
+        }
+        .copy-btn:hover { background: rgba(255,255,255,0.2); }
+        .copy-btn.copied { background: rgba(39,174,96,0.3); border-color: rgba(39,174,96,0.5); color: #A9DFBF; }
+
+        .ornament {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.03);
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-header">
+    <div>
+        <div class="app-title">Stories Instagram</div>
+        <div class="app-sub">Axis Consultorias · Aquecimento + Tráfego</div>
+    </div>
+    <div class="story-counter" id="story-counter">1 de 6</div>
+</div>
+
+<div class="progress-bar-row" id="progress-row"></div>
+
+<div class="story-viewer">
+    <div class="story-wrapper" id="story-container">
+
+        <!-- STORY 1: HOOK -->
+        <div class="story active bg-dark-blue" data-index="0">
+            <div class="ornament" style="width:300px;height:300px;top:-100px;right:-100px;"></div>
+            <div class="story-top">
+                <div class="story-profile">
+                    <div class="profile-ring"><div class="profile-inner">AX</div></div>
+                    <div>
+                        <div class="profile-name">axisconsultorias</div>
+                        <div class="profile-time">Agora</div>
+                    </div>
+                </div>
+                <div class="story-mute">🔊</div>
+            </div>
+            <div class="story-mid">
+                <div class="story-tag tag-r">⚠️ Urgente · NR-1 2025</div>
+                <div class="story-headline">Você sabe o que muda com a <span class="y">NR-1</span> em 2025?</div>
+                <div class="story-body-text">A maioria dos gestores de RH ainda não sabe que a lei mudou — e o prazo está correndo.</div>
+            </div>
+            <div class="story-bottom">
+                <div class="swipe-up">
+                    <div class="swipe-arrow">↑</div>
+                    <div class="swipe-text">Ver mais</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STORY 2: DADO IMPACTO -->
+        <div class="story bg-red" data-index="1">
+            <div class="story-top">
+                <div class="story-profile">
+                    <div class="profile-ring"><div class="profile-inner">AX</div></div>
+                    <div>
+                        <div class="profile-name">axisconsultorias</div>
+                        <div class="profile-time">Agora</div>
+                    </div>
+                </div>
+                <div class="story-mute">🔊</div>
+            </div>
+            <div class="story-mid">
+                <div class="story-tag tag-r">💸 Risco financeiro</div>
+                <div class="stat-big red">R$400k</div>
+                <div class="stat-label">É o valor máximo de multa por descumprimento da NR-1 atualizada. Por empresa. Por autuação.</div>
+                <div style="margin-top:20px;font-size:14px;color:rgba(255,255,255,0.6);line-height:1.6;">
+                    Além das multas, há risco de embargos, ações trabalhistas e danos irreparáveis à reputação.
+                </div>
+            </div>
+            <div class="story-bottom">
+                <div class="mention">Compartilhe com quem precisa saber 🙏</div>
+            </div>
+        </div>
+
+        <!-- STORY 3: CHECKLIST -->
+        <div class="story bg-blue-grad" data-index="2">
+            <div class="story-top">
+                <div class="story-profile">
+                    <div class="profile-ring"><div class="profile-inner">AX</div></div>
+                    <div>
+                        <div class="profile-name">axisconsultorias</div>
+                        <div class="profile-time">Agora</div>
+                    </div>
+                </div>
+                <div class="story-mute">🔊</div>
+            </div>
+            <div class="story-mid">
+                <div class="story-tag tag-w">📋 Sua empresa tem isso?</div>
+                <div class="story-headline" style="font-size:20px;margin-bottom:16px;">Check-list rápido de conformidade</div>
+                <div class="check-row">
+                    <div class="check-line">
+                        <div class="chk chk-ok">✓</div>
+                        <div class="check-line-text">PGR com riscos psicossociais</div>
+                    </div>
+                    <div class="check-line">
+                        <div class="chk chk-ok">✓</div>
+                        <div class="check-line-text">Mapeamento dos 6 fatores NR-1</div>
+                    </div>
+                    <div class="check-line">
+                        <div class="chk chk-no">✗</div>
+                        <div class="check-line-text">Ações documentadas e datadas</div>
+                    </div>
+                    <div class="check-line">
+                        <div class="chk chk-no">✗</div>
+                        <div class="check-line-text">Programa de saúde mental ativo</div>
+                    </div>
+                </div>
+            </div>
+            <div class="story-bottom">
+                <div class="mention">Quantos ✓ sua empresa tem?</div>
+            </div>
+        </div>
+
+        <!-- STORY 4: DADOS / IMPACTO -->
+        <div class="story bg-gold" data-index="3">
+            <div class="story-top">
+                <div class="story-profile">
+                    <div class="profile-ring"><div class="profile-inner">AX</div></div>
+                    <div>
+                        <div class="profile-name">axisconsultorias</div>
+                        <div class="profile-time">Agora</div>
+                    </div>
+                </div>
+                <div class="story-mute">🔊</div>
+            </div>
+            <div class="story-mid">
+                <div class="story-tag tag-y">📊 Impacto nos negócios</div>
+                <div class="story-headline">Burnout custa caro <span class="y">demais</span></div>
+                <div class="check-row">
+                    <div class="check-line" style="background:rgba(255,255,255,0.08);">
+                        <div style="font-size:22px;">📉</div>
+                        <div>
+                            <div style="font-size:14px;font-weight:700;color:#FAD7A0;">3x mais absenteísmo</div>
+                            <div style="font-size:11px;color:rgba(255,255,255,0.5);">em equipes com alto risco psicossocial</div>
+                        </div>
+                    </div>
+                    <div class="check-line" style="background:rgba(255,255,255,0.08);">
+                        <div style="font-size:22px;">💸</div>
+                        <div>
+                            <div style="font-size:14px;font-weight:700;color:#FAD7A0;">150% do salário anual</div>
+                            <div style="font-size:11px;color:rgba(255,255,255,0.5);">é o custo médio de substituir um colaborador</div>
+                        </div>
+                    </div>
+                    <div class="check-line" style="background:rgba(255,255,255,0.08);">
+                        <div style="font-size:22px;">😶</div>
+                        <div>
+                            <div style="font-size:14px;font-weight:700;color:#FAD7A0;">40% menos engajamento</div>
+                            <div style="font-size:11px;color:rgba(255,255,255,0.5);">em ambientes com fatores de risco ignorados</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="story-bottom">
+                <div class="swipe-up"><div class="swipe-arrow">↑</div><div class="swipe-text">Saiba mais</div></div>
+            </div>
+        </div>
+
+        <!-- STORY 5: SOLUÇÃO -->
+        <div class="story bg-green" data-index="4">
+            <div class="story-top">
+                <div class="story-profile">
+                    <div class="profile-ring"><div class="profile-inner">AX</div></div>
+                    <div>
+                        <div class="profile-name">axisconsultorias</div>
+                        <div class="profile-time">Agora</div>
+                    </div>
+                </div>
+                <div class="story-mute">🔊</div>
+            </div>
+            <div class="story-mid">
+                <div class="story-tag tag-g">✅ A solução</div>
+                <div class="story-headline"><span class="g">Diagnóstico NR-1</span> em 20 minutos</div>
+                <div class="story-body-text">Mapeamos os 6 fatores de risco psicossocial e entregamos um relatório completo com as ações prioritárias para o seu PGR.</div>
+                <div style="margin-top:20px;">
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                        <div style="background:rgba(255,255,255,0.08);border-radius:10px;padding:10px 14px;font-size:12px;color:rgba(255,255,255,0.8);">📊 Relatório PDF</div>
+                        <div style="background:rgba(255,255,255,0.08);border-radius:10px;padding:10px 14px;font-size:12px;color:rgba(255,255,255,0.8);">⚡ Resultado imediato</div>
+                        <div style="background:rgba(255,255,255,0.08);border-radius:10px;padding:10px 14px;font-size:12px;color:rgba(255,255,255,0.8);">🆓 Gratuito</div>
+                    </div>
+                </div>
+            </div>
+            <div class="story-bottom">
+                <div class="swipe-up"><div class="swipe-arrow">↑</div><div class="swipe-text">Solicitar diagnóstico</div></div>
+            </div>
+        </div>
+
+        <!-- STORY 6: CTA -->
+        <div class="story bg-accent" data-index="5">
+            <div class="story-top">
+                <div class="story-profile">
+                    <div class="profile-ring"><div class="profile-inner">AX</div></div>
+                    <div>
+                        <div class="profile-name">axisconsultorias</div>
+                        <div class="profile-time">Agora</div>
+                    </div>
+                </div>
+                <div class="story-mute">🔊</div>
+            </div>
+            <div class="story-mid" style="text-align:center;">
+                <div style="font-size:60px;margin-bottom:16px;">🚀</div>
+                <div class="story-headline" style="text-align:center;">Diagnóstico gratuito para <span class="y">sua empresa</span></div>
+                <div class="story-body-text" style="color:rgba(255,255,255,0.85);text-align:center;margin-top:8px;">Clique no link da bio ou mande <strong>"NR1"</strong> no nosso WhatsApp agora mesmo.</div>
+            </div>
+            <div class="story-bottom">
+                <button class="story-cta-btn" onclick="alert('Redirecionar para WhatsApp / Link in Bio')">
+                    ✅ Quero meu diagnóstico gratuito
+                </button>
+                <div class="mention"><strong>@axisconsultorias</strong> · Link na bio</div>
+            </div>
+        </div>
+
+        <!-- NAV OVERLAY -->
+        <div class="nav-overlay">
+            <div class="nav-zone" onclick="prevStory()"></div>
+            <div class="nav-zone" onclick="nextStory()"></div>
+        </div>
+    </div>
+</div>
+
+<!-- NAV BAR -->
+<div class="nav-bar">
+    <button class="nav-btn" id="btn-prev" onclick="prevStory()" disabled>‹ Anterior</button>
+    <button class="nav-btn" id="btn-next" onclick="nextStory()">Próxima ›</button>
+</div>
+
+<!-- COPY PANEL -->
+<div class="copy-panel">
+    <div class="copy-box">
+        <div class="copy-label">📝 Texto para sticker / legenda</div>
+        <div class="copy-text" id="copy-text"></div>
+        <button class="copy-btn" id="copy-btn" onclick="copyCaption()">📋 Copiar texto</button>
+    </div>
+</div>
+
+<script>
+const TOTAL = 6;
+let current = 0;
+
+const TEXTS = [
+    `Você sabe o que mudou na NR-1 em 2025? ⚠️\n\nA Portaria MTE nº 1.419/2024 tornou obrigatória a avaliação de riscos psicossociais. A maioria das empresas ainda não se adequou.\n\n👉 Manda "NR1" no nosso WhatsApp e descobre se sua empresa está em risco — de graça.`,
+    `Sua empresa pode ser multada em até R$ 400.000 💸\n\nNão é exagero. É o valor máximo das autuações por descumprimento da NR-1 atualizada.\n\nO quanto custa não se adequar agora?\n\n👆 Link na bio para diagnóstico gratuito`,
+    `Quantos ✓ sua empresa consegue marcar?\n\n✓ PGR com riscos psicossociais\n✓ Mapeamento dos 6 fatores NR-1\n✗ Ações documentadas e datadas\n✗ Programa de saúde mental ativo\n\nSe tiver menos de 4, precisa do nosso diagnóstico. 📲 Link na bio.`,
+    `Ignorar riscos psicossociais custa caro:\n\n• 3x mais absenteísmo\n• 150% do salário p/ substituir um talento\n• 40% menos engajamento\n\nAcha que pode ignorar? 🤔 Link na bio pra diagnóstico gratuito.`,
+    `Diagnóstico NR-1 gratuito em 20 minutos ✅\n\n6 fatores de risco avaliados + relatório PDF + recomendações prioritárias para o seu PGR.\n\nGratuito. Imediato. Sem compromisso.\n\n👆 Link na bio`,
+    `🚀 Diagnóstico NR-1 gratuito para sua empresa\n\nMande "NR1" no nosso WhatsApp:\n📲 (11) 94781-8238\n\nOu acesse o link na bio.\n\nSalve e compartilhe com quem precisa! 🔖\n\n@axisconsultorias`
+];
+
+function buildProgressBar() {
+    const row = document.getElementById('progress-row');
+    row.innerHTML = Array.from({ length: TOTAL }, (_, i) => `
+        <div class="progress-seg ${i < current ? 'done' : i === current ? 'active' : ''}" style="--dur:8s">
+            <div class="progress-seg-fill"></div>
+        </div>`).join('');
+}
+
+function goTo(idx) {
+    document.querySelectorAll('.story').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.story')[idx].classList.add('active');
+    current = idx;
+    document.getElementById('story-counter').textContent = `${current + 1} de ${TOTAL}`;
+    document.getElementById('btn-prev').disabled = current === 0;
+    document.getElementById('btn-next').disabled = current === TOTAL - 1;
+    document.getElementById('copy-text').textContent = TEXTS[current];
+    document.getElementById('copy-btn').textContent = '📋 Copiar texto';
+    document.getElementById('copy-btn').classList.remove('copied');
+    buildProgressBar();
+}
+
+function prevStory() { if (current > 0) goTo(current - 1); }
+function nextStory() { if (current < TOTAL - 1) goTo(current + 1); }
+
+function copyCaption() {
+    const text = TEXTS[current];
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => {
+            document.getElementById('copy-btn').textContent = '✓ Copiado!';
+            document.getElementById('copy-btn').classList.add('copied');
+        });
+    } else {
+        const ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        document.execCommand('copy'); document.body.removeChild(ta);
+        document.getElementById('copy-btn').textContent = '✓ Copiado!';
+        document.getElementById('copy-btn').classList.add('copied');
+    }
+}
+
+// Swipe
+let sx = 0;
+document.getElementById('story-container').addEventListener('touchstart', e => { sx = e.touches[0].clientX; }, { passive: true });
+document.getElementById('story-container').addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - sx;
+    if (Math.abs(dx) > 40) { dx < 0 ? nextStory() : prevStory(); }
+});
+
+goTo(0);
+</script>
+</body>
+</html>
