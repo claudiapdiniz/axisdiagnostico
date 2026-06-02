@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="description" content="Descubra em 2 minutos o nível de risco psicossocial da sua empresa. Diagnóstico gratuito baseado na NR-1 (2025).">
+    <meta property="og:title" content="Diagnóstico Gratuito NR-1 | Axis Consultorias">
+    <meta property="og:description" content="Sua empresa está em risco psicossocial e você ainda não sabe? Faça o diagnóstico gratuito em 2 minutos.">
+    <title>Diagnóstico Gratuito de Risco Psicossocial | Axis Consultorias</title>
+    <style>
+        *, *::before, *::after {
+            margin: 0; padding: 0; box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --navy:   #0F2744;
+            --blue:   #1B3A6B;
+            --blue2:  #2D5A9E;
+            --accent: #C0392B;
+            --gold:   #E67E22;
+            --ok:     #27AE60;
+            --bg:     #F2F5FA;
+            --card:   #FFFFFF;
+            --border: #DDE3EE;
+            --muted:  #7A8BA8;
+            --text:   #1A2540;
+            --green:  #25D366;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        /* ── SCREENS ─────────────────────────────────── */
+        .screen { display: none; min-height: 100vh; animation: fadeIn 0.22s ease; }
+        .screen.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ── BUTTONS ─────────────────────────────────── */
+        .btn {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            width: 100%; border: none; border-radius: 14px; padding: 16px 20px;
+            font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.18s;
+            font-family: inherit; text-decoration: none; text-align: center;
+        }
+        .btn:active { transform: scale(0.97); }
+        .btn-navy   { background: var(--navy); color: #fff; }
+        .btn-ghost  { background: #fff; color: var(--blue); border: 2px solid var(--border); }
+
+        /* ── FORM ────────────────────────────────────── */
+        .form-group { margin-bottom: 18px; }
+        .form-group label {
+            display: block; font-size: 11px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1px;
+            color: var(--muted); margin-bottom: 7px;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%; padding: 14px 15px;
+            border: 2px solid var(--border); border-radius: 12px;
+            font-size: 16px; color: var(--text); background: #fff;
+            outline: none; transition: border-color 0.18s;
+            font-family: inherit; -webkit-appearance: none; appearance: none;
+        }
+        .form-group input:focus,
+        .form-group select:focus { border-color: var(--blue); }
+        .form-group input.err,
+        .form-group select.err { border-color: var(--accent); }
+
+        /* ── PROGRESS ────────────────────────────────── */
+        .progress-wrap { background: rgba(255,255,255,0.2); border-radius: 100px; height: 5px; overflow: hidden; }
+        .progress-fill { height: 100%; background: #fff; border-radius: 100px; transition: width 0.4s ease; }
+
+        /* ── ANSWER BUTTONS ──────────────────────────── */
+        .ans-btn {
+            display: flex; align-items: center; gap: 12px;
+            background: #fff; border: 2px solid var(--border);
+            border-radius: 12px; padding: 14px 16px;
+            font-size: 15px; font-weight: 500; color: var(--text);
+            cursor: pointer; text-align: left; transition: all 0.18s;
+            font-family: inherit; width: 100%;
+        }
+        .ans-btn:active { transform: scale(0.99); }
+        .ans-btn.sel { border-color: var(--navy); background: #EBF0FA; color: var(--navy); }
+        .ans-dot {
+            width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+            border: 2px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.18s;
+        }
+        .ans-btn.sel .ans-dot { border-color: var(--navy); background: var(--navy); }
+        .ans-dot-inner { width: 8px; height: 8px; border-radius: 50%; background: #fff; display: none; }
+        .ans-btn.sel .ans-dot-inner { display: block; }
+
+        /* ── TOAST ───────────────────────────────────── */
+        .toast {
+            position: fixed; bottom: 24px; left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: var(--navy); color: #fff;
+            padding: 11px 20px; border-radius: 100px;
+            font-size: 13px; font-weight: 600; z-index: 300;
+            transition: transform 0.28s ease; white-space: nowrap;
+            box-shadow: 0 6px 24px rgba(15,39,68,0.2);
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+
+        /* ══════════════════════════════════════════════
+           SCREEN: LANDING
+        ══════════════════════════════════════════════ */
+        .landing-topbar {
+            background: var(--navy); padding: 14px 20px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .brand-name { font-size: 15px; font-weight: 800; color: #fff; letter-spacing: -0.3px; }
+        .brand-sub  { font-size: 10px; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 1px; }
+        .nr1-tag {
+            background: rgba(192,57,43,0.25); border: 1px solid rgba(192,57,43,0.5);
+            color: #F1948A; font-size: 10px; font-weight: 700;
+            padding: 3px 9px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+
+        .hero {
+            background: linear-gradient(145deg, #0A1E3A 0%, var(--blue) 100%);
+            padding: 40px 24px 36px; color: #fff; text-align: center;
+            position: relative; overflow: hidden;
+        }
+        .hero::before, .hero::after {
+            content: ''; position: absolute; border-radius: 50%;
+            background: rgba(255,255,255,0.04); pointer-events: none;
+        }
+        .hero::before { width: 220px; height: 220px; top: -80px; right: -60px; }
+        .hero::after  { width: 140px; height: 140px; bottom: -40px; left: -30px; }
+
+        .hero-eyebrow {
+            font-size: 11px; text-transform: uppercase; letter-spacing: 2.5px;
+            color: rgba(255,255,255,0.5); margin-bottom: 14px;
+        }
+        .hero-title {
+            font-size: 27px; font-weight: 900; line-height: 1.22;
+            letter-spacing: -0.5px; margin-bottom: 16px;
+        }
+        .hero-title em { color: #F1948A; font-style: normal; }
+        .hero-sub {
+            font-size: 15px; color: rgba(255,255,255,0.72); line-height: 1.7;
+            margin-bottom: 28px;
+        }
+        .stats-row {
+            display: flex; justify-content: center; gap: 10px;
+            flex-wrap: wrap; margin-bottom: 28px;
+        }
+        .stat-chip {
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 100px; padding: 6px 14px;
+            font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.9);
+        }
+        .hero-btn {
+            width: 100%; padding: 18px 24px; border-radius: 16px;
+            background: #fff; color: var(--navy); border: none;
+            font-size: 17px; font-weight: 800; cursor: pointer;
+            font-family: inherit; box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+            transition: all 0.18s;
+        }
+        .hero-btn:active { transform: scale(0.97); }
+        .hero-footnote { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 11px; }
+
+        .pain-block { background: #fff; padding: 28px 20px 20px; }
+        .section-eyebrow {
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1.5px; color: var(--muted); text-align: center; margin-bottom: 18px;
+        }
+        .pain-item {
+            display: flex; align-items: flex-start; gap: 14px;
+            padding: 14px 0; border-bottom: 1px solid var(--border);
+        }
+        .pain-item:last-child { border-bottom: none; }
+        .pain-icon {
+            width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; background: #FEF0F0;
+        }
+        .pain-body strong {
+            font-size: 14px; font-weight: 700; color: var(--text);
+            display: block; margin-bottom: 3px;
+        }
+        .pain-body span { font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+        .law-block {
+            margin: 8px 20px 24px; padding: 14px 16px;
+            background: #EBF0FA; border-left: 4px solid var(--navy);
+            border-radius: 12px;
+        }
+        .law-block p { font-size: 13px; color: var(--blue); line-height: 1.65; }
+        .law-block strong { color: var(--navy); }
+
+        .landing-footer { padding: 0 20px 44px; }
+
+        /* ══════════════════════════════════════════════
+           SCREEN: QUESTIONNAIRE
+        ══════════════════════════════════════════════ */
+        .quest-topbar {
+            background: var(--navy); padding: 12px 16px;
+            display: flex; align-items: center; gap: 12px;
+            position: sticky; top: 0; z-index: 20;
+        }
+        .back-btn {
+            background: rgba(255,255,255,0.12); border: none;
+            width: 38px; height: 38px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 18px; cursor: pointer; flex-shrink: 0;
+            transition: background 0.15s;
+        }
+        .back-btn:active { background: rgba(255,255,255,0.22); }
+        .quest-prog-wrap { flex: 1; }
+        .quest-prog-label { font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 5px; }
+        .quest-counter {
+            font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.6);
+            flex-shrink: 0; min-width: 32px; text-align: right;
+        }
+
+        .quest-body { padding: 26px 20px 36px; }
+
+        .fator-pill {
+            display: inline-flex; align-items: center; gap: 7px;
+            background: var(--navy); color: rgba(255,255,255,0.85);
+            border-radius: 100px; padding: 5px 14px;
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1px; margin-bottom: 22px;
+        }
+
+        .q-text {
+            font-size: 19px; font-weight: 700; line-height: 1.5;
+            color: var(--text); margin-bottom: 26px;
+        }
+
+        .answers { display: flex; flex-direction: column; gap: 10px; }
+
+        /* ══════════════════════════════════════════════
+           SCREEN: LEAD FORM
+        ══════════════════════════════════════════════ */
+        .form-topbar {
+            background: var(--navy); padding: 12px 16px;
+            display: flex; align-items: center; gap: 12px;
+        }
+
+        .form-hero {
+            background: linear-gradient(140deg, var(--navy), var(--blue2));
+            padding: 32px 24px 28px; color: #fff; text-align: center;
+        }
+        .form-hero-icon { font-size: 40px; margin-bottom: 14px; line-height: 1; }
+        .form-hero h2 { font-size: 22px; font-weight: 800; line-height: 1.3; margin-bottom: 10px; }
+        .form-hero p  { font-size: 14px; color: rgba(255,255,255,0.72); line-height: 1.65; }
+
+        .form-body { padding: 28px 20px 40px; }
+
+        .privacy-note {
+            font-size: 11px; color: var(--muted); line-height: 1.6;
+            text-align: center; margin-bottom: 18px;
+        }
+
+        /* ══════════════════════════════════════════════
+           SCREEN: RESULT
+        ══════════════════════════════════════════════ */
+        .result-hero {
+            padding: 36px 24px 32px; color: #fff; text-align: center;
+            position: relative; overflow: hidden;
+        }
+        .result-hero::after {
+            content: ''; position: absolute;
+            width: 180px; height: 180px; top: -50px; right: -50px;
+            border-radius: 50%; background: rgba(255,255,255,0.06);
+        }
+        .rh-critico { background: linear-gradient(145deg, #5C0000, #C0392B); }
+        .rh-alto    { background: linear-gradient(145deg, #7D3800, #E67E22); }
+        .rh-medio   { background: linear-gradient(145deg, #7A5B00, #D4AC0D); }
+        .rh-baixo   { background: linear-gradient(145deg, #145A1E, #27AE60); }
+
+        .rh-eyebrow  { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,0.6); margin-bottom: 6px; }
+        .rh-empresa  { font-size: 15px; font-weight: 700; margin-bottom: 18px; }
+        .rh-lbl      { font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.65); margin-bottom: 6px; }
+        .rh-nivel    { font-size: 48px; font-weight: 900; letter-spacing: -2px; line-height: 1; margin-bottom: 8px; }
+        .rh-score    { font-size: 14px; color: rgba(255,255,255,0.65); margin-bottom: 16px; }
+        .rh-desc     { font-size: 14px; color: rgba(255,255,255,0.82); line-height: 1.7; max-width: 340px; margin: 0 auto; }
+
+        .result-body { padding: 20px 20px 44px; }
+
+        .card {
+            background: #fff; border-radius: 16px; padding: 20px;
+            box-shadow: 0 2px 12px rgba(15,39,68,0.08); margin-bottom: 16px;
+        }
+        .card-label {
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1.5px; color: var(--muted); margin-bottom: 16px;
+        }
+
+        .factor-row {
+            display: flex; align-items: center; gap: 10px;
+            padding: 8px 0; border-bottom: 1px solid var(--border);
+        }
+        .factor-row:last-child { border-bottom: none; }
+        .fr-icon  { font-size: 16px; width: 22px; text-align: center; flex-shrink: 0; }
+        .fr-name  { font-size: 13px; font-weight: 600; flex: 1; }
+        .fr-bar   { width: 80px; height: 6px; background: var(--border); border-radius: 100px; overflow: hidden; flex-shrink: 0; }
+        .fr-fill  { height: 100%; border-radius: 100px; }
+        .fr-pct   { font-size: 11px; color: var(--muted); width: 30px; text-align: right; flex-shrink: 0; }
+
+        .rec-text { font-size: 14px; line-height: 1.75; color: var(--text); }
+
+        .cta-card { background: #fff; border-radius: 16px; padding: 22px 20px; box-shadow: 0 2px 12px rgba(15,39,68,0.08); }
+        .cta-card h3 { font-size: 19px; font-weight: 800; margin-bottom: 8px; line-height: 1.3; }
+        .cta-card p  { font-size: 14px; color: var(--muted); line-height: 1.65; margin-bottom: 20px; }
+
+        .wa-btn {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            background: #25D366; color: #fff; border: none;
+            border-radius: 16px; padding: 18px 24px;
+            font-size: 17px; font-weight: 800; cursor: pointer;
+            font-family: inherit; width: 100%; text-decoration: none;
+            box-shadow: 0 4px 20px rgba(37,211,102,0.3);
+            transition: all 0.18s;
+        }
+        .wa-btn:active { transform: scale(0.97); }
+
+        .restart-link {
+            display: block; text-align: center; margin-top: 16px;
+            font-size: 13px; color: var(--muted); cursor: pointer;
+        }
+        .restart-link:hover { text-decoration: underline; }
+
+        .result-footer {
+            padding: 20px; background: #fff;
+            border-top: 1px solid var(--border); text-align: center;
+            font-size: 12px; color: var(--muted); line-height: 1.8;
+        }
+        .result-footer strong { color: var(--navy); }
+    </style>
+</head>
+<body>
+
+<!-- ══ SCREEN: LANDING ══════════════════════════════════ -->
+<div id="s-landing" class="screen active">
+
+    <div class="landing-topbar">
+        <div>
+            <div class="brand-name">Axis Consultorias</div>
+            <div class="brand-sub">NR-1 &amp; Saúde Organizacional</div>
+        </div>
+        <div class="nr1-tag">NR-1 / 2025</div>
+    </div>
+
+    <div class="hero">
+        <div class="hero-eyebrow">Diagnóstico Gratuito</div>
+        <h1 class="hero-title">
+            Sua empresa está em<br><em>risco psicossocial</em><br>e você ainda não sabe?
+        </h1>
+        <p class="hero-sub">
+            A nova NR-1 exige que todas as empresas identifiquem e gerenciem riscos psicossociais. Descubra agora o nível de exposição da sua equipe — em 2 minutos.
+        </p>
+        <div class="stats-row">
+            <div class="stat-chip">⏱️ 2 minutos</div>
+            <div class="stat-chip">🎯 100% gratuito</div>
+            <div class="stat-chip">📊 Resultado imediato</div>
+        </div>
+        <button class="hero-btn" onclick="startDiag()">
+            Fazer o diagnóstico agora →
+        </button>
+        <div class="hero-footnote">Baseado na Portaria MTE nº 1.419/2024</div>
+    </div>
+
+    <div class="pain-block">
+        <div class="section-eyebrow">Você reconhece esses sinais?</div>
+
+        <div class="pain-item">
+            <div class="pain-icon">🔥</div>
+            <div class="pain-body">
+                <strong>Alta rotatividade e dificuldade de reter talentos</strong>
+                <span>Equipes esgotadas e sem reconhecimento pedem demissão com muito mais frequência.</span>
+            </div>
+        </div>
+
+        <div class="pain-item">
+            <div class="pain-icon">😰</div>
+            <div class="pain-body">
+                <strong>Afastamentos por ansiedade e burnout</strong>
+                <span>Saúde mental já é a 2ª maior causa de afastamentos no Brasil — e cresce todo ano.</span>
+            </div>
+        </div>
+
+        <div class="pain-item">
+            <div class="pain-icon">⚠️</div>
+            <div class="pain-body">
+                <strong>Risco de multas e autuações do MTE</strong>
+                <span>Sem gestão de riscos psicossociais, sua empresa está exposta a penalidades desde jan/2025.</span>
+            </div>
+        </div>
+
+        <div class="pain-item">
+            <div class="pain-icon">📉</div>
+            <div class="pain-body">
+                <strong>Queda de produtividade e engajamento</strong>
+                <span>Times em ambiente de alto risco entregam até 40% menos do seu potencial real.</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="law-block">
+        <p>
+            ⚖️ <strong>Obrigatório desde jan/2025:</strong> A NR-1 atualizada exige que todas as empresas incluam riscos psicossociais no PGR. O descumprimento pode gerar autuações e responsabilidade civil para a empresa e para gestores.
+        </p>
+    </div>
+
+    <div class="landing-footer">
+        <button class="btn btn-navy" onclick="startDiag()" style="padding:17px;font-size:16px;margin-bottom:12px;">
+            🎯 Fazer o diagnóstico gratuito →
+        </button>
+        <div style="text-align:center;font-size:12px;color:var(--muted);">
+            Sem cadastro prévio · Resultado em segundos · 6 perguntas
+        </div>
+    </div>
+
+</div>
+
+<!-- ══ SCREEN: QUESTIONNAIRE ════════════════════════════ -->
+<div id="s-quest" class="screen">
+
+    <div class="quest-topbar">
+        <button class="back-btn" onclick="backQ()">←</button>
+        <div class="quest-prog-wrap">
+            <div class="quest-prog-label">Diagnóstico de risco</div>
+            <div class="progress-wrap">
+                <div class="progress-fill" id="q-prog" style="width:0%"></div>
+            </div>
+        </div>
+        <div class="quest-counter" id="q-counter">1/6</div>
+    </div>
+
+    <div class="quest-body">
+        <div class="fator-pill">
+            <span id="q-icon"></span>
+            <span id="q-fator"></span>
+        </div>
+        <div class="q-text" id="q-text"></div>
+        <div class="answers" id="q-answers"></div>
+    </div>
+
+</div>
+
+<!-- ══ SCREEN: LEAD FORM ════════════════════════════════ -->
+<div id="s-form" class="screen">
+
+    <div class="form-topbar">
+        <button class="back-btn" onclick="backToLastQ()">←</button>
+        <div style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:600;">Quase lá!</div>
+    </div>
+
+    <div class="form-hero">
+        <div class="form-hero-icon">📊</div>
+        <h2>Seu diagnóstico<br>está pronto!</h2>
+        <p>
+            Preencha seus dados para receber o resultado personalizado e orientações específicas para a sua empresa.
+        </p>
+    </div>
+
+    <div class="form-body">
+        <div class="form-group">
+            <label>Seu nome *</label>
+            <input type="text" id="f-nome" placeholder="Ex.: Maria Silva" autocomplete="name" />
+        </div>
+        <div class="form-group">
+            <label>Nome da empresa *</label>
+            <input type="text" id="f-empresa" placeholder="Ex.: Empresa ABC Ltda" autocomplete="organization" />
+        </div>
+        <div class="form-group">
+            <label>Seu cargo *</label>
+            <select id="f-cargo">
+                <option value="">Selecione...</option>
+                <option>CEO / Diretor(a)</option>
+                <option>Gestor(a) de RH / DP</option>
+                <option>Gerente / Coordenador(a)</option>
+                <option>Especialista / Analista</option>
+                <option>Proprietário(a)</option>
+                <option>Consultor(a)</option>
+                <option>Outro</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>WhatsApp *</label>
+            <input type="tel" id="f-whatsapp" placeholder="(11) 99999-9999"
+                   autocomplete="tel" oninput="fmtPhone(this)" />
+        </div>
+
+        <div class="privacy-note">
+            🔒 Seus dados são tratados com sigilo e não compartilhados com terceiros.
+        </div>
+
+        <button class="btn btn-navy" onclick="submitForm()" style="padding:17px;font-size:16px;">
+            Ver meu resultado →
+        </button>
+    </div>
+
+</div>
+
+<!-- ══ SCREEN: RESULT ════════════════════════════════════ -->
+<div id="s-result" class="screen">
+
+    <div id="r-hero" class="result-hero rh-medio">
+        <div class="rh-eyebrow">Axis Consultorias · NR-1 / 2025</div>
+        <div class="rh-empresa" id="r-empresa"></div>
+        <div class="rh-lbl">Nível de risco psicossocial</div>
+        <div class="rh-nivel" id="r-nivel"></div>
+        <div class="rh-score" id="r-score"></div>
+        <div class="rh-desc" id="r-desc"></div>
+    </div>
+
+    <div class="result-body">
+
+        <div class="card">
+            <div class="card-label">Fatores analisados</div>
+            <div id="r-factors"></div>
+        </div>
+
+        <div class="card">
+            <div class="card-label">O que fazer agora</div>
+            <div class="rec-text" id="r-rec"></div>
+        </div>
+
+        <div class="cta-card">
+            <h3 id="r-cta-title">Entenda seu diagnóstico com a especialista</h3>
+            <p id="r-cta-text"></p>
+            <a id="r-wa-btn" href="#" class="wa-btn" target="_blank" rel="noopener">
+                <span style="font-size:22px;">💬</span>
+                <span>Conversar pelo WhatsApp</span>
+            </a>
+            <span class="restart-link" onclick="restartDiag()">↩ Refazer o diagnóstico</span>
+        </div>
+
+    </div>
+
+    <div class="result-footer">
+        <strong>Axis Consultorias</strong><br>
+        Clau Diniz · Consultora NR-1 | Psicóloga Organizacional<br>
+        <span style="color:var(--blue2);">@axisconsultorias</span>
+    </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─────────────────────────────────────────────────────────
+// CONFIG — ajuste o número conforme necessário
+// ─────────────────────────────────────────────────────────
+const WA_NUMBER = '5511947818238';
+
+// ─────────────────────────────────────────────────────────
+// DADOS
+// ─────────────────────────────────────────────────────────
+const PERGUNTAS = [
+  {
+    id: 'demanda',
+    icon: '🔥',
+    fator: 'Sobrecarga',
+    texto: 'Com que frequência sua equipe relata excesso de tarefas, pressão por prazos ou jornadas longas?'
+  },
+  {
+    id: 'controle',
+    icon: '🎯',
+    fator: 'Autonomia',
+    texto: 'Com que frequência há falta de clareza sobre responsabilidades ou colaboradores sentem que não têm autonomia no trabalho?'
+  },
+  {
+    id: 'relacoes',
+    icon: '🤝',
+    fator: 'Clima relacional',
+    texto: 'Com que frequência surgem conflitos, tensões ou situações de desrespeito entre pessoas da equipe ou com a liderança?'
+  },
+  {
+    id: 'reconhecimento',
+    icon: '⭐',
+    fator: 'Reconhecimento',
+    texto: 'Com que frequência os colaboradores se sentem desvalorizados, sem feedback adequado ou sem perspectiva de crescimento?'
+  },
+  {
+    id: 'comunicacao',
+    icon: '📢',
+    fator: 'Comunicação',
+    texto: 'Com que frequência a comunicação interna falha, gera confusão ou colaboradores ficam sem informação sobre decisões importantes?'
+  },
+  {
+    id: 'saude',
+    icon: '💚',
+    fator: 'Saúde mental',
+    texto: 'Com que frequência há relatos de estresse intenso, ansiedade, esgotamento ou sinais de burnout na sua empresa?'
+  }
+];
+
+const OPCOES = [
+  { label: 'Nunca',           valor: 0 },
+  { label: 'Raramente',       valor: 1 },
+  { label: 'Às vezes',        valor: 2 },
+  { label: 'Frequentemente',  valor: 3 },
+  { label: 'Sempre',          valor: 4 }
+];
+
+const DESCRICOES = {
+  Crítico: 'Sua empresa apresenta sinais graves de risco psicossocial. É necessária intervenção urgente para proteger a saúde da equipe e garantir conformidade legal.',
+  Alto:    'Há fatores de risco relevantes que precisam de atenção imediata. Sem ação, os impactos em afastamentos, produtividade e turnover tendem a se agravar.',
+  Médio:   'Existem vulnerabilidades que, se não tratadas, podem evoluir para riscos mais sérios. É o momento ideal para agir de forma preventiva.',
+  Baixo:   'Sua empresa demonstra boas práticas no cuidado com o bem-estar da equipe. Manter o monitoramento contínuo é fundamental para preservar esse resultado.'
+};
+
+const RECOMENDACOES = {
+  Crítico: 'Prioridade máxima: realize um mapeamento completo com especialista, acione suporte de saúde mental para a equipe e inicie a revisão das políticas de trabalho imediatamente.',
+  Alto:    'Urgência moderada: conduza entrevistas de escuta ativa, capacite líderes em gestão humanizada e estruture um plano de ação com prazos definidos.',
+  Médio:   'Ação preventiva: implemente pesquisas de clima, fortaleça canais de comunicação e crie um programa de monitoramento contínuo dos riscos psicossociais.',
+  Baixo:   'Manutenção: documente as boas práticas, integre os riscos psicossociais ao PGR e realize avaliações periódicas para garantir conformidade plena com a NR-1 2025.'
+};
+
+const CTA_TITULOS = {
+  Crítico: '🔴 Ação imediata necessária',
+  Alto:    '⚠️ Sua empresa precisa de atenção',
+  Médio:   '🔶 O momento certo de agir é agora',
+  Baixo:   '✅ Continue protegendo sua equipe'
+};
+
+const CTA_TEXTOS = {
+  Crítico: 'Sua empresa precisa de intervenção imediata. Converse agora com Clau Diniz e descubra como proteger sua equipe e garantir conformidade com a NR-1.',
+  Alto:    'Há riscos importantes a endereçar. Clau Diniz pode ajudar a estruturar um plano de ação personalizado para a sua realidade.',
+  Médio:   'Agir agora evita que esses riscos se tornem críticos. Converse com Clau Diniz para um mapeamento estratégico da sua empresa.',
+  Baixo:   'Ótimo resultado! Converse com Clau Diniz para documentar suas práticas e garantir total conformidade com a NR-1 2025.'
+};
+
+// ─────────────────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────────────────
+let S = { qi: 0, respostas: [], lead: null, timer: null };
+
+// ─────────────────────────────────────────────────────────
+// NAVIGATION
+// ─────────────────────────────────────────────────────────
+function goScreen(id) {
+  document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'auto' });
+}
+
+// ─────────────────────────────────────────────────────────
+// LANDING
+// ─────────────────────────────────────────────────────────
+function startDiag() {
+  S.qi = 0;
+  S.respostas = [];
+  renderQ();
+  goScreen('s-quest');
+}
+
+// ─────────────────────────────────────────────────────────
+// QUESTIONNAIRE
+// ─────────────────────────────────────────────────────────
+function renderQ() {
+  const p      = PERGUNTAS[S.qi];
+  const selVal = S.respostas[S.qi];
+  const pct    = (S.qi / PERGUNTAS.length) * 100;
+
+  document.getElementById('q-prog').style.width    = pct + '%';
+  document.getElementById('q-counter').textContent = `${S.qi + 1}/${PERGUNTAS.length}`;
+  document.getElementById('q-icon').textContent    = p.icon;
+  document.getElementById('q-fator').textContent   = p.fator;
+  document.getElementById('q-text').textContent    = p.texto;
+
+  document.getElementById('q-answers').innerHTML = OPCOES.map((op, i) => `
+    <button class="ans-btn ${selVal === op.valor ? 'sel' : ''}" onclick="pickAns(${op.valor})">
+      <div class="ans-dot"><div class="ans-dot-inner"></div></div>
+      <span>${op.label}</span>
+    </button>
+  `).join('');
+}
+
+function pickAns(val) {
+  S.respostas[S.qi] = val;
+
+  document.querySelectorAll('.ans-btn').forEach((btn, i) => {
+    btn.classList.toggle('sel', OPCOES[i].valor === val);
+  });
+
+  if (S.timer) clearTimeout(S.timer);
+  S.timer = setTimeout(() => { S.timer = null; advanceQ(); }, 420);
+}
+
+function advanceQ() {
+  if (S.qi < PERGUNTAS.length - 1) {
+    S.qi++;
+    renderQ();
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  } else {
+    goScreen('s-form');
+  }
+}
+
+function backQ() {
+  if (S.timer) { clearTimeout(S.timer); S.timer = null; }
+  if (S.qi > 0) {
+    S.qi--;
+    renderQ();
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  } else {
+    goScreen('s-landing');
+  }
+}
+
+function backToLastQ() {
+  S.qi = PERGUNTAS.length - 1;
+  renderQ();
+  goScreen('s-quest');
+}
+
+// ─────────────────────────────────────────────────────────
+// LEAD FORM
+// ─────────────────────────────────────────────────────────
+function fmtPhone(input) {
+  let v = input.value.replace(/\D/g, '');
+  if (v.length > 11) v = v.slice(0, 11);
+  if (v.length >= 7) {
+    v = `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
+  } else if (v.length >= 3) {
+    v = `(${v.slice(0,2)}) ${v.slice(2)}`;
+  }
+  input.value = v;
+}
+
+function submitForm() {
+  const fields = ['f-nome','f-empresa','f-cargo','f-whatsapp'];
+  let ok = true;
+
+  fields.forEach(id => {
+    const el = document.getElementById(id);
+    const empty = !el.value.trim();
+    el.classList.toggle('err', empty);
+    if (empty) ok = false;
+  });
+
+  if (!ok) { showToast('Preencha todos os campos obrigatórios'); return; }
+
+  const rawPhone = document.getElementById('f-whatsapp').value.replace(/\D/g,'');
+  if (rawPhone.length < 10) {
+    document.getElementById('f-whatsapp').classList.add('err');
+    showToast('Informe um WhatsApp válido');
+    return;
+  }
+
+  S.lead = {
+    nome:     document.getElementById('f-nome').value.trim(),
+    empresa:  document.getElementById('f-empresa').value.trim(),
+    cargo:    document.getElementById('f-cargo').value,
+    whatsapp: document.getElementById('f-whatsapp').value.trim()
+  };
+
+  renderResult();
+  goScreen('s-result');
+}
+
+// ─────────────────────────────────────────────────────────
+// RESULT
+// ─────────────────────────────────────────────────────────
+function calcScore() {
+  const total = S.respostas.reduce((s, v) => s + (v || 0), 0);
+  const max   = PERGUNTAS.length * 4;
+  const pct   = Math.round((total / max) * 100);
+  const nivel = pct >= 76 ? 'Crítico' : pct >= 51 ? 'Alto' : pct >= 26 ? 'Médio' : 'Baixo';
+  return { pct, nivel };
+}
+
+function barColor(pct) {
+  if (pct >= 76) return '#C0392B';
+  if (pct >= 51) return '#E67E22';
+  if (pct >= 26) return '#D4AC0D';
+  return '#27AE60';
+}
+
+function renderResult() {
+  const { pct, nivel } = calcScore();
+  const lead = S.lead;
+
+  const heroEl = document.getElementById('r-hero');
+  heroEl.className = `result-hero rh-${nivel === 'Crítico' ? 'critico' : nivel.toLowerCase()}`;
+
+  document.getElementById('r-empresa').textContent = lead.empresa;
+  document.getElementById('r-nivel').textContent   = nivel;
+  document.getElementById('r-score').textContent   = `Índice de risco consolidado: ${pct}%`;
+  document.getElementById('r-desc').textContent    = DESCRICOES[nivel];
+
+  document.getElementById('r-factors').innerHTML = PERGUNTAS.map((p, i) => {
+    const v    = S.respostas[i] || 0;
+    const fpct = Math.round((v / 4) * 100);
+    return `
+      <div class="factor-row">
+        <div class="fr-icon">${p.icon}</div>
+        <div class="fr-name">${p.fator}</div>
+        <div class="fr-bar"><div class="fr-fill" style="width:${fpct}%;background:${barColor(fpct)}"></div></div>
+        <div class="fr-pct">${fpct}%</div>
+      </div>`;
+  }).join('');
+
+  document.getElementById('r-rec').textContent    = RECOMENDACOES[nivel];
+  document.getElementById('r-cta-title').textContent = CTA_TITULOS[nivel];
+  document.getElementById('r-cta-text').textContent  = CTA_TEXTOS[nivel];
+
+  const emoji = nivel === 'Crítico' ? '🔴' : nivel === 'Alto' ? '⚠️' : nivel === 'Médio' ? '🔶' : '✅';
+  const msg = [
+    `Olá! Acabei de fazer o Diagnóstico de Risco Psicossocial da Axis Consultorias.`,
+    ``,
+    `${emoji} *Resultado: Risco ${nivel} (${pct}%)*`,
+    ``,
+    `*Empresa:* ${lead.empresa}`,
+    `*Cargo:* ${lead.cargo}`,
+    `*Nome:* ${lead.nome}`,
+    ``,
+    `Gostaria de entender melhor esse resultado e saber como vocês podem ajudar minha empresa.`
+  ].join('\n');
+
+  document.getElementById('r-wa-btn').href =
+    `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`;
+}
+
+// ─────────────────────────────────────────────────────────
+// UTILITIES
+// ─────────────────────────────────────────────────────────
+function restartDiag() {
+  S = { qi: 0, respostas: [], lead: null, timer: null };
+  ['f-nome','f-empresa','f-cargo','f-whatsapp'].forEach(id => {
+    document.getElementById(id).value = '';
+    document.getElementById(id).classList.remove('err');
+  });
+  goScreen('s-landing');
+}
+
+let toastTimer = null;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+}
+</script>
+</body>
+</html>
