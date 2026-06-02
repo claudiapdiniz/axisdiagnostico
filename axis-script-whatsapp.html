@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Script WhatsApp | Axis Consultorias</title>
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        :root {
+            --navy:   #0F2744;
+            --blue:   #1B3A6B;
+            --blue2:  #2D5A9E;
+            --accent: #C0392B;
+            --gold:   #E67E22;
+            --ok:     #27AE60;
+            --bg:     #F2F5FA;
+            --card:   #FFFFFF;
+            --border: #DDE3EE;
+            --muted:  #7A8BA8;
+            --text:   #1A2540;
+            --wa-bg:  #ECE5DD;
+            --wa-sent: #DCF8C6;
+            --wa-recv: #FFFFFF;
+        }
+
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            max-width: 540px;
+            margin: 0 auto;
+        }
+
+        /* ── HEADER ─────────────────────────────────────── */
+        .header {
+            background: var(--navy);
+            padding: 14px 20px 12px;
+            position: sticky; top: 0; z-index: 50;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .header-brand { display: flex; flex-direction: column; }
+        .header-sub { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,0.45); }
+        .header-title { font-size: 16px; font-weight: 700; color: #fff; }
+        .header-badge {
+            background: rgba(37,211,102,0.25); border: 1px solid rgba(37,211,102,0.4);
+            color: #25D366; font-size: 10px; font-weight: 700;
+            padding: 3px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+
+        /* ── CONTENT ─────────────────────────────────────── */
+        .content { padding: 20px; }
+
+        /* ── STAGE TABS ──────────────────────────────────── */
+        .stages {
+            display: flex; gap: 8px; overflow-x: auto;
+            padding-bottom: 4px; margin-bottom: 20px;
+            scrollbar-width: none;
+        }
+        .stages::-webkit-scrollbar { display: none; }
+        .stage-tab {
+            flex-shrink: 0;
+            padding: 8px 16px; border-radius: 20px;
+            background: var(--card); border: 2px solid var(--border);
+            font-size: 12px; font-weight: 700; color: var(--muted);
+            cursor: pointer; transition: all 0.18s; white-space: nowrap;
+            font-family: inherit;
+        }
+        .stage-tab.active {
+            background: var(--navy); border-color: var(--navy); color: #fff;
+        }
+
+        /* ── STAGE CONTENT ───────────────────────────────── */
+        .stage-panel { display: none; }
+        .stage-panel.active { display: block; }
+
+        /* ── STAGE HEADER ────────────────────────────────── */
+        .stage-header {
+            background: linear-gradient(135deg, var(--navy), var(--blue));
+            border-radius: 16px; padding: 18px 20px;
+            color: #fff; margin-bottom: 20px;
+            display: flex; align-items: center; gap: 14px;
+        }
+        .stage-icon { font-size: 30px; flex-shrink: 0; }
+        .stage-num { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.5); margin-bottom: 2px; }
+        .stage-name { font-size: 16px; font-weight: 700; }
+        .stage-desc { font-size: 12px; color: rgba(255,255,255,0.65); margin-top: 2px; line-height: 1.4; }
+
+        /* ── OBJECTIVE CARD ──────────────────────────────── */
+        .obj-card {
+            background: #EBF0FA;
+            border-left: 3px solid var(--blue);
+            border-radius: 10px; padding: 12px 14px;
+            font-size: 12px; color: var(--blue); line-height: 1.5;
+            margin-bottom: 18px;
+        }
+        .obj-card strong { display: block; margin-bottom: 3px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* ── SECTION LABEL ───────────────────────────────── */
+        .sec-label {
+            font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px;
+            color: var(--muted); font-weight: 700; margin-bottom: 10px; margin-top: 20px;
+        }
+
+        /* ── WHATSAPP CHAT ───────────────────────────────── */
+        .wa-window {
+            background: var(--wa-bg);
+            border-radius: 16px; overflow: hidden;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 12px rgba(15,39,68,0.1);
+        }
+        .wa-topbar {
+            background: #075E54;
+            padding: 10px 14px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .wa-avatar {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: #128C7E;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; font-weight: 700; color: #fff; flex-shrink: 0;
+        }
+        .wa-contact-name { font-size: 14px; font-weight: 600; color: #fff; }
+        .wa-status { font-size: 11px; color: rgba(255,255,255,0.6); }
+
+        .wa-body { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+
+        .bubble {
+            max-width: 85%; padding: 8px 12px;
+            border-radius: 12px; position: relative;
+            font-size: 13px; line-height: 1.55;
+        }
+        .bubble-sent {
+            background: var(--wa-sent);
+            align-self: flex-end;
+            border-radius: 12px 12px 4px 12px;
+            color: #111;
+        }
+        .bubble-recv {
+            background: var(--wa-recv);
+            align-self: flex-start;
+            border-radius: 12px 12px 12px 4px;
+            color: #111;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .bubble-time {
+            font-size: 10px; color: rgba(0,0,0,0.35);
+            text-align: right; margin-top: 4px;
+        }
+        .bubble .wa-check { color: #53BDEB; }
+
+        /* ── SCRIPT BLOCK ────────────────────────────────── */
+        .script-block {
+            background: var(--card);
+            border-radius: 14px; padding: 16px;
+            margin-bottom: 14px;
+            box-shadow: 0 2px 8px rgba(15,39,68,0.07);
+        }
+        .script-tag {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+            padding: 3px 10px; border-radius: 20px; margin-bottom: 10px;
+        }
+        .tag-enviar { background: #E8F5E9; color: #1B5E20; }
+        .tag-aguardar { background: #FFF8E1; color: #7A5B00; }
+        .tag-se { background: #E3F2FD; color: #0D47A1; }
+        .tag-tip { background: #F3E5F5; color: #4A148C; }
+        .tag-objecao { background: #FEECEC; color: #7B1010; }
+
+        .script-text {
+            font-size: 13px; line-height: 1.65; color: var(--text);
+            white-space: pre-line; font-style: italic;
+            background: #FAFBFD; border-radius: 10px; padding: 12px 14px;
+            border: 1px solid var(--border); margin-bottom: 10px;
+        }
+        .script-note {
+            font-size: 12px; color: var(--muted); line-height: 1.6;
+        }
+
+        .copy-btn {
+            width: 100%; padding: 10px;
+            background: var(--navy); color: #fff;
+            border: none; border-radius: 10px;
+            font-size: 12px; font-weight: 700;
+            cursor: pointer; font-family: inherit; transition: all 0.18s;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+        .copy-btn:hover { background: var(--blue); }
+        .copy-btn.copied { background: var(--ok); }
+
+        /* ── OBJECTION CARDS ─────────────────────────────── */
+        .objection-card {
+            background: var(--card);
+            border-radius: 14px; overflow: hidden;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(15,39,68,0.07);
+        }
+        .obj-q {
+            background: #FEECEC; padding: 14px 16px;
+            font-size: 13px; font-weight: 600; color: #7B1010;
+            border-bottom: 1px solid #FACACA;
+        }
+        .obj-q::before { content: '🗣 '; }
+        .obj-a {
+            padding: 14px 16px; font-size: 13px; color: var(--text); line-height: 1.65;
+        }
+        .obj-a::before { content: '💬 '; }
+
+        /* ── TIP ─────────────────────────────────────────── */
+        .tip-card {
+            background: #F3E5F5;
+            border-left: 3px solid #9C27B0;
+            border-radius: 10px; padding: 12px 14px;
+            font-size: 12px; color: #4A148C; line-height: 1.6;
+            margin-top: 8px;
+        }
+        .tip-card::before { content: '💡 '; font-style: normal; }
+
+        /* ── CHECKLIST ───────────────────────────────────── */
+        .checklist { display: flex; flex-direction: column; gap: 8px; }
+        .check-item {
+            display: flex; align-items: flex-start; gap: 10px;
+            font-size: 13px; color: var(--text); line-height: 1.5;
+        }
+        .check-item::before { content: '☑'; font-size: 16px; flex-shrink: 0; color: var(--ok); }
+
+        @media print {
+            .header { position: static; }
+            .stages, .copy-btn { display: none; }
+            .stage-panel { display: block !important; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-brand">
+        <span class="header-sub">Axis Consultorias</span>
+        <span class="header-title">Script WhatsApp</span>
+    </div>
+    <div class="header-badge">📲 WhatsApp</div>
+</header>
+
+<div class="content">
+
+    <!-- STAGE TABS -->
+    <div class="stages" id="stages">
+        <button class="stage-tab active" onclick="goStage(0)">1 · Primeiro contato</button>
+        <button class="stage-tab" onclick="goStage(1)">2 · Qualificação</button>
+        <button class="stage-tab" onclick="goStage(2)">3 · Apresentação</button>
+        <button class="stage-tab" onclick="goStage(3)">4 · Objeções</button>
+        <button class="stage-tab" onclick="goStage(4)">5 · Fechamento</button>
+    </div>
+
+    <!-- ══ ETAPA 1: PRIMEIRO CONTATO ══ -->
+    <div class="stage-panel active" id="stage-0">
+        <div class="stage-header">
+            <div class="stage-icon">👋</div>
+            <div>
+                <div class="stage-num">Etapa 1 de 5</div>
+                <div class="stage-name">Primeiro Contato</div>
+                <div class="stage-desc">Lead chegou pelo Instagram, site ou indicação</div>
+            </div>
+        </div>
+
+        <div class="obj-card">
+            <strong>🎯 Objetivo desta etapa</strong>
+            Criar conexão, gerar curiosidade e conseguir permissão para apresentar a solução. Não venda ainda.
+        </div>
+
+        <div class="sec-label">Mensagem de abertura</div>
+        <div class="wa-window">
+            <div class="wa-topbar">
+                <div class="wa-avatar">C</div>
+                <div>
+                    <div class="wa-contact-name">Contato</div>
+                    <div class="wa-status">online</div>
+                </div>
+            </div>
+            <div class="wa-body">
+                <div class="bubble bubble-sent">
+                    Olá, [Nome]! Tudo bem? 😊
+                    <div style="margin-top:6px;">Sou a [Seu Nome], consultora especialista em NR-1 da Axis Consultorias.</div>
+                    <div class="bubble-time">14:23 <span class="wa-check">✓✓</span></div>
+                </div>
+                <div class="bubble bubble-sent">
+                    Vi que você [se inscreveu no nosso site / interagiu com nosso post / foi indicado por [Nome]] 👆
+                    <div style="margin-top:6px;">Queria entender um pouco sobre como está a situação da [Empresa] em relação à NR-1 atualizada — são 2 minutinhos, pode ser? 🙂</div>
+                    <div class="bubble-time">14:23 <span class="wa-check">✓✓</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="script-block">
+            <div class="script-tag tag-enviar">📤 Enviar</div>
+            <div class="script-text">Olá, [Nome]! Tudo bem? 😊
+
+Sou a [Seu Nome], da Axis Consultorias — somos especialistas em NR-1 e saúde organizacional.
+
+Vi que você [se cadastrou no site / curtiu nosso post sobre NR-1 / foi indicado por [Nome]].
+
+Posso te fazer 2 perguntas rápidas sobre a [Empresa] para ver se consigo te ajudar?</div>
+            <button class="copy-btn" onclick="copyScript(this, `Olá, [Nome]! Tudo bem? 😊\n\nSou a [Seu Nome], da Axis Consultorias — somos especialistas em NR-1 e saúde organizacional.\n\nVi que você [se cadastrou no site / curtiu nosso post sobre NR-1 / foi indicado por [Nome]].\n\nPosso te fazer 2 perguntas rápidas sobre a [Empresa] para ver se consigo te ajudar?`)">📋 Copiar mensagem</button>
+        </div>
+
+        <div class="sec-label">Se não responder em 24h</div>
+        <div class="script-block">
+            <div class="script-tag tag-aguardar">⏱ Follow-up</div>
+            <div class="script-text">Oi [Nome], tudo bem? 😊
+
+Sei que o dia a dia corrido faz a gente deixar passar algumas coisas.
+
+Queria só te lembrar que a NR-1 atualizada exige que as empresas tenham um mapeamento de riscos psicossociais — e muitas ainda não sabem que estão expostas a multas significativas.
+
+Se fizer sentido, tenho um diagnóstico gratuito que leva 20 minutos. Posso te enviar mais detalhes? 📊</div>
+            <button class="copy-btn" onclick="copyScript(this, `Oi [Nome], tudo bem? 😊\n\nSei que o dia a dia corrido faz a gente deixar passar algumas coisas.\n\nQueria só te lembrar que a NR-1 atualizada exige que as empresas tenham um mapeamento de riscos psicossociais — e muitas ainda não sabem que estão expostas a multas significativas.\n\nSe fizer sentido, tenho um diagnóstico gratuito que leva 20 minutos. Posso te enviar mais detalhes? 📊`)">📋 Copiar mensagem</button>
+        </div>
+
+        <div class="tip-card">Personalize sempre o [Nome] e o nome da empresa. Mensagens genéricas têm taxa de resposta 3x menor.</div>
+    </div>
+
+    <!-- ══ ETAPA 2: QUALIFICAÇÃO ══ -->
+    <div class="stage-panel" id="stage-1">
+        <div class="stage-header">
+            <div class="stage-icon">🔍</div>
+            <div>
+                <div class="stage-num">Etapa 2 de 5</div>
+                <div class="stage-name">Qualificação</div>
+                <div class="stage-desc">Entender a dor, urgência e poder de decisão</div>
+            </div>
+        </div>
+
+        <div class="obj-card">
+            <strong>🎯 Objetivo desta etapa</strong>
+            Identificar: qual é a dor real? Quem decide? Qual o porte da empresa? Há urgência? Essas respostas guiam toda a conversa.
+        </div>
+
+        <div class="sec-label">Perguntas de qualificação</div>
+        <div class="script-block">
+            <div class="script-tag tag-enviar">📤 Enviar</div>
+            <div class="script-text">Perfeito, [Nome]! Tenho 3 perguntinhas rápidas:
+
+1️⃣ Quantos colaboradores a [Empresa] tem hoje?
+
+2️⃣ Vocês já têm algum documento de mapeamento de riscos psicossociais (PGR, PCMSO ou similar)?
+
+3️⃣ E você cuida da área de RH / SST, ou tem mais alguém envolvido nessa decisão?
+
+Pode responder por aqui mesmo 😊</div>
+            <button class="copy-btn" onclick="copyScript(this, `Perfeito, [Nome]! Tenho 3 perguntinhas rápidas:\n\n1️⃣ Quantos colaboradores a [Empresa] tem hoje?\n\n2️⃣ Vocês já têm algum documento de mapeamento de riscos psicossociais (PGR, PCMSO ou similar)?\n\n3️⃣ E você cuida da área de RH / SST, ou tem mais alguém envolvido nessa decisão?\n\nPode responder por aqui mesmo 😊`)">📋 Copiar mensagem</button>
+        </div>
+
+        <div class="sec-label">Análise das respostas</div>
+        <div class="objection-card">
+            <div class="obj-q">Empresa com menos de 20 funcionários</div>
+            <div class="obj-a">Foque na simplicidade: "A NR-1 vale para todas as empresas com CLT, independente do porte. E para empresas menores, a adequação costuma ser mais rápida e acessível."</div>
+        </div>
+        <div class="objection-card">
+            <div class="obj-q">Já tem algo de PGR/PCMSO</div>
+            <div class="obj-a">Explore a lacuna: "Ótimo! A grande mudança da NR-1 em 2024 foi a inclusão obrigatória dos riscos psicossociais — que muitos documentos antigos ainda não contemplam. Podemos verificar isso juntos?"</div>
+        </div>
+        <div class="objection-card">
+            <div class="obj-q">Não é o decisor</div>
+            <div class="obj-a">Peça conexão: "Entendo! Você conseguiria me conectar com [o responsável pelo RH / diretor / gerente]? Posso enviar um material resumido para vocês avaliarem juntos?"</div>
+        </div>
+
+        <div class="tip-card">Escute mais do que fale nesta etapa. Cada resposta é uma informação valiosa para personalizar a apresentação.</div>
+    </div>
+
+    <!-- ══ ETAPA 3: APRESENTAÇÃO ══ -->
+    <div class="stage-panel" id="stage-2">
+        <div class="stage-header">
+            <div class="stage-icon">🎯</div>
+            <div>
+                <div class="stage-num">Etapa 3 de 5</div>
+                <div class="stage-name">Apresentação da Solução</div>
+                <div class="stage-desc">Apresentar o diagnóstico e o valor da Axis</div>
+            </div>
+        </div>
+
+        <div class="obj-card">
+            <strong>🎯 Objetivo desta etapa</strong>
+            Mostrar que temos a solução certa para o problema identificado. Usar as informações da qualificação para personalizar.
+        </div>
+
+        <div class="sec-label">Apresentação inicial</div>
+        <div class="script-block">
+            <div class="script-tag tag-enviar">📤 Enviar</div>
+            <div class="script-text">Perfeito, [Nome]! Com base no que você me disse, acho que consigo te ajudar muito aqui.
+
+A Axis Consultorias tem um diagnóstico específico para NR-1 que:
+
+✅ Avalia os 6 fatores de risco psicossocial exigidos por lei
+✅ É feito em 20 minutos, sem burocracia
+✅ Gera um relatório completo com o nível de risco da empresa
+✅ Indica as ações prioritárias para o PGR
+
+E a primeira análise é gratuita, sem compromisso.
+
+Faz sentido fazermos juntos ainda essa semana? 📅</div>
+            <button class="copy-btn" onclick="copyScript(this, `Perfeito, [Nome]! Com base no que você me disse, acho que consigo te ajudar muito aqui.\n\nA Axis Consultorias tem um diagnóstico específico para NR-1 que:\n\n✅ Avalia os 6 fatores de risco psicossocial exigidos por lei\n✅ É feito em 20 minutos, sem burocracia\n✅ Gera um relatório completo com o nível de risco da empresa\n✅ Indica as ações prioritárias para o PGR\n\nE a primeira análise é gratuita, sem compromisso.\n\nFaz sentido fazermos juntos ainda essa semana? 📅`)">📋 Copiar mensagem</button>
+        </div>
+
+        <div class="sec-label">Após demonstrar o diagnóstico / enviar o link</div>
+        <div class="script-block">
+            <div class="script-tag tag-enviar">📤 Enviar</div>
+            <div class="script-text">Aqui está o link para o diagnóstico gratuito: [LINK]
+
+É super simples — em 20 minutos você já tem o resultado completo na tela, com o nível de risco por fator e as recomendações prioritárias.
+
+Assim que terminar, posso analisar o relatório com você e montar um plano de ação personalizado para a [Empresa]. 🎯
+
+Qualquer dúvida durante o processo, pode me chamar por aqui!</div>
+            <button class="copy-btn" onclick="copyScript(this, `Aqui está o link para o diagnóstico gratuito: [LINK]\n\nÉ super simples — em 20 minutos você já tem o resultado completo na tela, com o nível de risco por fator e as recomendações prioritárias.\n\nAssim que terminar, posso analisar o relatório com você e montar um plano de ação personalizado para a [Empresa]. 🎯\n\nQualquer dúvida durante o processo, pode me chamar por aqui!`)">📋 Copiar mensagem</button>
+        </div>
+
+        <div class="tip-card">Ofereça fazer o diagnóstico juntos em uma call/vídeo se perceber resistência. Aumenta muito a taxa de conclusão.</div>
+    </div>
+
+    <!-- ══ ETAPA 4: OBJEÇÕES ══ -->
+    <div class="stage-panel" id="stage-3">
+        <div class="stage-header">
+            <div class="stage-icon">💬</div>
+            <div>
+                <div class="stage-num">Etapa 4 de 5</div>
+                <div class="stage-name">Manejo de Objeções</div>
+                <div class="stage-desc">Respostas para as objeções mais comuns</div>
+            </div>
+        </div>
+
+        <div class="obj-card">
+            <strong>🎯 Lembre-se</strong>
+            Objeção não é rejeição — é pedido de mais informação. Acolha, valide e reencaminhe.
+        </div>
+
+        <div class="sec-label">Objeções frequentes</div>
+
+        <div class="objection-card">
+            <div class="obj-q">"Agora não é o momento certo."</div>
+            <div class="obj-a">Entendo, [Nome]! E exatamente por isso queria conversar agora: as empresas que se adequam antes da fiscalização têm muito mais controle sobre o processo. Quando seria um bom momento pra gente agendar 20 minutos?</div>
+        </div>
+        <div class="script-block" style="margin-top:-4px;">
+            <button class="copy-btn" onclick="copyScript(this, `Entendo, [Nome]! E exatamente por isso queria conversar agora: as empresas que se adequam antes da fiscalização têm muito mais controle sobre o processo. Quando seria um bom momento pra gente agendar 20 minutos?`)">📋 Copiar resposta</button>
+        </div>
+
+        <div class="objection-card">
+            <div class="obj-q">"Já temos um RH / consultoria que cuida disso."</div>
+            <div class="obj-a">Que ótimo! A maioria das empresas tem um RH estruturado. O que acontece é que a NR-1 atualizada trouxe exigências bem específicas sobre riscos psicossociais — e muitos RHs internos ainda estão aprendendo sobre isso. Poderia fazer sentido uma segunda opinião? O diagnóstico é gratuito e complementa qualquer trabalho já em andamento.</div>
+        </div>
+        <div class="script-block" style="margin-top:-4px;">
+            <button class="copy-btn" onclick="copyScript(this, `Que ótimo! A maioria das empresas tem um RH estruturado. O que acontece é que a NR-1 atualizada trouxe exigências bem específicas sobre riscos psicossociais — e muitos RHs internos ainda estão aprendendo sobre isso. Poderia fazer sentido uma segunda opinião? O diagnóstico é gratuito e complementa qualquer trabalho já em andamento.`)">📋 Copiar resposta</button>
+        </div>
+
+        <div class="objection-card">
+            <div class="obj-q">"Quanto custa?"</div>
+            <div class="obj-a">O diagnóstico inicial é 100% gratuito — sem compromisso. Se após o resultado você quiser um plano de ação detalhado ou consultoria continuada, aí apresentamos uma proposta específica para o porte e necessidades da [Empresa]. Mas primeiro vamos entender seu cenário real, tudo bem?</div>
+        </div>
+        <div class="script-block" style="margin-top:-4px;">
+            <button class="copy-btn" onclick="copyScript(this, `O diagnóstico inicial é 100% gratuito — sem compromisso. Se após o resultado você quiser um plano de ação detalhado ou consultoria continuada, aí apresentamos uma proposta específica para o porte e necessidades da [Empresa]. Mas primeiro vamos entender seu cenário real, tudo bem?`)">📋 Copiar resposta</button>
+        </div>
+
+        <div class="objection-card">
+            <div class="obj-q">"Não tenho tempo agora."</div>
+            <div class="obj-a">Claro, entendo! Posso te enviar o link do diagnóstico para você fazer no seu ritmo — são 20 minutos quando você tiver um tempinho livre. E pode ser pelo celular mesmo. Posso enviar?</div>
+        </div>
+        <div class="script-block" style="margin-top:-4px;">
+            <button class="copy-btn" onclick="copyScript(this, `Claro, entendo! Posso te enviar o link do diagnóstico para você fazer no seu ritmo — são 20 minutos quando você tiver um tempinho livre. E pode ser pelo celular mesmo. Posso enviar?`)">📋 Copiar resposta</button>
+        </div>
+
+        <div class="objection-card">
+            <div class="obj-q">"A NR-1 não se aplica à nossa empresa / somos pequenos."</div>
+            <div class="obj-a">Entendo a dúvida — mas a Portaria MTE nº 1.419/2024 se aplica a todas as empresas com trabalhadores CLT, independente do porte. Inclusive microempresas. A boa notícia é que para empresas menores a adequação costuma ser mais rápida e menos custosa. Vale confirmar sua situação antes que venha uma fiscalização, né?</div>
+        </div>
+        <div class="script-block" style="margin-top:-4px;">
+            <button class="copy-btn" onclick="copyScript(this, `Entendo a dúvida — mas a Portaria MTE nº 1.419/2024 se aplica a todas as empresas com trabalhadores CLT, independente do porte. Inclusive microempresas. A boa notícia é que para empresas menores a adequação costuma ser mais rápida e menos custosa. Vale confirmar sua situação antes que venha uma fiscalização, né?`)">📋 Copiar resposta</button>
+        </div>
+    </div>
+
+    <!-- ══ ETAPA 5: FECHAMENTO ══ -->
+    <div class="stage-panel" id="stage-4">
+        <div class="stage-header">
+            <div class="stage-icon">🤝</div>
+            <div>
+                <div class="stage-num">Etapa 5 de 5</div>
+                <div class="stage-name">Fechamento</div>
+                <div class="stage-desc">Após diagnóstico realizado — proposta e próximos passos</div>
+            </div>
+        </div>
+
+        <div class="obj-card">
+            <strong>🎯 Objetivo desta etapa</strong>
+            Conectar o resultado do diagnóstico com a proposta de consultoria. Criar urgência real — não artificial.
+        </div>
+
+        <div class="sec-label">Após o diagnóstico ser concluído</div>
+        <div class="script-block">
+            <div class="script-tag tag-enviar">📤 Enviar</div>
+            <div class="script-text">Oi [Nome]! Vi que você completou o diagnóstico 🎉
+
+Analisei o resultado da [Empresa] e montei algumas observações que quero compartilhar com você.
+
+O resultado mostrou [risco X] — especialmente no fator [Y], que ficou com [Z]% de risco. Isso indica [contextualizar brevemente].
+
+Posso te explicar o que isso significa na prática e quais seriam as ações mais urgentes?
+
+📅 Quando você teria 30 minutos para uma chamada esta semana?</div>
+            <button class="copy-btn" onclick="copyScript(this, `Oi [Nome]! Vi que você completou o diagnóstico 🎉\n\nAnalisei o resultado da [Empresa] e montei algumas observações que quero compartilhar com você.\n\nO resultado mostrou [risco X] — especialmente no fator [Y], que ficou com [Z]% de risco. Isso indica [contextualizar brevemente].\n\nPosso te explicar o que isso significa na prática e quais seriam as ações mais urgentes?\n\n📅 Quando você teria 30 minutos para uma chamada esta semana?`)">📋 Copiar mensagem</button>
+        </div>
+
+        <div class="sec-label">Após a apresentação da proposta</div>
+        <div class="script-block">
+            <div class="script-tag tag-enviar">📤 Enviar</div>
+            <div class="script-text">Conforme combinamos, estou enviando a proposta formal no PDF em anexo 📎
+
+Ela contempla tudo o que conversamos: [listar brevemente os serviços acordados].
+
+A proposta tem validade de 7 dias. Se tiver qualquer dúvida antes de assinar, pode me chamar aqui mesmo.
+
+Fico no aguardo! 😊</div>
+            <button class="copy-btn" onclick="copyScript(this, `Conforme combinamos, estou enviando a proposta formal no PDF em anexo 📎\n\nEla contempla tudo o que conversamos: [listar brevemente os serviços acordados].\n\nA proposta tem validade de 7 dias. Se tiver qualquer dúvida antes de assinar, pode me chamar aqui mesmo.\n\nFico no aguardo! 😊`)">📋 Copiar mensagem</button>
+        </div>
+
+        <div class="sec-label">Follow-up pós-proposta (48h sem resposta)</div>
+        <div class="script-block">
+            <div class="script-tag tag-aguardar">⏱ Follow-up</div>
+            <div class="script-text">Oi [Nome]! Tudo bem?
+
+Só queria ver se você teve a oportunidade de analisar a proposta 😊
+
+Estou à disposição para esclarecer qualquer dúvida ou ajustar algum ponto.
+
+Lembra que a validade é até [data]. Posso reservar a agenda para começarmos na semana que vem?</div>
+            <button class="copy-btn" onclick="copyScript(this, `Oi [Nome]! Tudo bem?\n\nSó queria ver se você teve a oportunidade de analisar a proposta 😊\n\nEstou à disposição para esclarecer qualquer dúvida ou ajustar algum ponto.\n\nLembra que a validade é até [data]. Posso reservar a agenda para começarmos na semana que vem?`)">📋 Copiar mensagem</button>
+        </div>
+
+        <div class="sec-label">Boas práticas de fechamento</div>
+        <div class="checklist">
+            <div class="check-item">Sempre conecte o fechamento ao resultado do diagnóstico — use dados reais</div>
+            <div class="check-item">Crie urgência legítima: prazo de conformidade, validade da proposta</div>
+            <div class="check-item">Ofereça flexibilidade de início: "podemos começar ainda neste mês"</div>
+            <div class="check-item">Se houver silêncio após 7 dias, encerre com elegância e abra porta futura</div>
+            <div class="check-item">Registre todas as interações no CRM para retomar no momento certo</div>
+        </div>
+
+        <div class="tip-card">O melhor fechamento é aquele em que o cliente sente que a decisão foi dele. Facilite, não force.</div>
+    </div>
+
+</div>
+
+<script>
+function goStage(idx) {
+    document.querySelectorAll('.stage-panel').forEach((p, i) => {
+        p.classList.toggle('active', i === idx);
+    });
+    document.querySelectorAll('.stage-tab').forEach((t, i) => {
+        t.classList.toggle('active', i === idx);
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function copyScript(btn, text) {
+    const original = btn.innerHTML;
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => {
+            btn.innerHTML = '✓ Copiado!';
+            btn.classList.add('copied');
+            setTimeout(() => { btn.innerHTML = original; btn.classList.remove('copied'); }, 2500);
+        });
+    } else {
+        const ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        document.execCommand('copy'); document.body.removeChild(ta);
+        btn.innerHTML = '✓ Copiado!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.innerHTML = original; btn.classList.remove('copied'); }, 2500);
+    }
+}
+</script>
+</body>
+</html>
