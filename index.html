@@ -308,11 +308,94 @@
         }
 
         /* ── PRINT ──────────────────────────────────────── */
+        .print-only { display: none !important; }
+
         @media print {
-            .header, .action-zone, .nav-row, .progress-wrap, .cat-card { display: none !important; }
-            .screen { display: block !important; padding: 10px; }
-            .card, .factor-item, .recommendations-card { box-shadow: none !important; border: 1px solid #ddd; }
-            body { max-width: 100%; }
+            /* 1. Ocultar TODAS as telas por padrão */
+            .screen { display: none !important; }
+
+            /* 2. Mostrar APENAS a tela de resultados */
+            #s-results {
+                display: block !important;
+                position: static !important;
+                width: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                animation: none !important;
+            }
+
+            /* 3. Ocultar elementos de navegação e UI */
+            header.header,
+            .overlay,
+            .toast,
+            .no-print { display: none !important; }
+
+            /* 4. Body e html para impressão */
+            html, body {
+                max-width: 100% !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: #fff !important;
+                color: #111 !important;
+                font-size: 11pt !important;
+            }
+
+            /* 5. Preservar cores exatas na impressão */
+            *, *::before, *::after {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            /* 6. Cards sem sombra, com borda, sem corte de página */
+            .print-card,
+            .factor-item,
+            .card {
+                box-shadow: none !important;
+                border: 1px solid #ddd !important;
+                break-inside: avoid !important;
+                page-break-inside: avoid !important;
+            }
+
+            /* 7. Hero do resultado: evitar quebra + manter gradiente */
+            .result-hero {
+                break-inside: avoid !important;
+                page-break-inside: avoid !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            /* 8. Corrigir barras de progresso (overflow:hidden quebra no print) */
+            .bar-wrap {
+                overflow: visible !important;
+                height: 10px !important;
+                border-radius: 100px !important;
+                background: #e0e0e0 !important;
+                border: none !important;
+            }
+
+            /* 9. Compliance note e cards internos */
+            .compliance-note {
+                break-inside: avoid !important;
+                page-break-inside: avoid !important;
+            }
+
+            /* 10. Exibir elementos exclusivos de impressão */
+            .print-only {
+                display: block !important;
+            }
+
+            /* 11. Configuração da página A4 */
+            @page {
+                size: A4;
+                margin: 12mm 12mm 16mm 12mm;
+            }
+
+            /* 12. Rec items sem corte */
+            .rec-item {
+                break-inside: avoid !important;
+                page-break-inside: avoid !important;
+            }
         }
 
         /* ── DIVIDER ────────────────────────────────────── */
@@ -948,7 +1031,7 @@ function renderResults(c) {
   const factorsHTML = c.fatores.map(f => {
     const frc = riskClass(f.nivel);
     return `
-      <div class="factor-item">
+      <div class="factor-item print-card">
         <div class="fi-top">
           <div class="fi-name">${f.icon} ${f.nome}</div>
           <span class="badge badge-${frc}">${f.nivel}</span>
@@ -977,10 +1060,33 @@ function renderResults(c) {
       </div>`;
   }).join('');
 
+  const brand = loadBrand();
+  const brandLinhas = brand ? [brand.profissional, brand.titulo, brand.contato, brand.instagram].filter(Boolean) : [];
+  const dataFormatada = fmtDate(c.data) || new Date().toLocaleDateString('pt-BR');
+
   document.getElementById('s-results').innerHTML = `
-    <div class="result-hero rh-${rc}">
+
+    <!-- CABEÇALHO EXCLUSIVO DE IMPRESSÃO -->
+    <div class="print-only" style="border-bottom:3px solid #0F2744;padding-bottom:16px;margin-bottom:20px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <div style="font-size:10pt;text-transform:uppercase;letter-spacing:2px;color:#7A8BA8;margin-bottom:2px;">Relatório de Diagnóstico NR-1</div>
+          <div style="font-size:18pt;font-weight:900;color:#0F2744;letter-spacing:-0.5px;">Axis Insight IA</div>
+          <div style="font-size:9pt;color:#7A8BA8;margin-top:2px;">Mapeamento de Riscos Psicossociais | Portaria MTE nº 1.419/2024</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:10pt;font-weight:700;color:#0F2744;">${c.empresa}</div>
+          <div style="font-size:9pt;color:#7A8BA8;">${c.setor} · ${c.func}</div>
+          <div style="font-size:9pt;color:#7A8BA8;">Data da análise: ${dataFormatada}</div>
+          ${brand ? `<div style="font-size:9pt;color:#7A8BA8;margin-top:4px;">${brand.empresa} — ${brand.profissional}</div>` : ''}
+        </div>
+      </div>
+    </div>
+
+    <!-- HERO -->
+    <div class="result-hero print-card rh-${rc}">
       <div class="rh-company">${c.empresa}</div>
-      <div class="rh-meta">${c.setor} · ${c.func} · ${fmtDate(c.data)}</div>
+      <div class="rh-meta">${c.setor} · ${c.func} · ${dataFormatada}</div>
       <div class="rh-lbl">Nível de Risco Geral</div>
       <div class="rh-risk">${c.nivel}</div>
       <div class="rh-pct">Índice consolidado: ${c.pct}%</div>
@@ -989,18 +1095,19 @@ function renderResults(c) {
     <div class="sec-label">Resultado por Fator de Risco</div>
     ${factorsHTML}
 
-    <div class="card" style="margin-top:4px;">
+    <div class="card print-card" style="margin-top:4px;">
       <div class="sec-label" style="margin-bottom:4px;">Distribuição de Risco por Nível</div>
       <div style="font-size:12px;color:var(--muted);margin-bottom:16px;">Proporção dos 6 fatores em cada categoria</div>
       <div style="display:flex;align-items:center;gap:16px;">
         <div style="width:170px;height:170px;flex-shrink:0;position:relative;">
           <canvas id="pieChart"></canvas>
+          <img id="pieChart-print" style="display:none;width:170px;height:170px;" />
         </div>
         <div id="pie-legend" style="flex:1;display:flex;flex-direction:column;gap:8px;"></div>
       </div>
     </div>
 
-    <div class="card">
+    <div class="card print-card">
       <div class="sec-label" style="margin-bottom:14px;">🎯 Recomendações Prioritárias</div>
       <div style="font-size:12px;color:var(--muted);margin-bottom:14px;">
         Baseadas nos 3 fatores com maior índice de risco identificado:
@@ -1008,26 +1115,29 @@ function renderResults(c) {
       ${recsHTML}
     </div>
 
-    <div class="compliance-note" style="margin-bottom:14px;">
+    <div class="compliance-note print-card" style="margin-bottom:14px;">
       ⚖️ Este diagnóstico serve como subsídio para elaboração do <strong>PGR</strong> e <strong>PCMSO</strong>
       conforme exigência da NR-1 (Portaria MTE nº 1.419/2024). Recomenda-se aprofundamento com avaliação clínica individual.
     </div>
 
-    ${(()=>{
-      const b = loadBrand();
-      if (!b) return '';
-      const linhas = [b.profissional, b.titulo, b.contato, b.instagram].filter(Boolean);
-      return `<div style="background:#fff;border-radius:12px;padding:16px;box-shadow:var(--sh);margin-bottom:18px;display:flex;align-items:center;gap:14px;">
-        <div style="width:42px;height:42px;border-radius:10px;background:var(--navy);display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;font-weight:700;flex-shrink:0;">${b.empresa.charAt(0).toUpperCase()}</div>
-        <div>
-          <div style="font-size:14px;font-weight:700;color:var(--text);">${b.empresa}</div>
-          ${linhas.map(l=>`<div style="font-size:12px;color:var(--muted);">${l}</div>`).join('')}
-        </div>
-      </div>`;
-    })()}
+    ${brand ? `
+    <div class="print-card" style="background:#fff;border-radius:12px;padding:16px;box-shadow:var(--sh);margin-bottom:18px;display:flex;align-items:center;gap:14px;">
+      <div style="width:42px;height:42px;border-radius:10px;background:var(--navy);display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;font-weight:700;flex-shrink:0;">${brand.empresa.charAt(0).toUpperCase()}</div>
+      <div>
+        <div style="font-size:14px;font-weight:700;color:var(--text);">${brand.empresa}</div>
+        ${brandLinhas.map(l=>`<div style="font-size:12px;color:var(--muted);">${l}</div>`).join('')}
+      </div>
+    </div>` : ''}
 
-    <div class="action-zone">
-      <button class="btn btn-accent" onclick="window.print()">🖨️ Imprimir / Salvar como PDF</button>
+    <!-- RODAPÉ EXCLUSIVO DE IMPRESSÃO -->
+    <div class="print-only" style="border-top:1px solid #DDE3EE;margin-top:24px;padding-top:12px;display:flex;justify-content:space-between;align-items:center;">
+      <div style="font-size:8pt;color:#7A8BA8;">Gerado por Axis Insight IA · axisconsultorias.com.br</div>
+      <div style="font-size:8pt;color:#7A8BA8;">Diagnóstico realizado em ${dataFormatada}</div>
+    </div>
+
+    <!-- BOTÕES DE AÇÃO (ocultos na impressão) -->
+    <div class="action-zone no-print">
+      <button class="btn btn-accent" onclick="printReport()">🖨️ Imprimir / Salvar como PDF</button>
       <button class="btn btn-navy" onclick="goSetup()">＋ Nova Análise</button>
       <button class="btn btn-ghost" onclick="goHome()">← Todas as Análises</button>
     </div>
@@ -1238,6 +1348,31 @@ function pickCor(cor) {
   selectedCor = cor;
   renderColorPresets();
 }
+
+// ─────────────────────────────────────────────────────────
+// IMPRESSÃO / PDF
+// ─────────────────────────────────────────────────────────
+function printReport() {
+  // Converte o canvas do gráfico em imagem estática para o PDF
+  const canvas = document.getElementById('pieChart');
+  const printImg = document.getElementById('pieChart-print');
+  if (canvas && printImg && pieInst) {
+    try {
+      printImg.src = canvas.toDataURL('image/png', 1.0);
+      printImg.style.display = 'block';
+      canvas.style.display = 'none';
+    } catch(e) {}
+  }
+  window.print();
+}
+
+// Restaura o canvas após fechar o diálogo de impressão
+window.addEventListener('afterprint', function() {
+  const canvas = document.getElementById('pieChart');
+  const printImg = document.getElementById('pieChart-print');
+  if (canvas) canvas.style.display = '';
+  if (printImg) { printImg.style.display = 'none'; printImg.src = ''; }
+});
 
 // ─────────────────────────────────────────────────────────
 // INIT
