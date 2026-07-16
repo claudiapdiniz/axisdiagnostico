@@ -93,6 +93,7 @@
         .btn:active { transform: scale(0.97); }
         .btn-navy { background: var(--navy); color: #fff; }
         .btn-accent { background: var(--accent); color: #fff; }
+        .btn-gold { background: linear-gradient(135deg, var(--blue), var(--blue2)); color: var(--navy); }
         .btn-ghost { background: #fff; color: var(--blue); border: 2px solid var(--border); }
         .btn-outline { background: transparent; color: var(--blue); border: 2px solid var(--blue); }
         .btn:disabled { background: var(--border) !important; color: var(--muted) !important; cursor: not-allowed; transform: none !important; }
@@ -1149,7 +1150,7 @@ function renderResults(c) {
 
     <!-- BOTÕES DE AÇÃO (ocultos na impressão) -->
     <div class="action-zone no-print">
-      <button class="btn btn-accent" onclick="printReport()">🖨️ Imprimir / Salvar como PDF</button>
+      <button class="btn btn-gold" onclick="printReport()">🖨️ Imprimir / Salvar como PDF</button>
       <button class="btn btn-navy" onclick="goSetup()">＋ Nova Análise</button>
       <button class="btn btn-ghost" onclick="goHome()">← Todas as Análises</button>
     </div>
