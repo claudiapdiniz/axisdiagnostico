@@ -23,21 +23,21 @@
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         :root {
-            --navy:   #0F2744;
-            --blue:   #1B3A6B;
-            --blue2:  #2D5A9E;
+            --navy:   #2C1F0E;
+            --blue:   #B8922A;
+            --blue2:  #C9A44A;
             --accent: #C0392B;
             --gold:   #E67E22;
             --ok:     #27AE60;
             --warn:   #E67E22;
             --danger: #C0392B;
-            --bg:     #F2F5FA;
-            --card:   #FFFFFF;
-            --border: #DDE3EE;
-            --muted:  #7A8BA8;
-            --text:   #1A2540;
-            --sh: 0 2px 12px rgba(15,39,68,0.10);
-            --sh2: 0 6px 24px rgba(15,39,68,0.13);
+            --bg:     #F5EDE0;
+            --card:   #FDFAF6;
+            --border: #E5DAC8;
+            --muted:  #9A8A78;
+            --text:   #2C1F0E;
+            --sh: 0 2px 12px rgba(44,31,14,0.10);
+            --sh2: 0 6px 24px rgba(44,31,14,0.13);
         }
 
         html { scroll-behavior: smooth; }
@@ -230,7 +230,7 @@
             font-family: inherit;
         }
         .ans-btn:active { transform: scale(0.99); }
-        .ans-btn.sel { border-color: var(--blue); background: #EBF0FA; color: var(--blue); }
+        .ans-btn.sel { border-color: var(--blue); background: #FBF3E3; color: var(--text); }
         .ans-dot {
             width: 20px; height: 20px; border-radius: 50%;
             border: 2px solid var(--border); flex-shrink: 0;
@@ -313,9 +313,9 @@
 
         /* ── COMPLIANCE NOTICE ──────────────────────────── */
         .compliance-note {
-            background: #EBF0FA; border-left: 3px solid var(--blue);
+            background: #FBF3E3; border-left: 3px solid var(--blue);
             border-radius: 10px; padding: 12px 14px;
-            font-size: 12px; color: var(--blue); line-height: 1.5;
+            font-size: 12px; color: #6B5740; line-height: 1.5;
             margin-bottom: 18px;
         }
 
@@ -1079,18 +1079,18 @@ function renderResults(c) {
   document.getElementById('s-results').innerHTML = `
 
     <!-- CABEÇALHO EXCLUSIVO DE IMPRESSÃO -->
-    <div class="print-only" style="border-bottom:3px solid #0F2744;padding-bottom:16px;margin-bottom:20px;">
+    <div class="print-only" style="border-bottom:3px solid #2C1F0E;padding-bottom:16px;margin-bottom:20px;">
       <div style="display:flex;align-items:center;justify-content:space-between;">
         <div>
-          <div style="font-size:10pt;text-transform:uppercase;letter-spacing:2px;color:#7A8BA8;margin-bottom:2px;">Relatório de Diagnóstico NR-1</div>
-          <div style="font-size:18pt;font-weight:900;color:#0F2744;letter-spacing:-0.5px;">Axis Insight IA</div>
-          <div style="font-size:9pt;color:#7A8BA8;margin-top:2px;">Mapeamento de Riscos Psicossociais | Portaria MTE nº 1.419/2024</div>
+          <div style="font-size:10pt;text-transform:uppercase;letter-spacing:2px;color:#9A8A78;margin-bottom:2px;">Relatório de Diagnóstico NR-1</div>
+          <div style="font-size:18pt;font-weight:900;color:#2C1F0E;letter-spacing:-0.5px;">Axis Insight IA</div>
+          <div style="font-size:9pt;color:#9A8A78;margin-top:2px;">Mapeamento de Riscos Psicossociais | Portaria MTE nº 1.419/2024</div>
         </div>
         <div style="text-align:right;">
-          <div style="font-size:10pt;font-weight:700;color:#0F2744;">${c.empresa}</div>
-          <div style="font-size:9pt;color:#7A8BA8;">${c.setor} · ${c.func}</div>
-          <div style="font-size:9pt;color:#7A8BA8;">Data da análise: ${dataFormatada}</div>
-          ${brand ? `<div style="font-size:9pt;color:#7A8BA8;margin-top:4px;">${brand.empresa} — ${brand.profissional}</div>` : ''}
+          <div style="font-size:10pt;font-weight:700;color:#2C1F0E;">${c.empresa}</div>
+          <div style="font-size:9pt;color:#9A8A78;">${c.setor} · ${c.func}</div>
+          <div style="font-size:9pt;color:#9A8A78;">Data da análise: ${dataFormatada}</div>
+          ${brand ? `<div style="font-size:9pt;color:#9A8A78;margin-top:4px;">${brand.empresa} — ${brand.profissional}</div>` : ''}
         </div>
       </div>
     </div>
@@ -1142,9 +1142,9 @@ function renderResults(c) {
     </div>` : ''}
 
     <!-- RODAPÉ EXCLUSIVO DE IMPRESSÃO -->
-    <div class="print-only" style="border-top:1px solid #DDE3EE;margin-top:24px;padding-top:12px;display:flex;justify-content:space-between;align-items:center;">
-      <div style="font-size:8pt;color:#7A8BA8;">Gerado por Axis Insight IA · axisconsultorias.com.br</div>
-      <div style="font-size:8pt;color:#7A8BA8;">Diagnóstico realizado em ${dataFormatada}</div>
+    <div class="print-only" style="border-top:1px solid #E5DAC8;margin-top:24px;padding-top:12px;display:flex;justify-content:space-between;align-items:center;">
+      <div style="font-size:8pt;color:#9A8A78;">Gerado por Axis Insight IA · axisconsultorias.com.br</div>
+      <div style="font-size:8pt;color:#9A8A78;">Diagnóstico realizado em ${dataFormatada}</div>
     </div>
 
     <!-- BOTÕES DE AÇÃO (ocultos na impressão) -->
@@ -1185,9 +1185,9 @@ function drawPie(fatores) {
       return `
         <div style="display:flex;align-items:center;gap:8px;">
           <div style="width:12px;height:12px;border-radius:3px;background:${COLORS[i]};flex-shrink:0;"></div>
-          <div style="font-size:13px;color:#1A2540;flex:1;">${l}</div>
-          <div style="font-size:13px;font-weight:700;color:#1A2540;">${pct}%</div>
-          <div style="font-size:11px;color:#7A8BA8;">(${n}/${total})</div>
+          <div style="font-size:13px;color:#2C1F0E;flex:1;">${l}</div>
+          <div style="font-size:13px;font-weight:700;color:#2C1F0E;">${pct}%</div>
+          <div style="font-size:11px;color:#9A8A78;">(${n}/${total})</div>
         </div>`;
     }).join('');
   }
@@ -1288,7 +1288,7 @@ function tryActivate() {
 // ─────────────────────────────────────────────────────────
 const BRAND_KEY = 'axis_brand';
 const COR_PRESETS = [
-  { nome: 'Azul Naval',   cor: '#0F2744' },
+  { nome: 'Axis (Padrão)', cor: '#2C1F0E' },
   { nome: 'Verde Escuro', cor: '#145A1E' },
   { nome: 'Roxo',         cor: '#4A235A' },
   { nome: 'Bordo',        cor: '#6B0E1E' },
