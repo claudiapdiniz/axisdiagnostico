@@ -843,6 +843,25 @@ function fmtDate(d) {
   return `${day}/${m}/${y}`;
 }
 function totalQ() { return FATORES.reduce((s, f) => s + f.perguntas.length, 0); }
+
+// Na vitrine o consultor responde só 2 perguntas para sentir o fluxo inteiro
+// (cadastro → pergunta → diagnóstico) sem abandonar no meio. As demais são
+// preenchidas automaticamente para o resultado sair completo, com os 6 fatores.
+const VITRINE_QTD_PERGUNTAS = 2;
+function limiteQ() { return isVitrine() ? VITRINE_QTD_PERGUNTAS : totalQ(); }
+function ehUltimaPergunta() {
+  if (isVitrine()) return globalIdx() >= VITRINE_QTD_PERGUNTAS - 1;
+  const fator = FATORES[S.fi];
+  return S.fi === FATORES.length - 1 && S.pi === fator.perguntas.length - 1;
+}
+function completaRespostasVitrine() {
+  FATORES.forEach((f, fi) => {
+    f.perguntas.forEach((_, pi) => {
+      const k = fi + '_' + pi;
+      if (S.resp[k] === undefined) S.resp[k] = [2, 3, 1, 2, 3, 2][fi % 6];
+    });
+  });
+}
 function globalIdx() {
   let n = 0;
   for (let i = 0; i < S.fi; i++) n += FATORES[i].perguntas.length;
@@ -959,7 +978,7 @@ function startQ() {
 function renderQ() {
   const fator = FATORES[S.fi];
   const perg  = fator.perguntas[S.pi];
-  const total = totalQ();
+  const total = limiteQ();
   const gIdx  = globalIdx();
   const k     = key();
   const selVal = S.resp[k];
@@ -985,7 +1004,19 @@ function renderQ() {
 
   // Nav
   const isFirst = S.fi === 0 && S.pi === 0;
-  const isLast  = S.fi === FATORES.length - 1 && S.pi === fator.perguntas.length - 1;
+  const isLast  = ehUltimaPergunta();
+
+  // Deixa claro que a demonstração é encurtada, para não passar a impressão
+  // de que o produto real só tem 2 perguntas
+  const aviso = document.getElementById('q-aviso-vitrine');
+  if (isVitrine() && !aviso) {
+    const el = document.createElement('p');
+    el.id = 'q-aviso-vitrine';
+    el.style.cssText = 'font-size:12px;color:var(--muted);text-align:center;margin-top:14px;line-height:1.5;';
+    el.textContent = 'Demonstração encurtada: a versão completa aplica '
+      + totalQ() + ' perguntas, divididas nos 6 fatores da NR-1.';
+    document.getElementById('q-answers').insertAdjacentElement('afterend', el);
+  }
 
   document.getElementById('btn-back').style.display = isFirst ? 'none' : 'flex';
   const nextBtn = document.getElementById('btn-next');
@@ -1013,9 +1044,12 @@ function nextQ() {
   if (S.resp[key()] === undefined) return;
 
   const fator = FATORES[S.fi];
-  const isLast = S.fi === FATORES.length - 1 && S.pi === fator.perguntas.length - 1;
 
-  if (isLast) { finalizeQ(); return; }
+  if (ehUltimaPergunta()) {
+    if (isVitrine()) completaRespostasVitrine();
+    finalizeQ();
+    return;
+  }
 
   if (S.pi < fator.perguntas.length - 1) {
     S.pi++;
@@ -1510,8 +1544,13 @@ S.companies = db.get();
 if (isVitrine()) {
   // Vitrine: entra direto, sem código, com uma empresa de exemplo em memória.
   // Nada é gravado no navegador da pessoa (db.set vira no-op logo abaixo).
+  // finalizeQ faz "S.companies = db.get()" antes de salvar. Como na vitrine o
+  // navegador está vazio, o get precisa devolver a empresa de exemplo, senão
+  // ela sumiria da lista assim que o visitante fizesse a própria análise.
+  const exemplo = empresaExemploVitrine();
+  db.get = function () { return [exemplo]; };
   db.set = function () {};
-  S.companies = [empresaExemploVitrine()];
+  S.companies = db.get();
   applyBrand(loadBrand() || { nome: 'Minha Consultoria', cor: COR_PRESETS[0].cor });
   montaBannerVitrine();
   renderHome();
