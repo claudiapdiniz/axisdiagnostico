@@ -466,6 +466,45 @@
             border: 3px solid transparent; transition: all 0.18s;
         }
         .color-dot.selected { border-color: var(--text); transform: scale(1.1); }
+
+        /* ── MODO VITRINE ───────────────────────────────── */
+        #vitrine-banner {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 9000;
+            background: #C9A227; color: #1A1A1A;
+            font-size: 11px; font-weight: 800; letter-spacing: .4px;
+            text-transform: uppercase; text-align: center;
+            padding: 7px 12px;
+            display: flex; align-items: center; justify-content: center; gap: 12px;
+        }
+        #vitrine-banner a {
+            color: #1A1A1A; background: rgba(26,26,26,.14);
+            padding: 4px 10px; border-radius: 99px; text-decoration: none;
+            font-size: 10.5px; white-space: nowrap;
+        }
+        body.tem-vitrine-banner { padding-top: 32px; }
+        @media print { #vitrine-banner { display: none; } }
+
+        #vitrine-overlay {
+            position: fixed; inset: 0; z-index: 9100;
+            background: rgba(26,26,26,.74);
+            display: flex; align-items: center; justify-content: center; padding: 20px;
+        }
+        #vitrine-overlay .vitrine-card {
+            background: #fff; border-radius: 16px; padding: 26px 22px;
+            max-width: 360px; width: 100%; text-align: left;
+            box-shadow: 0 20px 50px rgba(0,0,0,.4);
+        }
+        .vitrine-tag {
+            display: inline-block; background: #1A1A1A; color: #C9A227;
+            font-size: 10px; font-weight: 800; letter-spacing: .5px;
+            text-transform: uppercase; padding: 5px 10px; border-radius: 99px;
+            margin-bottom: 12px;
+        }
+        #vitrine-overlay h3 { font-size: 18px; margin: 0 0 10px; line-height: 1.3; }
+        #vitrine-overlay p { font-size: 13.5px; line-height: 1.6; color: #6b6b6b; margin: 0 0 18px; }
+        .vitrine-btn { display: block; width: 100%; text-align: center; text-decoration: none; }
+        .vitrine-btn + .vitrine-btn { margin-top: 8px; }
+        .vitrine-btn-ghost { background: transparent; border: 1.5px solid #1A1A1A; color: #1A1A1A; }
     </style>
 </head>
 <body>
@@ -506,7 +545,7 @@
 
     <div class="hero">
         <h2>Diagnóstico de Riscos Psicossociais</h2>
-        <p>Mapeie os fatores de risco NR-1 durante a reunião de vendas — sem planilhas, direto no celular.</p>
+        <p>Mapeie os fatores de risco NR-1 durante a reunião de vendas, sem planilhas, direto no celular.</p>
         <button class="btn btn-ghost" onclick="goSetup()">
             <span>＋</span> Nova Análise de Empresa
         </button>
@@ -1067,7 +1106,7 @@ function renderResults(c) {
       <div class="rec-item">
         <div class="rec-num">${i + 1}</div>
         <div class="rec-body">
-          <strong>${f.icon} ${f.nome} — ${f.nivel} (${f.pct}%)</strong>
+          <strong>${f.icon} ${f.nome}: ${f.nivel} (${f.pct}%)</strong>
           ${rec}
         </div>
       </div>`;
@@ -1091,7 +1130,7 @@ function renderResults(c) {
           <div style="font-size:10pt;font-weight:700;color:#2C1F0E;">${c.empresa}</div>
           <div style="font-size:9pt;color:#9A8A78;">${c.setor} · ${c.func}</div>
           <div style="font-size:9pt;color:#9A8A78;">Data da análise: ${dataFormatada}</div>
-          ${brand ? `<div style="font-size:9pt;color:#9A8A78;margin-top:4px;">${brand.empresa} — ${brand.profissional}</div>` : ''}
+          ${brand ? `<div style="font-size:9pt;color:#9A8A78;margin-top:4px;">${brand.empresa} · ${brand.profissional}</div>` : ''}
         </div>
       </div>
     </div>
@@ -1255,6 +1294,81 @@ function isActivated() {
   try { return !!localStorage.getItem('axis_lic'); } catch { return false; }
 }
 
+// ─────────────────────────────────────────────────────────
+// MODO VITRINE (link publico de demonstracao: ?vitrine=1)
+// Libera o app sem codigo de licenca para a pessoa ver por dentro, mas trava a
+// entrega de valor (o relatorio em PDF), que e o que se paga ao comprar.
+// Fica em sessionStorage de proposito: nao grava licenca nenhuma e acaba quando
+// a aba fecha, entao o link nao vira uma licenca vitalicia por acidente.
+// ─────────────────────────────────────────────────────────
+const VITRINE_WHATS = 'https://wa.me/5511947836879?text='
+  + encodeURIComponent('Quero conhecer o Axis Diagnóstico');
+
+function isVitrine() {
+  try {
+    if (new URLSearchParams(location.search).get('vitrine') === '1') {
+      sessionStorage.setItem('axis_vitrine', '1');
+    }
+    return sessionStorage.getItem('axis_vitrine') === '1';
+  } catch { return false; }
+}
+
+function montaBannerVitrine() {
+  if (document.getElementById('vitrine-banner')) return;
+  const b = document.createElement('div');
+  b.id = 'vitrine-banner';
+  b.innerHTML = 'Demonstração · dados fictícios'
+    + '<a href="' + VITRINE_WHATS + '" target="_blank" rel="noopener">Falar com a Axis</a>';
+  document.body.appendChild(b);
+  document.body.classList.add('tem-vitrine-banner');
+}
+
+function modalVitrine() {
+  if (document.getElementById('vitrine-overlay')) return;
+  const ov = document.createElement('div');
+  ov.id = 'vitrine-overlay';
+  ov.innerHTML =
+    '<div class="vitrine-card">'
+    + '<span class="vitrine-tag">Isso é uma demonstração</span>'
+    + '<h3>O relatório é a entrega do Axis Diagnóstico.</h3>'
+    + '<p>Você pode percorrer o app inteiro por aqui, mas o relatório em PDF, '
+    + 'com a sua marca, sai na versão licenciada. É ele que você leva para a '
+    + 'reunião com o cliente.</p>'
+    + '<a class="btn btn-navy vitrine-btn" href="' + VITRINE_WHATS + '" target="_blank" rel="noopener">Falar no WhatsApp</a>'
+    + '<button class="btn vitrine-btn vitrine-btn-ghost" id="vitrine-fechar">Continuar vendo</button>'
+    + '</div>';
+  document.body.appendChild(ov);
+  const fecha = () => ov.remove();
+  document.getElementById('vitrine-fechar').onclick = fecha;
+  ov.onclick = (e) => { if (e.target === ov) fecha(); };
+}
+
+// Empresa de exemplo, so em memoria: a home nao pode abrir vazia numa vitrine.
+function empresaExemploVitrine() {
+  const resp = {};
+  const fatores = FATORES.map((f, fi) => {
+    const alvo = [62, 48, 33, 71, 40, 55][fi] != null ? [62, 48, 33, 71, 40, 55][fi] : 45;
+    const max = f.perguntas.length * 4;
+    const tot = Math.round((alvo / 100) * max);
+    f.perguntas.forEach((_, pi) => {
+      resp[fi + '_' + pi] = Math.min(4, Math.round(tot / f.perguntas.length));
+    });
+    const pct = Math.round((tot / max) * 100);
+    const nivel = pct >= 76 ? 'Crítico' : pct >= 51 ? 'Alto' : pct >= 26 ? 'Médio' : 'Baixo';
+    return { id: f.id, icon: f.icon, nome: f.nome, tot, max, pct, nivel };
+  });
+  const pct = Math.round(fatores.reduce((s, f) => s + f.pct, 0) / fatores.length);
+  return {
+    empresa: 'Padaria Bom Dia (exemplo)',
+    setor: 'Alimentação',
+    func: '18',
+    data: new Date().toISOString().slice(0, 10),
+    resp, fatores, pct,
+    nivel: pct >= 76 ? 'Crítico' : pct >= 51 ? 'Alto' : pct >= 26 ? 'Médio' : 'Baixo',
+    ts: Date.now()
+  };
+}
+
 function formatCode(input) {
   let v = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
   if (v.length > 4 && !v.startsWith('AXIS')) v = v.slice(0, 4);
@@ -1366,6 +1480,8 @@ function pickCor(cor) {
 // IMPRESSÃO / PDF
 // ─────────────────────────────────────────────────────────
 function printReport() {
+  // Na vitrine o relatório é justamente o que não sai: é a entrega paga
+  if (isVitrine()) { modalVitrine(); return; }
   // Converte o canvas do gráfico em imagem estática para o PDF
   const canvas = document.getElementById('pieChart');
   const printImg = document.getElementById('pieChart-print');
@@ -1391,7 +1507,16 @@ window.addEventListener('afterprint', function() {
 // INIT
 // ─────────────────────────────────────────────────────────
 S.companies = db.get();
-if (!isActivated()) {
+if (isVitrine()) {
+  // Vitrine: entra direto, sem código, com uma empresa de exemplo em memória.
+  // Nada é gravado no navegador da pessoa (db.set vira no-op logo abaixo).
+  db.set = function () {};
+  S.companies = [empresaExemploVitrine()];
+  applyBrand(loadBrand() || { nome: 'Minha Consultoria', cor: COR_PRESETS[0].cor });
+  montaBannerVitrine();
+  renderHome();
+  goScreen('s-home');
+} else if (!isActivated()) {
   // Não ativado → tela de código de acesso
   goScreen('s-activate');
 } else {
