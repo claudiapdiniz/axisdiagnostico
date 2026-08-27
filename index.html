@@ -5,57 +5,138 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <title>Mapeamento NR-1 | Axis Consultorias</title>
+    <title>Diagnóstico NR-1 | AXIS</title>
+    <meta name="theme-color" content="#0E2A21">
     <link rel="icon" type="image/png" href="/axisdiagnostico/favicon.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/axisdiagnostico/apple-touch-icon.png">
-    <meta property="og:title" content="Mapeamento NR-1 | Axis Consultorias">
-    <meta property="og:description" content="Mapeamento de riscos psicossociais NR-1">
+    <meta property="og:title" content="Diagnóstico NR-1 | AXIS">
+    <meta property="og:description" content="Inteligencia Psicossocial Corporativa. Diagnostico dos seis fatores de risco da NR-1.">
     <meta property="og:image" content="https://claudiapdiniz.github.io/axisdiagnostico/og-image.png">
     <meta property="og:url" content="https://claudiapdiniz.github.io/axisdiagnostico/">
     <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Axis Consultorias">
+    <meta property="og:site_name" content="AXIS">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Mapeamento NR-1 | Axis Consultorias">
-    <meta name="twitter:description" content="Mapeamento de riscos psicossociais NR-1">
+    <meta name="twitter:title" content="Diagnóstico NR-1 | AXIS">
+    <meta name="twitter:description" content="Inteligencia Psicossocial Corporativa. Diagnostico dos seis fatores de risco da NR-1.">
     <meta name="twitter:image" content="https://claudiapdiniz.github.io/axisdiagnostico/og-image.png">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
+        /* ══════════════════════════════════════════════════
+           SISTEMA DIGITAL PROFUNDO — identidade oficial AXIS
+           Verde-esmeralda profundo, dourado como unico accent.
+           O relatorio impresso inverte para Documental Claro
+           (ver bloco @media print no fim deste arquivo).
+        ══════════════════════════════════════════════════ */
         :root {
-            --navy:   #2C1F0E;
-            --blue:   #B8922A;
-            --blue2:  #C9A44A;
-            --accent: #C0392B;
-            --gold:   #E67E22;
-            --ok:     #27AE60;
-            --warn:   #E67E22;
-            --danger: #C0392B;
-            --bg:     #F5EDE0;
-            --card:   #FDFAF6;
-            --border: #E5DAC8;
-            --muted:  #9A8A78;
-            --text:   #2C1F0E;
-            --sh: 0 2px 12px rgba(44,31,14,0.10);
-            --sh2: 0 6px 24px rgba(44,31,14,0.13);
+            /* Verdes */
+            --forest-950: #050F0C;
+            --forest-900: #07160F;
+            --forest-800: #0B2018;
+            --forest-700: #0E2A21;
+            --forest-600: #13342A;
+            --forest-500: #1A4436;
+            --forest-400: #245846;
+
+            /* Dourado */
+            --gold:       #C9A24B;
+            --gold-light: #E2C583;
+            --gold-deep:  #A8823A;
+            --gold-grad:  linear-gradient(135deg, #EBD6A5 0%, #D2AC5E 45%, #B08D3F 100%);
+
+            /* Texto */
+            --cream:     #F4ECDC;
+            --cream-mid: rgba(244,236,220,0.72);
+            --cream-low: rgba(244,236,220,0.60);
+
+            /* Escala de risco — quente, legivel sobre fundo escuro */
+            --risk-critico:   #D4603F;
+            --risk-alto:      #DE9440;
+            --risk-medio:     #C9A24B;
+            --risk-baixo:     #62A882;
+            --risk-critico-t: #F0A78C;
+            --risk-alto-t:    #F2C489;
+            --risk-medio-t:   #E2C583;
+            --risk-baixo-t:   #9BD3B4;
+
+            /* Aliases mantidos para os estilos inline gerados em JS */
+            --navy:   #071A13;
+            --blue:   #C9A24B;
+            --blue2:  #E2C583;
+            --accent: #D4603F;
+            --ok:     #62A882;
+            --warn:   #DE9440;
+            --danger: #D4603F;
+            --bg:     #0E2A21;
+            --card:   #13342A;
+            --border: rgba(201,162,75,0.20);
+            --border-strong: rgba(201,162,75,0.42);
+            --muted:  rgba(244,236,220,0.60);
+            --text:   #F4ECDC;
+
+            --sh:  0 10px 28px rgba(0,0,0,0.32);
+            --sh2: 0 18px 48px rgba(0,0,0,0.45);
+
+            --r-sm: 10px; --r-md: 16px; --r-lg: 22px; --r-pill: 999px;
+
+            color-scheme: dark;
         }
 
-        html { scroll-behavior: smooth; }
+        html {
+            scroll-behavior: smooth;
+            background: var(--forest-950);
+        }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: var(--bg);
-            color: var(--text);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            font-weight: 400;
+            background:
+                radial-gradient(120% 62% at 50% 0%, #164034 0%, transparent 58%),
+                radial-gradient(90% 48% at 0% 100%, #1D5040 0%, transparent 60%),
+                var(--forest-700);
+            background-attachment: fixed;
+            color: var(--cream);
             min-height: 100vh;
-            max-width: 480px;
+            max-width: 430px;
             margin: 0 auto;
             position: relative;
+            -webkit-font-smoothing: antialiased;
         }
+
+        /* Moldura de aparelho em telas largas */
+        @media (min-width: 560px) {
+            html { background: #050F0C radial-gradient(80% 50% at 50% 0%, #0B2018 0%, #050F0C 70%); }
+            body {
+                min-height: 100vh;
+                border-left: 1px solid rgba(201,162,75,0.16);
+                border-right: 1px solid rgba(201,162,75,0.16);
+                box-shadow: 0 0 90px rgba(0,0,0,0.55);
+            }
+        }
+
+        h1, h2, h3, .serif { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 400; }
+        /* A Cormorant usa algarismos antigos por padrao: o 1 vira um traco baixo
+           e "NR-1" fica ilegivel. Forcar algarismos alinhados em toda a serifada. */
+        .header-title, .hero h2, .screen-h1, .activate-title, .cat-name, .q-text,
+        .company-name, .rh-company, .rh-risk, .fi-name, .rec-body strong,
+        .rec-num, .modal h3, .empty-state .e-icon, .company-icon, .activate-logo,
+        #vitrine-overlay h3, h1, h2, h3, .serif {
+            font-variant-numeric: lining-nums;
+            font-feature-settings: 'lnum' 1;
+        }
+        em { font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic; font-weight: 300; color: var(--gold-light); }
 
         /* ── HEADER ─────────────────────────────────────── */
         .header {
-            background: var(--navy);
-            padding: 14px 20px 12px;
+            background: linear-gradient(180deg, rgba(5,15,12,0.94), rgba(7,22,15,0.82));
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-bottom: 1px solid var(--border);
+            padding: 15px 20px 13px;
             position: sticky;
             top: 0;
             z-index: 50;
@@ -63,271 +144,534 @@
             align-items: center;
             justify-content: space-between;
         }
-        .header-brand { display: flex; flex-direction: column; }
-        .header-sub { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,0.45); }
-        .header-title { font-size: 16px; font-weight: 700; color: #fff; letter-spacing: -0.3px; }
+        .header-brand { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+        .header-sub {
+            font-size: 9.5px; text-transform: uppercase; letter-spacing: 3.4px;
+            color: var(--gold); font-weight: 700;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .header-title {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 20px; font-weight: 400; color: var(--cream); letter-spacing: 0.2px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
         .header-tag {
-            background: rgba(192,57,43,0.25);
-            border: 1px solid rgba(192,57,43,0.5);
-            color: #F1948A;
-            font-size: 10px;
+            background: rgba(201,162,75,0.12);
+            border: 1px solid var(--border-strong);
+            color: var(--gold-light);
+            font-size: 9px;
             font-weight: 700;
-            padding: 3px 8px;
-            border-radius: 20px;
+            padding: 5px 9px;
+            border-radius: var(--r-pill);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1.4px;
+            white-space: nowrap;
         }
 
         /* ── SCREENS ─────────────────────────────────────── */
-        .screen { display: none; padding: 20px; animation: fadeIn 0.2s ease; }
+        .screen { display: none; padding: 24px 20px 40px; animation: fadeIn 0.28s ease; }
         .screen.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
         /* ── BUTTONS ─────────────────────────────────────── */
         .btn {
             display: flex; align-items: center; justify-content: center; gap: 8px;
-            width: 100%; border: none; border-radius: 14px; padding: 15px 20px;
-            font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.18s;
-            font-family: inherit; text-align: center;
+            width: 100%; border: none; border-radius: var(--r-pill); padding: 15px 24px;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase;
+            cursor: pointer; transition: all 0.2s ease; text-align: center;
         }
-        .btn:active { transform: scale(0.97); }
-        .btn-navy { background: var(--navy); color: #fff; }
-        .btn-accent { background: var(--accent); color: #fff; }
-        .btn-gold { background: linear-gradient(135deg, var(--blue), var(--blue2)); color: var(--navy); }
-        .btn-ghost { background: #fff; color: var(--blue); border: 2px solid var(--border); }
-        .btn-outline { background: transparent; color: var(--blue); border: 2px solid var(--blue); }
-        .btn:disabled { background: var(--border) !important; color: var(--muted) !important; cursor: not-allowed; transform: none !important; }
-        .btn-sm { padding: 10px 16px; font-size: 13px; border-radius: 10px; }
+        .btn:active { transform: scale(0.98); }
+
+        /* Primario: dourado. Substitui o antigo btn-navy em toda a interface. */
+        .btn-navy {
+            background: var(--gold-grad); color: #12281F;
+            box-shadow: 0 8px 22px rgba(201,162,75,0.22);
+        }
+        .btn-navy:hover { filter: brightness(1.07); transform: translateY(-2px); }
+
+        .btn-gold {
+            background: var(--gold-grad); color: #12281F;
+            box-shadow: 0 8px 22px rgba(201,162,75,0.22);
+        }
+        .btn-gold:hover { filter: brightness(1.07); transform: translateY(-2px); }
+
+        .btn-ghost {
+            background: transparent; color: var(--gold-light);
+            border: 1px solid var(--border-strong);
+        }
+        .btn-ghost:hover { background: rgba(201,162,75,0.10); }
+
+        .btn-outline { background: transparent; color: var(--gold-light); border: 1px solid var(--border-strong); }
+
+        .btn-accent {
+            background: rgba(212,96,63,0.14); color: var(--risk-critico-t);
+            border: 1px solid rgba(212,96,63,0.45);
+        }
+        .btn-accent:hover { background: rgba(212,96,63,0.22); }
+
+        .btn:disabled {
+            background: rgba(244,236,220,0.07) !important;
+            color: rgba(244,236,220,0.34) !important;
+            border-color: transparent !important;
+            box-shadow: none !important;
+            cursor: not-allowed; transform: none !important; filter: none !important;
+        }
+        .btn-sm { padding: 11px 18px; font-size: 10.5px; }
 
         /* ── CARDS ─────────────────────────────────────── */
         .card {
-            background: var(--card);
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: var(--sh);
+            background: linear-gradient(160deg, rgba(255,255,255,0.045), rgba(255,255,255,0.012));
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            padding: 22px;
             margin-bottom: 14px;
         }
 
-        /* ── SECTION LABEL ─────────────────────────────── */
+        /* ── SECTION LABEL (eyebrow) ───────────────────── */
         .sec-label {
-            font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px;
-            color: var(--muted); font-weight: 700; margin-bottom: 10px;
+            font-size: 9.5px; text-transform: uppercase; letter-spacing: 4px;
+            color: var(--gold); font-weight: 700; margin-bottom: 14px;
+        }
+        .sec-label::after {
+            content: ''; display: block; width: 34px; height: 1px;
+            background: var(--gold); opacity: 0.6; margin-top: 9px;
         }
 
         /* ── RISK BADGES ─────────────────────────────────── */
         .badge {
             display: inline-flex; align-items: center;
-            font-size: 11px; font-weight: 800; padding: 4px 10px;
-            border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;
-            flex-shrink: 0;
+            font-size: 9px; font-weight: 700; padding: 5px 11px;
+            border-radius: var(--r-pill); text-transform: uppercase; letter-spacing: 1.6px;
+            flex-shrink: 0; border: 1px solid transparent;
         }
-        .badge-critico      { background: #FDECEC; color: #7B1010; }
-        .badge-alto         { background: #FEE8D6; color: #7D3800; }
-        .badge-medio        { background: #FEF9D6; color: #7A5B00; }
-        .badge-baixo        { background: #E8F5E9; color: #1B5E20; }
+        .badge-critico { background: rgba(212,96,63,0.16);  color: var(--risk-critico-t); border-color: rgba(212,96,63,0.38); }
+        .badge-alto    { background: rgba(222,148,64,0.16); color: var(--risk-alto-t);    border-color: rgba(222,148,64,0.38); }
+        .badge-medio   { background: rgba(201,162,75,0.16); color: var(--risk-medio-t);   border-color: rgba(201,162,75,0.38); }
+        .badge-baixo   { background: rgba(98,168,130,0.16); color: var(--risk-baixo-t);   border-color: rgba(98,168,130,0.38); }
 
         /* ══════════════════════════════════════════════════
            SCREEN: HOME
         ══════════════════════════════════════════════════ */
         .hero {
-            background: linear-gradient(140deg, var(--navy) 0%, var(--blue) 100%);
-            border-radius: 20px;
-            padding: 26px 22px 22px;
-            color: #fff;
-            margin-bottom: 22px;
+            background:
+                radial-gradient(120% 100% at 100% 0%, rgba(201,162,75,0.14) 0%, transparent 62%),
+                linear-gradient(160deg, var(--forest-500) 0%, var(--forest-700) 100%);
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            padding: 30px 24px 26px;
+            color: var(--cream);
+            margin-bottom: 30px;
             position: relative;
             overflow: hidden;
         }
         .hero::after {
             content: '';
             position: absolute;
-            top: -40px; right: -40px;
-            width: 160px; height: 160px;
+            top: -70px; right: -70px;
+            width: 190px; height: 190px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(201,162,75,0.16);
         }
-        .hero h2 { font-size: 20px; font-weight: 800; line-height: 1.3; margin-bottom: 8px; }
-        .hero p  { font-size: 13px; color: rgba(255,255,255,0.72); line-height: 1.6; margin-bottom: 20px; }
+        .hero-eyebrow {
+            font-size: 9px; text-transform: uppercase; letter-spacing: 4px;
+            color: var(--gold); font-weight: 700; margin-bottom: 12px;
+        }
+        .hero h2 {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 31px; font-weight: 400; line-height: 1.18; margin-bottom: 12px; letter-spacing: 0.2px;
+        }
+        .hero p  { font-size: 13.5px; font-weight: 300; color: var(--cream-mid); line-height: 1.7; margin-bottom: 24px; }
 
         .company-card {
-            background: #fff;
-            border-radius: 14px;
-            padding: 14px 16px;
+            background: linear-gradient(160deg, rgba(255,255,255,0.045), rgba(255,255,255,0.012));
+            border: 1px solid var(--border);
+            border-radius: var(--r-md);
+            padding: 15px 16px;
             margin-bottom: 10px;
-            box-shadow: var(--sh);
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
             cursor: pointer;
-            transition: box-shadow 0.18s;
+            transition: all 0.2s ease;
         }
-        .company-card:active { box-shadow: var(--sh2); transform: scale(0.99); }
+        .company-card:hover { border-color: var(--border-strong); transform: translateY(-2px); }
+        .company-card:active { transform: scale(0.99); }
         .company-icon {
-            width: 42px; height: 42px; border-radius: 10px;
+            width: 40px; height: 40px; border-radius: 11px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 18px; flex-shrink: 0;
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 19px; font-weight: 500; flex-shrink: 0;
+            border: 1px solid currentColor;
         }
         .company-info { flex: 1; min-width: 0; }
-        .company-name { font-size: 14px; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .company-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
-        .del-btn {
-            background: none; border: none; color: var(--muted);
-            font-size: 16px; cursor: pointer; padding: 6px; flex-shrink: 0;
-            line-height: 1;
+        .company-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; }
+        .company-name {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 19px; font-weight: 400; color: var(--cream);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
-        .empty-state { text-align: center; padding: 36px 16px; color: var(--muted); }
-        .empty-state .e-icon { font-size: 44px; margin-bottom: 12px; }
-        .empty-state p { font-size: 13px; line-height: 1.6; }
+        .company-meta {
+            font-size: 10.5px; color: var(--cream-low); margin-top: 3px; letter-spacing: 0.2px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .del-btn {
+            background: none; border: none; color: var(--cream-low);
+            font-family: 'Inter', sans-serif;
+            font-size: 8.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.6px;
+            cursor: pointer; padding: 6px 2px; flex-shrink: 0;
+            line-height: 1; transition: color 0.18s;
+        }
+        .del-btn:hover { color: var(--risk-critico-t); }
+        .empty-state {
+            text-align: center; padding: 44px 20px; color: var(--cream-low);
+            border: 1px dashed var(--border); border-radius: var(--r-lg);
+        }
+        .empty-state .e-icon {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 34px; color: var(--gold); margin-bottom: 10px; font-style: italic; font-weight: 300;
+        }
+        .empty-state p { font-size: 13px; line-height: 1.7; font-weight: 300; }
 
         /* ══════════════════════════════════════════════════
-           SCREEN: SETUP
+           SCREEN: SETUP / FORMULARIOS
         ══════════════════════════════════════════════════ */
-        .screen-h1 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
-        .screen-sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; line-height: 1.5; }
+        .screen-h1 {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 34px; font-weight: 400; margin-bottom: 8px; line-height: 1.15;
+        }
+        .screen-sub { font-size: 13.5px; font-weight: 300; color: var(--cream-mid); margin-bottom: 28px; line-height: 1.7; }
 
-        .form-group { margin-bottom: 18px; }
+        .form-group { margin-bottom: 20px; }
         .form-group label {
-            display: block; font-size: 11px; font-weight: 700;
-            text-transform: uppercase; letter-spacing: 1px;
-            color: var(--muted); margin-bottom: 7px;
+            display: block; font-size: 9px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 3px;
+            color: var(--gold); margin-bottom: 9px;
         }
         .form-group input,
         .form-group select {
-            width: 100%; padding: 13px 15px;
-            border: 2px solid var(--border); border-radius: 12px;
-            font-size: 16px; color: var(--text); background: #fff;
-            outline: none; transition: border-color 0.18s;
+            width: 100%; padding: 14px 16px;
+            border: 1px solid var(--border); border-radius: 12px;
+            font-size: 16px; color: var(--cream);
+            background: rgba(255,255,255,0.04);
+            outline: none; transition: border-color 0.2s, background 0.2s;
             font-family: inherit; -webkit-appearance: none; appearance: none;
         }
+        .form-group input::placeholder { color: rgba(244,236,220,0.34); }
+        .form-group select { background-image: none; }
+        .form-group select option { background: var(--forest-800); color: var(--cream); }
         .form-group input:focus,
-        .form-group select:focus { border-color: var(--blue); }
+        .form-group select:focus { border-color: var(--gold); background: rgba(201,162,75,0.07); }
 
         /* ══════════════════════════════════════════════════
-           SCREEN: QUESTIONNAIRE
+           SCREEN: QUESTIONARIO
         ══════════════════════════════════════════════════ */
-        .progress-wrap { background: var(--border); border-radius: 100px; height: 5px; margin-bottom: 20px; overflow: hidden; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--blue), var(--blue2)); border-radius: 100px; transition: width 0.4s ease; }
+        .progress-wrap {
+            background: rgba(244,236,220,0.10); border-radius: var(--r-pill);
+            height: 3px; margin-bottom: 24px; overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%; background: var(--gold-grad);
+            border-radius: var(--r-pill); transition: width 0.45s ease;
+        }
 
         .cat-card {
-            background: linear-gradient(135deg, var(--navy), var(--blue));
-            border-radius: 16px; padding: 18px 20px;
-            color: #fff; margin-bottom: 20px;
-            display: flex; align-items: center; gap: 14px;
+            background: linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.012));
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg); padding: 18px 20px;
+            color: var(--cream); margin-bottom: 26px;
+            display: flex; align-items: center; gap: 16px;
         }
-        .cat-emoji { font-size: 30px; flex-shrink: 0; }
-        .cat-sub { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.55); margin-bottom: 3px; }
-        .cat-name { font-size: 17px; font-weight: 700; }
+        .cat-emoji {
+            font-family: 'Inter', sans-serif;
+            font-size: 24px; font-weight: 200; color: var(--gold);
+            font-variant-numeric: tabular-nums lining-nums;
+            flex-shrink: 0; line-height: 1; min-width: 38px;
+            border-right: 1px solid var(--border); padding-right: 16px;
+        }
+        .cat-sub { font-size: 9px; text-transform: uppercase; letter-spacing: 3px; color: var(--gold); font-weight: 700; margin-bottom: 5px; }
+        .cat-name { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 20px; font-weight: 400; line-height: 1.25; }
 
-        .q-counter { font-size: 11px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
-        .q-text { font-size: 17px; font-weight: 600; line-height: 1.5; color: var(--text); margin-bottom: 22px; }
+        .q-counter { font-size: 9px; color: var(--cream-low); font-weight: 700; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 12px; }
+        .q-text {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 25px; font-weight: 400; line-height: 1.32; color: var(--cream); margin-bottom: 26px;
+        }
 
-        .answers { display: flex; flex-direction: column; gap: 9px; margin-bottom: 28px; }
+        .answers { display: flex; flex-direction: column; gap: 9px; margin-bottom: 24px; }
         .ans-btn {
-            display: flex; align-items: center; gap: 12px;
-            background: #fff; border: 2px solid var(--border);
-            border-radius: 12px; padding: 13px 15px;
-            font-size: 14px; font-weight: 500; color: var(--text);
-            cursor: pointer; text-align: left; transition: all 0.18s;
+            display: flex; align-items: center; gap: 13px;
+            background: rgba(255,255,255,0.035); border: 1px solid var(--border);
+            border-radius: 14px; padding: 14px 16px;
+            font-size: 14px; font-weight: 400; color: var(--cream-mid);
+            cursor: pointer; text-align: left; transition: all 0.2s ease;
             font-family: inherit;
         }
+        .ans-btn:hover { border-color: var(--border-strong); }
         .ans-btn:active { transform: scale(0.99); }
-        .ans-btn.sel { border-color: var(--blue); background: #FBF3E3; color: var(--text); }
+        .ans-btn.sel { border-color: var(--gold); background: rgba(201,162,75,0.12); color: var(--cream); }
         .ans-dot {
-            width: 20px; height: 20px; border-radius: 50%;
-            border: 2px solid var(--border); flex-shrink: 0;
+            width: 18px; height: 18px; border-radius: 50%;
+            border: 1px solid var(--border-strong); flex-shrink: 0;
             display: flex; align-items: center; justify-content: center;
-            transition: all 0.18s;
+            transition: all 0.2s;
         }
-        .ans-btn.sel .ans-dot { border-color: var(--blue); background: var(--blue); }
-        .ans-dot-inner { width: 8px; height: 8px; border-radius: 50%; background: #fff; display: none; }
+        .ans-btn.sel .ans-dot { border-color: var(--gold); background: var(--gold); }
+        .ans-dot-inner { width: 7px; height: 7px; border-radius: 50%; background: #12281F; display: none; }
         .ans-btn.sel .ans-dot-inner { display: block; }
 
-        .nav-row { display: flex; gap: 10px; }
+        /* Barra de acao flutuante */
+        .nav-row {
+            display: flex; gap: 10px;
+            position: sticky; bottom: 0;
+            margin: 0 -20px; padding: 26px 20px 14px;
+            background: linear-gradient(180deg, rgba(11,32,24,0) 0%, rgba(9,27,20,0.72) 40%, rgba(7,22,15,0.96) 100%);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
         .nav-row .btn-ghost { flex: 1; }
         .nav-row .btn-navy  { flex: 2; }
 
         /* ══════════════════════════════════════════════════
-           SCREEN: RESULTS
+           SCREEN: RESULTADO
         ══════════════════════════════════════════════════ */
         .result-hero {
-            border-radius: 20px; padding: 24px 22px;
-            color: #fff; margin-bottom: 20px; text-align: center;
+            border-radius: var(--r-lg); padding: 30px 24px;
+            color: var(--cream); margin-bottom: 24px; text-align: center;
+            border: 1px solid var(--border-strong);
+            position: relative; overflow: hidden;
         }
-        .rh-critico     { background: linear-gradient(140deg, #5C0000, #C0392B); }
-        .rh-alto        { background: linear-gradient(140deg, #7D3800, #E67E22); }
-        .rh-medio       { background: linear-gradient(140deg, #7A5B00, #F1C40F); }
-        .rh-baixo       { background: linear-gradient(140deg, #145A1E, #27AE60); }
-        .rh-company { font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.65); margin-bottom: 2px; }
-        .rh-meta    { font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 16px; }
-        .rh-lbl     { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.75); margin-bottom: 4px; }
-        .rh-risk    { font-size: 42px; font-weight: 900; letter-spacing: -2px; line-height: 1; margin-bottom: 8px; }
-        .rh-pct     { font-size: 13px; color: rgba(255,255,255,0.7); }
+        .rh-critico { background: linear-gradient(155deg, #3B1710 0%, #8A3A22 100%); }
+        .rh-alto    { background: linear-gradient(155deg, #3A2710 0%, #8A5F22 100%); }
+        .rh-medio   { background: linear-gradient(155deg, #32290F 0%, #85691F 100%); }
+        .rh-baixo   { background: linear-gradient(155deg, #0E2A21 0%, #276B4D 100%); }
+        .rh-company {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 22px; font-weight: 400; color: var(--cream); margin-bottom: 4px;
+        }
+        .rh-meta { font-size: 11px; color: rgba(244,236,220,0.62); margin-bottom: 22px; letter-spacing: 0.3px; }
+        .rh-lbl  { font-size: 9px; text-transform: uppercase; letter-spacing: 4px; color: var(--gold-light); font-weight: 700; margin-bottom: 10px; }
+        .rh-risk {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 52px; font-weight: 300; letter-spacing: 0; line-height: 1; margin-bottom: 10px;
+        }
+        .rh-pct { font-size: 12px; color: rgba(244,236,220,0.72); letter-spacing: 0.3px; }
 
-        .factor-item { background: #fff; border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; box-shadow: var(--sh); }
-        .fi-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 9px; }
-        .fi-name { font-size: 13px; font-weight: 700; flex: 1; margin-right: 8px; }
-        .bar-wrap { height: 8px; background: var(--border); border-radius: 100px; overflow: hidden; }
-        .bar-fill { height: 100%; border-radius: 100px; }
-        .fi-pct { font-size: 11px; color: var(--muted); text-align: right; margin-top: 5px; }
+        .factor-item {
+            background: linear-gradient(160deg, rgba(255,255,255,0.045), rgba(255,255,255,0.012));
+            border: 1px solid var(--border);
+            border-radius: var(--r-md); padding: 16px 18px; margin-bottom: 10px;
+        }
+        .fi-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+        .fi-name { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 17px; font-weight: 400; color: var(--cream); flex: 1; line-height: 1.25; }
+        .bar-wrap { height: 4px; background: rgba(244,236,220,0.10); border-radius: var(--r-pill); overflow: hidden; }
+        .bar-fill { height: 100%; border-radius: var(--r-pill); }
+        .fi-pct { font-size: 10px; color: var(--cream-low); text-align: right; margin-top: 7px; letter-spacing: 1px; text-transform: uppercase; }
 
-        .rec-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+        .rec-item { display: flex; align-items: flex-start; gap: 14px; padding: 15px 0; border-bottom: 1px solid var(--border); }
         .rec-item:last-child { border-bottom: none; }
         .rec-num {
-            width: 26px; height: 26px; border-radius: 50%;
-            background: var(--navy); color: #fff;
-            font-size: 12px; font-weight: 700;
+            width: 27px; height: 27px; border-radius: 50%;
+            background: transparent; border: 1px solid var(--gold); color: var(--gold);
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 14px; font-weight: 500;
             display: flex; align-items: center; justify-content: center; flex-shrink: 0;
         }
-        .rec-body { font-size: 13px; line-height: 1.6; color: var(--text); }
-        .rec-body strong { color: var(--navy); display: block; margin-bottom: 3px; }
+        .rec-body { font-size: 13px; line-height: 1.7; font-weight: 300; color: var(--cream-mid); }
+        .rec-body strong {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 16px; font-weight: 400; color: var(--cream);
+            display: block; margin-bottom: 5px; letter-spacing: 0.2px;
+        }
 
         .action-zone { display: flex; flex-direction: column; gap: 10px; padding-bottom: 36px; }
 
         /* ── MODAL ──────────────────────────────────────── */
         .overlay {
             display: none; position: fixed; inset: 0;
-            background: rgba(10,20,40,0.55); z-index: 200;
+            background: rgba(5,15,12,0.76); backdrop-filter: blur(6px); z-index: 200;
             align-items: flex-end; justify-content: center;
         }
         .overlay.open { display: flex; }
         .modal {
-            background: #fff; border-radius: 24px 24px 0 0;
-            padding: 20px; width: 100%; max-width: 480px;
-            animation: slideUp 0.28s ease;
+            background: var(--forest-800);
+            border-top: 1px solid var(--border-strong);
+            border-radius: 26px 26px 0 0;
+            padding: 24px 22px 26px; width: 100%; max-width: 430px;
+            animation: slideUp 0.3s ease;
         }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        .modal-handle { width: 38px; height: 4px; background: var(--border); border-radius: 100px; margin: 0 auto 18px; }
-        .modal h3 { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
-        .modal p  { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 22px; }
+        .modal-handle { width: 38px; height: 3px; background: var(--border-strong); border-radius: var(--r-pill); margin: 0 auto 20px; }
+        .modal h3 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 26px; font-weight: 400; margin-bottom: 8px; }
+        .modal p  { font-size: 13px; font-weight: 300; color: var(--cream-mid); line-height: 1.7; margin-bottom: 24px; }
 
         /* ── TOAST ──────────────────────────────────────── */
         .toast {
-            position: fixed; bottom: 24px; left: 50%;
-            transform: translateX(-50%) translateY(80px);
-            background: var(--navy); color: #fff;
-            padding: 11px 20px; border-radius: 100px;
-            font-size: 13px; font-weight: 600; z-index: 300;
-            transition: transform 0.28s ease;
-            white-space: nowrap; box-shadow: var(--sh2);
+            position: fixed; bottom: 26px; left: 50%;
+            transform: translateX(-50%) translateY(90px);
+            background: var(--gold-grad); color: #12281F;
+            padding: 12px 22px; border-radius: var(--r-pill);
+            font-size: 10.5px; font-weight: 700; z-index: 300;
+            text-transform: uppercase; letter-spacing: 1.2px;
+            transition: transform 0.3s ease;
+            white-space: nowrap; box-shadow: 0 12px 30px rgba(0,0,0,0.45);
         }
         .toast.show { transform: translateX(-50%) translateY(0); }
 
-        /* ── COMPLIANCE NOTICE ──────────────────────────── */
+        /* ── NOTA DE CONFORMIDADE ───────────────────────── */
         .compliance-note {
-            background: #FBF3E3; border-left: 3px solid var(--blue);
-            border-radius: 10px; padding: 12px 14px;
-            font-size: 12px; color: #6B5740; line-height: 1.5;
-            margin-bottom: 18px;
+            background: rgba(201,162,75,0.07);
+            border: 1px solid var(--border);
+            border-left: 2px solid var(--gold);
+            border-radius: 12px; padding: 14px 16px;
+            font-size: 12px; font-weight: 300; color: var(--cream-mid); line-height: 1.7;
+            margin-bottom: 20px;
         }
+        .compliance-note strong { font-weight: 600; color: var(--cream); }
 
-        /* ── PRINT ──────────────────────────────────────── */
+        /* ── DIVIDER ────────────────────────────────────── */
+        .divider { height: 1px; background: var(--border); margin: 4px 0 18px; }
+
+        /* ── TELA DE ATIVACAO ───────────────────────────── */
+        .activate-wrap {
+            min-height: 100vh;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 40px 24px; text-align: center;
+        }
+        .activate-logo {
+            width: 74px; height: 74px; border-radius: 22px;
+            background: transparent; border: 1px solid var(--gold);
+            color: var(--gold);
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 27px; font-weight: 400; margin: 0 auto 26px;
+            letter-spacing: 1px;
+        }
+        .activate-title { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 34px; font-weight: 400; margin-bottom: 10px; }
+        .activate-sub   { font-size: 13.5px; font-weight: 300; color: var(--cream-mid); line-height: 1.75; margin-bottom: 34px; }
+        .code-input {
+            width: 100%; padding: 17px; text-align: center;
+            font-size: 17px; font-weight: 500; letter-spacing: 4px;
+            border: 1px solid var(--border); border-radius: 14px;
+            outline: none; font-family: 'Inter', monospace;
+            text-transform: uppercase; background: rgba(255,255,255,0.04);
+            color: var(--cream);
+            transition: border-color 0.2s, background 0.2s; margin-bottom: 16px;
+        }
+        .code-input::placeholder { color: rgba(244,236,220,0.30); letter-spacing: 3px; }
+        .code-input:focus { border-color: var(--gold); background: rgba(201,162,75,0.07); }
+        .code-input.error { border-color: var(--risk-critico); animation: shake 0.3s ease; }
+        @keyframes shake {
+            0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}
+        }
+        .activate-error {
+            font-size: 12.5px; color: var(--risk-critico-t); font-weight: 500;
+            margin-bottom: 16px; display: none;
+        }
+        .activate-error.show { display: block; }
+        .activate-foot { margin-top: 26px; font-size: 12px; font-weight: 300; color: var(--cream-low); line-height: 1.8; }
+        .activate-foot strong { color: var(--gold-light); font-weight: 600; letter-spacing: 0.3px; }
+
+        /* ── BOTAO DE CONFIGURACAO ──────────────────────── */
+        .settings-btn {
+            background: transparent; border: 1px solid var(--border);
+            height: 30px; padding: 0 12px; border-radius: var(--r-pill);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; color: var(--gold-light);
+            font-family: 'Inter', sans-serif;
+            font-size: 8.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.8px;
+            transition: all 0.18s; flex-shrink: 0; white-space: nowrap;
+        }
+        .settings-btn:hover, .settings-btn:active { background: rgba(201,162,75,0.12); border-color: var(--border-strong); }
+
+        /* ── ASSINATURA DA IDENTIDADE (tela Sua Marca) ──── */
+        .identity-lock {
+            display: flex; align-items: center; gap: 14px;
+            background: rgba(201,162,75,0.06);
+            border: 1px solid var(--border); border-radius: var(--r-md);
+            padding: 15px 16px; margin-bottom: 22px;
+        }
+        .identity-swatch {
+            width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
+            background:
+                linear-gradient(135deg, transparent 50%, rgba(201,162,75,0.9) 50%),
+                var(--forest-700);
+            border: 1px solid var(--border-strong);
+        }
+        .identity-lock div p { font-size: 11.5px; font-weight: 300; color: var(--cream-low); line-height: 1.6; margin-top: 3px; }
+        .identity-lock div span { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 2.6px; color: var(--gold); }
+
+        /* ── MODO VITRINE ───────────────────────────────── */
+        #vitrine-banner {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 9000;
+            background: var(--gold-grad); color: #12281F;
+            font-size: 9px; font-weight: 700; letter-spacing: 2px;
+            text-transform: uppercase; text-align: center;
+            padding: 8px 12px;
+            display: flex; align-items: center; justify-content: center; gap: 12px;
+        }
+        #vitrine-banner a {
+            color: #12281F; background: rgba(18,40,31,0.16);
+            padding: 4px 11px; border-radius: var(--r-pill); text-decoration: none;
+            font-size: 9px; letter-spacing: 1.4px; white-space: nowrap;
+        }
+        body.tem-vitrine-banner { padding-top: 34px; }
+        @media print { #vitrine-banner { display: none; } }
+
+        #vitrine-overlay {
+            position: fixed; inset: 0; z-index: 9100;
+            background: rgba(5,15,12,0.82); backdrop-filter: blur(8px);
+            display: flex; align-items: center; justify-content: center; padding: 22px;
+        }
+        #vitrine-overlay .vitrine-card {
+            background: var(--forest-800);
+            border: 1px solid var(--border-strong);
+            border-radius: var(--r-lg); padding: 28px 24px;
+            max-width: 360px; width: 100%; text-align: left;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+        }
+        .vitrine-tag {
+            display: inline-block; background: rgba(201,162,75,0.14); color: var(--gold-light);
+            border: 1px solid var(--border-strong);
+            font-size: 9px; font-weight: 700; letter-spacing: 2px;
+            text-transform: uppercase; padding: 5px 11px; border-radius: var(--r-pill);
+            margin-bottom: 16px;
+        }
+        #vitrine-overlay h3 {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 25px; font-weight: 400; color: var(--cream); margin: 0 0 12px; line-height: 1.25;
+        }
+        #vitrine-overlay p { font-size: 13px; font-weight: 300; line-height: 1.75; color: var(--cream-mid); margin: 0 0 22px; }
+        .vitrine-btn { display: block; width: 100%; text-align: center; text-decoration: none; }
+        .vitrine-btn + .vitrine-btn { margin-top: 9px; }
+        .vitrine-btn-ghost { background: transparent; border: 1px solid var(--border-strong); color: var(--gold-light); }
+
+        /* ══════════════════════════════════════════════════
+           IMPRESSAO — sistema DOCUMENTAL CLARO
+           O relatorio e leitura longa e vai para o cliente em
+           papel ou PDF. Aqui a interface inteira inverte para
+           creme institucional e grafite.
+        ══════════════════════════════════════════════════ */
         .print-only { display: none !important; }
 
         @media print {
-            /* 1. Ocultar TODAS as telas por padrão */
+            :root {
+                --cream: #1F1F1F;
+                --cream-mid: #3D3D3A;
+                --cream-low: #6B6B66;
+                --text: #1F1F1F;
+                --muted: #6B6B66;
+                --gold: #A8823A;
+                --gold-light: #A8823A;
+                --border: #DCD8CF;
+                --border-strong: #C9C4B8;
+                --navy: #1F1F1F;
+                color-scheme: light;
+            }
+
             .screen { display: none !important; }
 
-            /* 2. Mostrar APENAS a tela de resultados */
             #s-results {
                 display: block !important;
                 position: static !important;
@@ -337,174 +681,97 @@
                 animation: none !important;
             }
 
-            /* 3. Ocultar elementos de navegação e UI */
             header.header,
             .overlay,
             .toast,
+            .nav-row,
             .no-print { display: none !important; }
 
-            /* 4. Body e html para impressão */
             html, body {
                 max-width: 100% !important;
                 width: 100% !important;
                 margin: 0 !important;
                 padding: 0 !important;
-                background: #fff !important;
-                color: #111 !important;
+                background: #FFFFFF !important;
+                color: #1F1F1F !important;
                 font-size: 11pt !important;
+                border: none !important;
+                box-shadow: none !important;
             }
 
-            /* 5. Preservar cores exatas na impressão */
             *, *::before, *::after {
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
 
-            /* 6. Cards sem sombra, com borda, sem corte de página */
             .print-card,
             .factor-item,
             .card {
+                background: #FFFFFF !important;
+                color: #1F1F1F !important;
                 box-shadow: none !important;
-                border: 1px solid #ddd !important;
+                border: 1px solid #DCD8CF !important;
                 break-inside: avoid !important;
                 page-break-inside: avoid !important;
             }
 
-            /* 7. Hero do resultado: evitar quebra + manter gradiente */
+            .sec-label { color: #A8823A !important; }
+            .sec-label::after { background: #A8823A !important; }
+            .fi-name, .rec-body strong, .company-name { color: #1F1F1F !important; }
+            .rec-body { color: #3D3D3A !important; }
+            .fi-pct { color: #6B6B66 !important; }
+            .rec-num { border-color: #A8823A !important; color: #A8823A !important; }
+            .bar-wrap { background: #E8E4DB !important; }
+
+            .badge-critico { background: #FBEAE4 !important; color: #8A3A22 !important; border-color: #E8C3B4 !important; }
+            .badge-alto    { background: #FBF0E0 !important; color: #8A5F22 !important; border-color: #E8D5B4 !important; }
+            .badge-medio   { background: #FAF3E0 !important; color: #7A5F1F !important; border-color: #E5D8B2 !important; }
+            .badge-baixo   { background: #E7F2EC !important; color: #256B4C !important; border-color: #BDD9CA !important; }
+
             .result-hero {
+                color: #FFFFFF !important;
+                border: none !important;
                 break-inside: avoid !important;
                 page-break-inside: avoid !important;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
             }
+            /* Precisa vir depois da regra generica de .print-card, senao o
+               fundo branco !important apaga o gradiente e o hero some. */
+            .result-hero.rh-critico { background: linear-gradient(155deg, #3B1710 0%, #8A3A22 100%) !important; }
+            .result-hero.rh-alto    { background: linear-gradient(155deg, #3A2710 0%, #8A5F22 100%) !important; }
+            .result-hero.rh-medio   { background: linear-gradient(155deg, #32290F 0%, #85691F 100%) !important; }
+            .result-hero.rh-baixo   { background: linear-gradient(155deg, #0E2A21 0%, #276B4D 100%) !important; }
+            .rh-company, .rh-risk { color: #FFFFFF !important; }
+            .rh-meta { color: rgba(255,255,255,0.72) !important; }
+            .rh-lbl  { color: rgba(255,255,255,0.86) !important; }
+            .rh-pct  { color: rgba(255,255,255,0.80) !important; }
 
-            /* 8. Corrigir barras de progresso (overflow:hidden quebra no print) */
+            .compliance-note {
+                background: #FAF6EC !important;
+                color: #3D3D3A !important;
+                border: 1px solid #DCD8CF !important;
+                border-left: 2px solid #A8823A !important;
+                break-inside: avoid !important;
+                page-break-inside: avoid !important;
+            }
+            .compliance-note strong { color: #1F1F1F !important; }
+
             .bar-wrap {
                 overflow: visible !important;
-                height: 10px !important;
+                height: 8px !important;
                 border-radius: 100px !important;
-                background: #e0e0e0 !important;
                 border: none !important;
             }
 
-            /* 9. Compliance note e cards internos */
-            .compliance-note {
-                break-inside: avoid !important;
-                page-break-inside: avoid !important;
-            }
+            .print-only { display: block !important; }
 
-            /* 10. Exibir elementos exclusivos de impressão */
-            .print-only {
-                display: block !important;
-            }
+            @page { size: A4; margin: 12mm 12mm 16mm 12mm; }
 
-            /* 11. Configuração da página A4 */
-            @page {
-                size: A4;
-                margin: 12mm 12mm 16mm 12mm;
-            }
-
-            /* 12. Rec items sem corte */
             .rec-item {
+                border-bottom: 1px solid #E8E4DB !important;
                 break-inside: avoid !important;
                 page-break-inside: avoid !important;
             }
         }
-
-        /* ── DIVIDER ────────────────────────────────────── */
-        .divider { height: 1px; background: var(--border); margin: 4px 0 16px; }
-
-        /* ── ACTIVATION SCREEN ─────────────────────────── */
-        .activate-wrap {
-            min-height: calc(100vh - 68px);
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            padding: 32px 20px; text-align: center;
-        }
-        .activate-logo {
-            width: 72px; height: 72px; border-radius: 20px;
-            background: var(--navy); color: #fff;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 32px; font-weight: 900; margin: 0 auto 20px;
-            letter-spacing: -1px;
-        }
-        .activate-title { font-size: 22px; font-weight: 800; margin-bottom: 8px; }
-        .activate-sub   { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 32px; }
-        .code-input {
-            width: 100%; padding: 16px; text-align: center;
-            font-size: 20px; font-weight: 700; letter-spacing: 3px;
-            border: 2px solid var(--border); border-radius: 14px;
-            outline: none; font-family: 'Courier New', monospace;
-            text-transform: uppercase; background: #fff;
-            transition: border-color 0.18s; margin-bottom: 14px;
-        }
-        .code-input:focus { border-color: var(--blue); }
-        .code-input.error { border-color: #C0392B; animation: shake 0.3s ease; }
-        @keyframes shake {
-            0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}
-        }
-        .activate-error {
-            font-size: 13px; color: #C0392B; font-weight: 600;
-            margin-bottom: 14px; display: none;
-        }
-        .activate-error.show { display: block; }
-
-        /* ── SETTINGS BTN ───────────────────────────────── */
-        .settings-btn {
-            background: rgba(255,255,255,0.12); border: none;
-            width: 36px; height: 36px; border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; font-size: 18px; color: #fff;
-            transition: background 0.18s; flex-shrink: 0;
-        }
-        .settings-btn:active { background: rgba(255,255,255,0.22); }
-
-        /* ── COLOR PRESETS ──────────────────────────────── */
-        .color-presets { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
-        .color-dot {
-            width: 34px; height: 34px; border-radius: 50%; cursor: pointer;
-            border: 3px solid transparent; transition: all 0.18s;
-        }
-        .color-dot.selected { border-color: var(--text); transform: scale(1.1); }
-
-        /* ── MODO VITRINE ───────────────────────────────── */
-        #vitrine-banner {
-            position: fixed; top: 0; left: 0; right: 0; z-index: 9000;
-            background: #C9A227; color: #1A1A1A;
-            font-size: 11px; font-weight: 800; letter-spacing: .4px;
-            text-transform: uppercase; text-align: center;
-            padding: 7px 12px;
-            display: flex; align-items: center; justify-content: center; gap: 12px;
-        }
-        #vitrine-banner a {
-            color: #1A1A1A; background: rgba(26,26,26,.14);
-            padding: 4px 10px; border-radius: 99px; text-decoration: none;
-            font-size: 10.5px; white-space: nowrap;
-        }
-        body.tem-vitrine-banner { padding-top: 32px; }
-        @media print { #vitrine-banner { display: none; } }
-
-        #vitrine-overlay {
-            position: fixed; inset: 0; z-index: 9100;
-            background: rgba(26,26,26,.74);
-            display: flex; align-items: center; justify-content: center; padding: 20px;
-        }
-        #vitrine-overlay .vitrine-card {
-            background: #fff; border-radius: 16px; padding: 26px 22px;
-            max-width: 360px; width: 100%; text-align: left;
-            box-shadow: 0 20px 50px rgba(0,0,0,.4);
-        }
-        .vitrine-tag {
-            display: inline-block; background: #1A1A1A; color: #C9A227;
-            font-size: 10px; font-weight: 800; letter-spacing: .5px;
-            text-transform: uppercase; padding: 5px 10px; border-radius: 99px;
-            margin-bottom: 12px;
-        }
-        #vitrine-overlay h3 { font-size: 18px; margin: 0 0 10px; line-height: 1.3; }
-        #vitrine-overlay p { font-size: 13.5px; line-height: 1.6; color: #6b6b6b; margin: 0 0 18px; }
-        .vitrine-btn { display: block; width: 100%; text-align: center; text-decoration: none; }
-        .vitrine-btn + .vitrine-btn { margin-top: 8px; }
-        .vitrine-btn-ghost { background: transparent; border: 1.5px solid #1A1A1A; color: #1A1A1A; }
     </style>
 </head>
 <body>
@@ -512,18 +779,18 @@
 <!-- ══ SCREEN: ATIVAÇÃO ═══════════════════════════════════ -->
 <div id="s-activate" class="screen">
     <div class="activate-wrap">
-        <div class="activate-logo">NR1</div>
+        <div class="activate-logo">AXIS</div>
         <div class="activate-title">Código de Acesso</div>
-        <div class="activate-sub">Este app é licenciado individualmente.<br>Digite o código que você recebeu ao adquirir a ferramenta.</div>
+        <div class="activate-sub">Este aplicativo é licenciado individualmente.<br>Digite o código que você recebeu ao adquirir a ferramenta.</div>
         <input class="code-input" id="act-input" type="text" maxlength="14"
                placeholder="AXIS-XXXX-XXXX"
                oninput="formatCode(this)"
                onkeydown="if(event.key==='Enter') tryActivate()" />
         <div class="activate-error" id="act-error">Código inválido. Verifique e tente novamente.</div>
-        <button class="btn btn-navy" style="width:100%;" onclick="tryActivate()">Ativar Acesso →</button>
-        <div style="margin-top:20px;font-size:12px;color:var(--muted);line-height:1.6;">
-            Não tem um código? Entre em contato com a Axis Consultorias.<br>
-            <strong style="color:var(--text);">@axisconsultorias</strong>
+        <button class="btn btn-navy" style="width:100%;" onclick="tryActivate()">Ativar acesso</button>
+        <div class="activate-foot">
+            Não tem um código? Entre em contato com a AXIS.<br>
+            <strong>www.axisconsultorias.com.br</strong>
         </div>
     </div>
 </div>
@@ -532,11 +799,11 @@
 <header class="header">
     <div class="header-brand">
         <span class="header-sub" id="h-empresa">Minha Consultoria</span>
-        <span class="header-title" id="h-profissional">Mapeamento NR-1</span>
+        <span class="header-title" id="h-profissional">Diagnóstico NR-1</span>
     </div>
     <div style="display:flex;align-items:center;gap:8px;">
         <span class="header-tag">NR-1 / 2025</span>
-        <button class="settings-btn" onclick="goBrand()" title="Configurar marca">⚙️</button>
+        <button class="settings-btn" onclick="goBrand()" title="Configurar marca">Marca</button>
     </div>
 </header>
 
@@ -544,14 +811,13 @@
 <div id="s-home" class="screen active">
 
     <div class="hero">
-        <h2>Diagnóstico de Riscos Psicossociais</h2>
-        <p>Mapeie os fatores de risco NR-1 durante a reunião de vendas, sem planilhas, direto no celular.</p>
-        <button class="btn btn-ghost" onclick="goSetup()">
-            <span>＋</span> Nova Análise de Empresa
-        </button>
+        <div class="hero-eyebrow">Inteligência Psicossocial</div>
+        <h2>Diagnóstico de <em>riscos psicossociais</em></h2>
+        <p>Mapeie os seis fatores de risco da NR-1 durante a reunião com o cliente, sem planilha, direto no celular.</p>
+        <button class="btn btn-navy" onclick="goSetup()">Nova análise de empresa</button>
     </div>
 
-    <div class="sec-label">Análises Realizadas</div>
+    <div class="sec-label">Análises realizadas</div>
     <div id="companies-list"></div>
 </div>
 
@@ -561,7 +827,7 @@
     <div class="screen-sub">Preencha os dados da empresa antes de iniciar o diagnóstico de riscos psicossociais.</div>
 
     <div class="compliance-note">
-        📋 <strong>Conformidade NR-1 (2025):</strong> Este questionário avalia os 6 fatores de risco psicossocial conforme a Portaria MTE nº 1.419/2024.
+        <strong>Conformidade NR-1 (2025):</strong> este questionário avalia os seis fatores de risco psicossocial conforme a Portaria MTE nº 1.419/2024.
     </div>
 
     <div class="form-group">
@@ -572,17 +838,17 @@
         <label>Setor / Segmento</label>
         <select id="f-setor">
             <option value="">Selecione...</option>
-            <option>Saúde</option>
+            <option>Administração Pública</option>
+            <option>Alimentação / Hotelaria</option>
+            <option>Construção Civil</option>
             <option>Educação</option>
+            <option>Indústria / Manufatura</option>
+            <option>Jurídico / Consultoria</option>
+            <option>Logística / Transporte</option>
+            <option>Saúde</option>
+            <option>Serviços Financeiros</option>
             <option>Tecnologia / TI</option>
             <option>Varejo / Comércio</option>
-            <option>Indústria / Manufatura</option>
-            <option>Serviços Financeiros</option>
-            <option>Logística / Transporte</option>
-            <option>Construção Civil</option>
-            <option>Alimentação / Hotelaria</option>
-            <option>Administração Pública</option>
-            <option>Jurídico / Consultoria</option>
             <option>Outro</option>
         </select>
     </div>
@@ -602,8 +868,8 @@
         <input type="date" id="f-data" />
     </div>
 
-    <button class="btn btn-navy" onclick="startQ()" style="margin-top:4px;">Iniciar Diagnóstico →</button>
-    <button class="btn btn-ghost" onclick="goHome()" style="margin-top:10px;">← Voltar</button>
+    <button class="btn btn-navy" onclick="startQ()" style="margin-top:4px;">Iniciar diagnóstico</button>
+    <button class="btn btn-ghost" onclick="goHome()" style="margin-top:10px;">Voltar</button>
 </div>
 
 <!-- ══ SCREEN: QUESTIONÁRIO ═════════════════════════════ -->
@@ -620,8 +886,8 @@
     <div class="q-text" id="q-text"></div>
     <div class="answers" id="q-answers"></div>
     <div class="nav-row">
-        <button class="btn btn-ghost" id="btn-back" onclick="prevQ()">← Voltar</button>
-        <button class="btn btn-navy" id="btn-next" onclick="nextQ()" disabled>Próxima →</button>
+        <button class="btn btn-ghost" id="btn-back" onclick="prevQ()">Voltar</button>
+        <button class="btn btn-navy" id="btn-next" onclick="nextQ()" disabled>Próxima</button>
     </div>
 </div>
 
@@ -633,11 +899,19 @@
 <!-- ══ SCREEN: CONFIGURAR MARCA ══════════════════════════ -->
 <div id="s-brand" class="screen">
     <div class="screen-h1">Sua Marca</div>
-    <div class="screen-sub">Personalize o app com os dados da sua consultoria. Estas informações aparecem no cabeçalho e nos relatórios.</div>
+    <div class="screen-sub">Personalize o aplicativo com os dados da sua consultoria. Estas informações aparecem no cabeçalho e no relatório entregue ao cliente.</div>
+
+    <div class="identity-lock">
+        <div class="identity-swatch"></div>
+        <div>
+            <span>Identidade AXIS</span>
+            <p>A paleta é fixa: verde profundo e dourado. Ela garante que todo relatório saia com o mesmo padrão de apresentação.</p>
+        </div>
+    </div>
 
     <div class="form-group">
         <label>Nome da sua Consultoria / Empresa *</label>
-        <input type="text" id="b-empresa" placeholder="Ex.: Axis Consultorias" />
+        <input type="text" id="b-empresa" placeholder="Ex.: AXIS Consultorias" />
     </div>
     <div class="form-group">
         <label>Seu nome profissional *</label>
@@ -649,26 +923,21 @@
     </div>
     <div class="form-group">
         <label>WhatsApp / Contato</label>
-        <input type="text" id="b-contato" placeholder="Ex.: (11) 94781-8238" />
+        <input type="text" id="b-contato" placeholder="Ex.: (11) 90000-0000" />
     </div>
     <div class="form-group">
         <label>Instagram</label>
         <input type="text" id="b-instagram" placeholder="Ex.: @axisconsultorias" />
     </div>
-    <div class="form-group">
-        <label>Cor principal</label>
-        <div class="color-presets" id="color-presets"></div>
-    </div>
-
-    <button class="btn btn-navy" onclick="saveBrand()" style="margin-top:8px;">Salvar e continuar →</button>
+    <button class="btn btn-navy" onclick="saveBrand()" style="margin-top:8px;">Salvar e continuar</button>
 </div>
 
 <!-- MODAL: confirmar exclusão -->
 <div class="overlay" id="modal-del">
     <div class="modal">
         <div class="modal-handle"></div>
-        <h3>Excluir Análise</h3>
-        <p>Tem certeza? Esta ação não pode ser desfeita.</p>
+        <h3>Excluir análise</h3>
+        <p>Esta ação não pode ser desfeita. A análise sai do aparelho definitivamente.</p>
         <button class="btn btn-accent" onclick="confirmDel()">Excluir definitivamente</button>
         <button class="btn btn-ghost" onclick="closeModal()" style="margin-top:10px;">Cancelar</button>
     </div>
@@ -683,7 +952,7 @@
 // ─────────────────────────────────────────────────────────
 const FATORES = [
   {
-    id: 'demanda', icon: '⚙️',
+    id: 'demanda',
     sub: 'Fator 1 de 6',
     nome: 'Demanda e Organização do Trabalho',
     perguntas: [
@@ -696,7 +965,7 @@ const FATORES = [
     ]
   },
   {
-    id: 'controle', icon: '🎯',
+    id: 'controle',
     sub: 'Fator 2 de 6',
     nome: 'Controle e Autonomia',
     perguntas: [
@@ -708,7 +977,7 @@ const FATORES = [
     ]
   },
   {
-    id: 'relacoes', icon: '🤝',
+    id: 'relacoes',
     sub: 'Fator 3 de 6',
     nome: 'Relações e Suporte Social',
     perguntas: [
@@ -720,7 +989,7 @@ const FATORES = [
     ]
   },
   {
-    id: 'reconhecimento', icon: '⭐',
+    id: 'reconhecimento',
     sub: 'Fator 4 de 6',
     nome: 'Reconhecimento e Recompensa',
     perguntas: [
@@ -731,7 +1000,7 @@ const FATORES = [
     ]
   },
   {
-    id: 'comunicacao', icon: '📢',
+    id: 'comunicacao',
     sub: 'Fator 5 de 6',
     nome: 'Comunicação Organizacional',
     perguntas: [
@@ -742,7 +1011,7 @@ const FATORES = [
     ]
   },
   {
-    id: 'saude', icon: '💚',
+    id: 'saude',
     sub: 'Fator 6 de 6',
     nome: 'Saúde e Bem-Estar Psicológico',
     perguntas: [
@@ -825,17 +1094,20 @@ function riskClass(nivel) {
   if (nivel === 'Médio')    return 'medio';
   return 'baixo';
 }
+// Escala de risco do sistema Digital Profundo: quente, sem vermelho puro nem
+// verde puro, com contraste verificado sobre o fundo verde-esmeralda.
 function riskColor(nivel) {
-  if (nivel === 'Crítico')  return '#C0392B';
-  if (nivel === 'Alto')     return '#E67E22';
-  if (nivel === 'Médio')    return '#F1C40F';
-  return '#27AE60';
+  if (nivel === 'Crítico')  return '#D4603F';
+  if (nivel === 'Alto')     return '#DE9440';
+  if (nivel === 'Médio')    return '#C9A24B';
+  return '#62A882';
 }
-function riskEmoji(nivel) {
-  if (nivel === 'Crítico')  return '🔴';
-  if (nivel === 'Alto')     return '⚠️';
-  if (nivel === 'Médio')    return '🔶';
-  return '✅';
+// Sem emoji: a inicial do nivel, em tipografia, dentro de um contorno da cor.
+function riskInitial(nivel) {
+  if (nivel === 'Crítico')  return 'C';
+  if (nivel === 'Alto')     return 'A';
+  if (nivel === 'Médio')    return 'M';
+  return 'B';
 }
 function fmtDate(d) {
   if (!d) return '';
@@ -903,8 +1175,8 @@ function renderHome() {
   if (!companies.length) {
     list.innerHTML = `
       <div class="empty-state">
-        <div class="e-icon">📋</div>
-        <p>Nenhuma análise realizada ainda.<br>Toque em <strong>"Nova Análise"</strong> para começar.</p>
+        <div class="e-icon">Ainda vazio</div>
+        <p>Nenhuma análise realizada.<br>Toque em <strong>Nova análise de empresa</strong> para começar.</p>
       </div>`;
     return;
   }
@@ -913,13 +1185,15 @@ function renderHome() {
     const rc = riskClass(c.nivel);
     return `
       <div class="company-card" onclick="viewCompany(${i})">
-        <div class="company-icon" style="background:${riskColor(c.nivel)}18">${riskEmoji(c.nivel)}</div>
+        <div class="company-icon" style="color:${riskColor(c.nivel)};background:${riskColor(c.nivel)}1A">${riskInitial(c.nivel)}</div>
         <div class="company-info">
           <div class="company-name">${c.empresa}</div>
-          <div class="company-meta">${c.setor || '—'} · ${fmtDate(c.data)} · ${c.pct}%</div>
+          <div class="company-meta">${c.setor || 'Setor não informado'} · ${fmtDate(c.data)} · ${c.pct}%</div>
         </div>
-        <span class="badge badge-${rc}">${c.nivel}</span>
-        <button class="del-btn" onclick="event.stopPropagation();askDel(${i})">✕</button>
+        <div class="company-right">
+          <span class="badge badge-${rc}">${c.nivel}</span>
+          <button class="del-btn" onclick="event.stopPropagation();askDel(${i})">Excluir</button>
+        </div>
       </div>`;
   }).join('');
 }
@@ -987,7 +1261,7 @@ function renderQ() {
   document.getElementById('prog-bar').style.width = `${(gIdx / total) * 100}%`;
 
   // Category
-  document.getElementById('q-icon').textContent = fator.icon;
+  document.getElementById('q-icon').textContent = String(S.fi + 1).padStart(2, '0');
   document.getElementById('q-sub').textContent  = fator.sub;
   document.getElementById('q-name').textContent = fator.nome;
 
@@ -1020,7 +1294,7 @@ function renderQ() {
 
   document.getElementById('btn-back').style.display = isFirst ? 'none' : 'flex';
   const nextBtn = document.getElementById('btn-next');
-  nextBtn.textContent = isLast ? 'Ver Diagnóstico ✓' : 'Próxima →';
+  nextBtn.textContent = isLast ? 'Ver diagnóstico' : 'Próxima';
   nextBtn.disabled = selVal === undefined;
 }
 
@@ -1082,7 +1356,7 @@ function calcResults() {
     f.perguntas.forEach((_, pi) => { tot += S.resp[`${fi}_${pi}`] || 0; });
     const pct = Math.round((tot / max) * 100);
     const nivel = pct >= 76 ? 'Crítico' : pct >= 51 ? 'Alto' : pct >= 26 ? 'Médio' : 'Baixo';
-    return { id: f.id, icon: f.icon, nome: f.nome, tot, max, pct, nivel };
+    return { id: f.id, nome: f.nome, tot, max, pct, nivel };
   });
 
   const avgPct = Math.round(fatores.reduce((s, f) => s + f.pct, 0) / fatores.length);
@@ -1119,7 +1393,7 @@ function renderResults(c) {
     return `
       <div class="factor-item print-card">
         <div class="fi-top">
-          <div class="fi-name">${f.icon} ${f.nome}</div>
+          <div class="fi-name">${f.nome}</div>
           <span class="badge badge-${frc}">${f.nivel}</span>
         </div>
         <div class="bar-wrap">
@@ -1140,7 +1414,8 @@ function renderResults(c) {
       <div class="rec-item">
         <div class="rec-num">${i + 1}</div>
         <div class="rec-body">
-          <strong>${f.icon} ${f.nome}: ${f.nivel} (${f.pct}%)</strong>
+          <strong>${f.nome}</strong>
+          <span style="display:block;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:2.4px;color:var(--gold);margin-bottom:8px;">${f.nivel} · ${f.pct}% de risco</span>
           ${rec}
         </div>
       </div>`;
@@ -1153,18 +1428,18 @@ function renderResults(c) {
   document.getElementById('s-results').innerHTML = `
 
     <!-- CABEÇALHO EXCLUSIVO DE IMPRESSÃO -->
-    <div class="print-only" style="border-bottom:3px solid #2C1F0E;padding-bottom:16px;margin-bottom:20px;">
+    <div class="print-only" style="border-bottom:2px solid #A8823A;padding-bottom:16px;margin-bottom:20px;">
       <div style="display:flex;align-items:center;justify-content:space-between;">
         <div>
-          <div style="font-size:10pt;text-transform:uppercase;letter-spacing:2px;color:#9A8A78;margin-bottom:2px;">Relatório de Diagnóstico NR-1</div>
-          <div style="font-size:18pt;font-weight:900;color:#2C1F0E;letter-spacing:-0.5px;">Axis Insight IA</div>
-          <div style="font-size:9pt;color:#9A8A78;margin-top:2px;">Mapeamento de Riscos Psicossociais | Portaria MTE nº 1.419/2024</div>
+          <div style="font-size:10pt;text-transform:uppercase;letter-spacing:3px;color:#A8823A;font-weight:700;margin-bottom:4px;">Relatório de diagnóstico NR-1</div>
+          <div style="font-family:'Cormorant Garamond',Georgia,serif;font-size:20pt;font-weight:500;color:#1F1F1F;letter-spacing:0.3px;">${brand ? brand.empresa : 'AXIS'}</div>
+          <div style="font-size:9pt;color:#6B6B66;margin-top:2px;">Diagnóstico de Riscos Psicossociais | Portaria MTE nº 1.419/2024</div>
         </div>
         <div style="text-align:right;">
-          <div style="font-size:10pt;font-weight:700;color:#2C1F0E;">${c.empresa}</div>
-          <div style="font-size:9pt;color:#9A8A78;">${c.setor} · ${c.func}</div>
-          <div style="font-size:9pt;color:#9A8A78;">Data da análise: ${dataFormatada}</div>
-          ${brand ? `<div style="font-size:9pt;color:#9A8A78;margin-top:4px;">${brand.empresa} · ${brand.profissional}</div>` : ''}
+          <div style="font-size:10pt;font-weight:700;color:#1F1F1F;">${c.empresa}</div>
+          <div style="font-size:9pt;color:#6B6B66;">${c.setor} · ${c.func}</div>
+          <div style="font-size:9pt;color:#6B6B66;">Data da análise: ${dataFormatada}</div>
+          ${brand ? `<div style="font-size:9pt;color:#6B6B66;margin-top:4px;">${brand.empresa} · ${brand.profissional}</div>` : ''}
         </div>
       </div>
     </div>
@@ -1178,11 +1453,11 @@ function renderResults(c) {
       <div class="rh-pct">Índice consolidado: ${c.pct}%</div>
     </div>
 
-    <div class="sec-label">Resultado por Fator de Risco</div>
+    <div class="sec-label">Resultado por fator de risco</div>
     ${factorsHTML}
 
     <div class="card print-card" style="margin-top:4px;">
-      <div class="sec-label" style="margin-bottom:4px;">Distribuição de Risco por Nível</div>
+      <div class="sec-label" style="margin-bottom:4px;">Distribuição de risco por nível</div>
       <div style="font-size:12px;color:var(--muted);margin-bottom:16px;">Proporção dos 6 fatores em cada categoria</div>
       <div style="display:flex;align-items:center;gap:16px;">
         <div style="width:170px;height:170px;flex-shrink:0;position:relative;">
@@ -1194,7 +1469,7 @@ function renderResults(c) {
     </div>
 
     <div class="card print-card">
-      <div class="sec-label" style="margin-bottom:14px;">🎯 Recomendações Prioritárias</div>
+      <div class="sec-label" style="margin-bottom:14px;">Recomendações prioritárias</div>
       <div style="font-size:12px;color:var(--muted);margin-bottom:14px;">
         Baseadas nos 3 fatores com maior índice de risco identificado:
       </div>
@@ -1202,30 +1477,30 @@ function renderResults(c) {
     </div>
 
     <div class="compliance-note print-card" style="margin-bottom:14px;">
-      ⚖️ Este diagnóstico serve como subsídio para elaboração do <strong>PGR</strong> e <strong>PCMSO</strong>
+      Este diagnóstico serve como subsídio para elaboração do <strong>PGR</strong> e <strong>PCMSO</strong>
       conforme exigência da NR-1 (Portaria MTE nº 1.419/2024). Recomenda-se aprofundamento com avaliação clínica individual.
     </div>
 
     ${brand ? `
-    <div class="print-card" style="background:#fff;border-radius:12px;padding:16px;box-shadow:var(--sh);margin-bottom:18px;display:flex;align-items:center;gap:14px;">
-      <div style="width:42px;height:42px;border-radius:10px;background:var(--navy);display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;font-weight:700;flex-shrink:0;">${brand.empresa.charAt(0).toUpperCase()}</div>
+    <div class="print-card" style="background:linear-gradient(160deg,rgba(255,255,255,0.045),rgba(255,255,255,0.012));border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:18px;display:flex;align-items:center;gap:14px;">
+      <div style="width:44px;height:44px;border-radius:12px;border:1px solid var(--gold);color:var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',Georgia,serif;font-size:21px;font-weight:500;flex-shrink:0;">${brand.empresa.charAt(0).toUpperCase()}</div>
       <div>
-        <div style="font-size:14px;font-weight:700;color:var(--text);">${brand.empresa}</div>
-        ${brandLinhas.map(l=>`<div style="font-size:12px;color:var(--muted);">${l}</div>`).join('')}
+        <div style="font-family:'Cormorant Garamond',Georgia,serif;font-size:20px;font-weight:400;color:var(--text);">${brand.empresa}</div>
+        ${brandLinhas.map(l=>`<div style="font-size:11.5px;font-weight:300;color:var(--muted);line-height:1.65;">${l}</div>`).join('')}
       </div>
     </div>` : ''}
 
     <!-- RODAPÉ EXCLUSIVO DE IMPRESSÃO -->
-    <div class="print-only" style="border-top:1px solid #E5DAC8;margin-top:24px;padding-top:12px;display:flex;justify-content:space-between;align-items:center;">
-      <div style="font-size:8pt;color:#9A8A78;">Gerado por Axis Insight IA · axisconsultorias.com.br</div>
-      <div style="font-size:8pt;color:#9A8A78;">Diagnóstico realizado em ${dataFormatada}</div>
+    <div class="print-only" style="border-top:1px solid #DCD8CF;margin-top:24px;padding-top:12px;display:flex;justify-content:space-between;align-items:center;">
+      <div style="font-size:8pt;color:#6B6B66;">Gerado com AXIS · www.axisconsultorias.com.br</div>
+      <div style="font-size:8pt;color:#6B6B66;">Diagnóstico realizado em ${dataFormatada}</div>
     </div>
 
     <!-- BOTÕES DE AÇÃO (ocultos na impressão) -->
     <div class="action-zone no-print">
-      <button class="btn btn-gold" onclick="printReport()">🖨️ Imprimir / Salvar como PDF</button>
-      <button class="btn btn-navy" onclick="goSetup()">＋ Nova Análise</button>
-      <button class="btn btn-ghost" onclick="goHome()">← Todas as Análises</button>
+      <button class="btn btn-gold" onclick="printReport()">Imprimir ou salvar em PDF</button>
+      <button class="btn btn-ghost" onclick="goSetup()">Nova análise</button>
+      <button class="btn btn-ghost" onclick="goHome()">Todas as análises</button>
     </div>
   `;
 
@@ -1243,7 +1518,7 @@ function drawPie(fatores) {
   if (pieInst) { pieInst.destroy(); pieInst = null; }
 
   const LEVELS = ['Crítico', 'Alto', 'Médio', 'Baixo'];
-  const COLORS  = ['#C0392B', '#E67E22', '#F1C40F', '#27AE60'];
+  const COLORS  = ['#D4603F', '#DE9440', '#C9A24B', '#62A882'];
 
   // Count how many factors fall in each level
   const counts = LEVELS.map(l => fatores.filter(f => f.nivel === l).length);
@@ -1258,10 +1533,10 @@ function drawPie(fatores) {
       if (n === 0) return '';
       return `
         <div style="display:flex;align-items:center;gap:8px;">
-          <div style="width:12px;height:12px;border-radius:3px;background:${COLORS[i]};flex-shrink:0;"></div>
-          <div style="font-size:13px;color:#2C1F0E;flex:1;">${l}</div>
-          <div style="font-size:13px;font-weight:700;color:#2C1F0E;">${pct}%</div>
-          <div style="font-size:11px;color:#9A8A78;">(${n}/${total})</div>
+          <div style="width:9px;height:9px;border-radius:2px;background:${COLORS[i]};flex-shrink:0;"></div>
+          <div style="font-size:12.5px;font-weight:300;color:var(--text);flex:1;">${l}</div>
+          <div style="font-size:12.5px;font-weight:600;color:var(--text);">${pct}%</div>
+          <div style="font-size:10.5px;color:var(--muted);">(${n}/${total})</div>
         </div>`;
     }).join('');
   }
@@ -1273,8 +1548,8 @@ function drawPie(fatores) {
       datasets: [{
         data: counts,
         backgroundColor: COLORS,
-        borderColor: '#fff',
-        borderWidth: 3,
+        borderColor: '#0E2A21',
+        borderWidth: 2,
         hoverOffset: 8
       }]
     },
@@ -1336,7 +1611,7 @@ function isActivated() {
 // a aba fecha, entao o link nao vira uma licenca vitalicia por acidente.
 // ─────────────────────────────────────────────────────────
 const VITRINE_WHATS = 'https://wa.me/5511947836879?text='
-  + encodeURIComponent('Quero conhecer o Axis Diagnóstico');
+  + encodeURIComponent('Quero conhecer o Diagnóstico NR-1 da AXIS');
 
 function isVitrine() {
   try {
@@ -1352,7 +1627,7 @@ function montaBannerVitrine() {
   const b = document.createElement('div');
   b.id = 'vitrine-banner';
   b.innerHTML = 'Demonstração · dados fictícios'
-    + '<a href="' + VITRINE_WHATS + '" target="_blank" rel="noopener">Falar com a Axis</a>';
+    + '<a href="' + VITRINE_WHATS + '" target="_blank" rel="noopener">Falar com a AXIS</a>';
   document.body.appendChild(b);
   document.body.classList.add('tem-vitrine-banner');
 }
@@ -1364,12 +1639,12 @@ function modalVitrine() {
   ov.innerHTML =
     '<div class="vitrine-card">'
     + '<span class="vitrine-tag">Isso é uma demonstração</span>'
-    + '<h3>O relatório é a entrega do Axis Diagnóstico.</h3>'
-    + '<p>Você pode percorrer o app inteiro por aqui, mas o relatório em PDF, '
+    + '<h3>O relatório é a entrega do <em>Diagnóstico NR-1</em>.</h3>'
+    + '<p>Você pode percorrer o aplicativo inteiro por aqui. O relatório em PDF, '
     + 'com a sua marca, sai na versão licenciada. É ele que você leva para a '
     + 'reunião com o cliente.</p>'
     + '<a class="btn btn-navy vitrine-btn" href="' + VITRINE_WHATS + '" target="_blank" rel="noopener">Falar no WhatsApp</a>'
-    + '<button class="btn vitrine-btn vitrine-btn-ghost" id="vitrine-fechar">Continuar vendo</button>'
+    + '<button class="btn vitrine-btn vitrine-btn-ghost" id="vitrine-fechar">Continuar navegando</button>'
     + '</div>';
   document.body.appendChild(ov);
   const fecha = () => ov.remove();
@@ -1389,7 +1664,7 @@ function empresaExemploVitrine() {
     });
     const pct = Math.round((tot / max) * 100);
     const nivel = pct >= 76 ? 'Crítico' : pct >= 51 ? 'Alto' : pct >= 26 ? 'Médio' : 'Baixo';
-    return { id: f.id, icon: f.icon, nome: f.nome, tot, max, pct, nivel };
+    return { id: f.id, nome: f.nome, tot, max, pct, nivel };
   });
   const pct = Math.round(fatores.reduce((s, f) => s + f.pct, 0) / fatores.length);
   return {
@@ -1421,10 +1696,10 @@ function tryActivate() {
   const hash = fnv1a(normalized);
   if (VALID_HASHES.includes(hash)) {
     try { localStorage.setItem('axis_lic', hash); } catch {}
-    showToast('Acesso ativado com sucesso! ✓');
+    showToast('Acesso ativado');
     const brand = loadBrand();
     if (brand) { applyBrand(brand); renderHome(); goScreen('s-home'); }
-    else { selectedCor = COR_PRESETS[0].cor; renderColorPresets(); goScreen('s-brand'); }
+    else { goScreen('s-brand'); }
   } else {
     const input = document.getElementById('act-input');
     input.classList.add('error');
@@ -1436,15 +1711,10 @@ function tryActivate() {
 // BRAND / MARCA
 // ─────────────────────────────────────────────────────────
 const BRAND_KEY = 'axis_brand';
-const COR_PRESETS = [
-  { nome: 'Axis (Padrão)', cor: '#2C1F0E' },
-  { nome: 'Verde Escuro', cor: '#145A1E' },
-  { nome: 'Roxo',         cor: '#4A235A' },
-  { nome: 'Bordo',        cor: '#6B0E1E' },
-  { nome: 'Azul Petróleo',cor: '#0E4A56' },
-  { nome: 'Grafite',      cor: '#2C2C2C' }
-];
-let selectedCor = COR_PRESETS[0].cor;
+// A paleta e travada na identidade AXIS (Digital Profundo). O consultor
+// personaliza nome, titulo e contato, nunca a cor: e isso que mantem todo
+// relatorio saindo com o mesmo padrao de apresentacao.
+const IDENTIDADE = 'axis-digital-profundo';
 
 function loadBrand() {
   try { return JSON.parse(localStorage.getItem(BRAND_KEY)); } catch { return null; }
@@ -1462,23 +1732,18 @@ function saveBrand() {
     titulo:    document.getElementById('b-titulo').value.trim(),
     contato:   document.getElementById('b-contato').value.trim(),
     instagram: document.getElementById('b-instagram').value.trim(),
-    cor:       selectedCor
+    identidade: IDENTIDADE
   };
   localStorage.setItem(BRAND_KEY, JSON.stringify(brand));
   applyBrand(brand);
-  showToast('Marca salva com sucesso!');
+  showToast('Marca salva');
   goHome();
 }
 
 function applyBrand(brand) {
   if (!brand) return;
   document.getElementById('h-empresa').textContent     = brand.empresa || 'Minha Consultoria';
-  document.getElementById('h-profissional').textContent = brand.profissional || 'Mapeamento NR-1';
-  // Apply primary color to CSS variable
-  if (brand.cor) {
-    document.documentElement.style.setProperty('--navy', brand.cor);
-    document.documentElement.style.setProperty('--blue', brand.cor + 'CC');
-  }
+  document.getElementById('h-profissional').textContent = brand.profissional || 'Diagnóstico NR-1';
 }
 
 function goBrand() {
@@ -1489,25 +1754,7 @@ function goBrand() {
   document.getElementById('b-titulo').value        = brand?.titulo      || '';
   document.getElementById('b-contato').value       = brand?.contato     || '';
   document.getElementById('b-instagram').value     = brand?.instagram   || '';
-  selectedCor = brand?.cor || COR_PRESETS[0].cor;
-  renderColorPresets();
   goScreen('s-brand');
-}
-
-function renderColorPresets() {
-  const el = document.getElementById('color-presets');
-  if (!el) return;
-  el.innerHTML = COR_PRESETS.map(p => `
-    <div class="color-dot ${selectedCor === p.cor ? 'selected' : ''}"
-         style="background:${p.cor}"
-         title="${p.nome}"
-         onclick="pickCor('${p.cor}')"></div>
-  `).join('');
-}
-
-function pickCor(cor) {
-  selectedCor = cor;
-  renderColorPresets();
 }
 
 // ─────────────────────────────────────────────────────────
@@ -1551,7 +1798,7 @@ if (isVitrine()) {
   db.get = function () { return [exemplo]; };
   db.set = function () {};
   S.companies = db.get();
-  applyBrand(loadBrand() || { nome: 'Minha Consultoria', cor: COR_PRESETS[0].cor });
+  applyBrand(loadBrand() || { empresa: 'Sua Consultoria', profissional: 'Diagnóstico NR-1' });
   montaBannerVitrine();
   renderHome();
   goScreen('s-home');
@@ -1565,8 +1812,6 @@ if (isVitrine()) {
     renderHome();
     goScreen('s-home');
   } else {
-    selectedCor = COR_PRESETS[0].cor;
-    renderColorPresets();
     goScreen('s-brand');
   }
 }
